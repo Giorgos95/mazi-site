@@ -3,32 +3,339 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mazí</title>
+<title>Mazí. Groceries, chores, meals and the family calendar, shared in one place.</title>
+<meta name="description" content="Mazí keeps a household running without the group chat. A shared space for groceries, chores, meal plans and the family calendar. Free for 30 days.">
+<link rel="icon" type="image/png" href="./assets/icon.png">
+<meta property="og:title" content="Mazí">
+<meta property="og:description" content="Groceries, chores, meals and the family calendar, shared in one place.">
+<meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
+<meta property="og:url" content="https://meetmazi.com/">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: light dark; }
-  body {
-    max-width: 34rem; margin: 0 auto; padding: 4rem 1.25rem;
-    font: 16px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    color: #1a1a1a; background: #fff;
+  :root {
+    color-scheme: light dark;
+    --bg: #FAF4E8;
+    --card: #FFFFFF;
+    --ink: #1F2B1E;
+    --muted: #6E685A;
+    --green: #2F9E44;
+    --green-deep: #14522A;
+    --teal: #0D8478;
+    --line: rgba(31, 43, 30, 0.12);
+    --band: #14522A;
+    --band-ink: #F3EEDF;
+    --shadow: 0 14px 40px rgba(31, 43, 30, 0.14);
   }
-  h1 { font-size: 2.4rem; margin: 0 0 .25rem; color: #0d8478; }
-  p.tag { color: #666; margin-top: 0; }
-  ul { list-style: none; padding: 0; margin-top: 2.5rem; }
-  li { margin-bottom: .9rem; }
-  a { color: #0d8478; font-weight: 600; }
   @media (prefers-color-scheme: dark) {
-    body { color: #e8e8e8; background: #121212; }
-    h1, a { color: #3fd3c3; }
-    p.tag { color: #999; }
+    :root {
+      --bg: #171512;
+      --card: #221F1A;
+      --ink: #ECE7DC;
+      --muted: #A39C8C;
+      --green: #4CC366;
+      --green-deep: #7FDB93;
+      --teal: #3FD3C3;
+      --line: rgba(236, 231, 220, 0.14);
+      --band: #10331D;
+      --band-ink: #E9F3E9;
+      --shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.65 "Atkinson Hyperlegible", system-ui, sans-serif;
+  }
+  img { max-width: 100%; }
+  a { color: var(--green); }
+  a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--green);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 1.4rem; }
+
+  /* Header */
+  .top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-block: 1.4rem 0.5rem;
+  }
+  .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+  .brand img { width: 44px; height: 44px; border-radius: 11px; }
+  .brand span {
+    font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.7rem;
+    color: var(--teal); letter-spacing: 0.01em;
+  }
+  .top-cta {
+    font-weight: 700; text-decoration: none; color: var(--green-deep);
+    border: 2px solid var(--line); border-radius: 999px; padding: 0.5rem 1.1rem;
+  }
+  .top-cta:hover { border-color: var(--green); }
+
+  /* Hero */
+  .hero {
+    display: grid; grid-template-columns: 1.05fr 0.95fr;
+    gap: 3.5rem; align-items: center; padding-block: 4rem 5rem;
+  }
+  h1 {
+    font-family: Fredoka, sans-serif; font-weight: 500;
+    font-size: clamp(2.1rem, 4.6vw, 3.15rem); line-height: 1.13;
+    letter-spacing: -0.015em; margin: 0 0 1rem; color: var(--green-deep);
+  }
+  .hero p.lead { margin: 0 0 1.6rem; font-size: 1.1rem; color: var(--muted); max-width: 34rem; }
+
+  /* The self-ticking list */
+  .list-card {
+    background: var(--card); border-radius: 22px; box-shadow: var(--shadow);
+    padding: 1.6rem 1.7rem; max-width: 27rem; margin: 0; justify-self: end;
+    width: 100%; font-size: 1.08rem; rotate: 1.2deg;
+  }
+  .list-card .list-label {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 0.5rem;
+  }
+  .list-card ul { list-style: none; margin: 0; padding: 0; }
+  .list-card li {
+    display: flex; align-items: center; gap: 0.85rem;
+    padding: 0.8rem 0; border-top: 1px solid var(--line);
+  }
+  .list-card li:first-of-type { border-top: 0; }
+  .tickbox {
+    flex: none; width: 26px; height: 26px; border-radius: 9px;
+    border: 2.5px solid var(--green); position: relative;
+  }
+  .tickbox::after {
+    content: ""; position: absolute; inset: -2.5px; border-radius: 9px;
+    background: var(--green) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4.5 4.5L19 7"/></svg>') center/70% no-repeat;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tickbox::after {
+      transform: scale(0);
+      animation: tick-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      animation-delay: var(--d);
+    }
+  }
+  @keyframes tick-pop { to { transform: scale(1); } }
+
+  /* Play badge */
+  .badge { display: inline-block; line-height: 0; }
+  .badge img { height: 74px; width: auto; }
+
+  .hero-note { margin: 0.55rem 0 0; font-size: 0.92rem; color: var(--muted); }
+
+  /* Phones */
+  .phone {
+    margin: 0; background: var(--card); border: 1px solid var(--line);
+    border-radius: 30px; padding: 10px; box-shadow: var(--shadow);
+    width: min(300px, 100%);
+  }
+  .phone img { display: block; width: 100%; height: auto; border-radius: 21px; }
+
+  /* Feature sections */
+  .features { display: grid; gap: 4.5rem; padding-block: 1.5rem 4.5rem; }
+  .feature {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; align-items: center;
+  }
+  .feature .phone { justify-self: center; }
+  .feature:nth-of-type(even) .phone { order: -1; }
+  .eyebrow {
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 0.6rem;
+  }
+  h2 {
+    font-family: Fredoka, sans-serif; font-weight: 500;
+    font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2;
+    letter-spacing: -0.01em; margin: 0 0 0.8rem; color: var(--green-deep);
+  }
+  .feature p { margin: 0; color: var(--muted); max-width: 30rem; }
+
+  /* Light and dark pair */
+  .themes { text-align: center; padding-block: 0 4.5rem; }
+  .themes h2 { margin-bottom: 2rem; }
+  .theme-pair { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; }
+  .theme-pair .phone { width: min(260px, 100%); }
+
+  /* Privacy band */
+  .band { background: var(--band); color: var(--band-ink); padding: 4.5rem 0; }
+  .band h2 { color: var(--band-ink); }
+  .band-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .band ul { list-style: none; margin: 0; padding: 0; }
+  .band li { display: flex; align-items: baseline; gap: 0.7rem; padding: 0.4rem 0; font-size: 1.08rem; }
+  .band li::before { content: "✓"; font-weight: 700; color: var(--green); }
+  @media (prefers-color-scheme: dark) { .band li::before { color: var(--green); } }
+  .band p { margin: 0 0 1rem; opacity: 0.88; max-width: 30rem; }
+  .band .together {
+    font-family: Fredoka, sans-serif; font-weight: 500; font-size: 1.35rem;
+    margin: 1.6rem 0 0; opacity: 1;
+  }
+
+  /* Final CTA */
+  .get { text-align: center; padding-block: 5rem; }
+  .get p { color: var(--muted); margin: 0 auto 1.8rem; max-width: 30rem; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--line); padding: 2rem 0 3rem; font-size: 0.92rem; color: var(--muted); }
+  footer .foot-links { display: flex; gap: 1.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  footer a { color: var(--green-deep); }
+  footer .fine { font-size: 0.8rem; margin: 0.3rem 0 0; }
+
+  @media (max-width: 820px) {
+    .hero { grid-template-columns: 1fr; gap: 2.5rem; padding-block: 2.5rem 3.5rem; }
+    .list-card { justify-self: start; rotate: 0deg; max-width: 24rem; }
+    .feature { grid-template-columns: 1fr; gap: 2rem; }
+    .feature:nth-of-type(even) .phone { order: 0; }
+    .features { gap: 3.5rem; }
+    .band-cols { grid-template-columns: 1fr; gap: 1.5rem; }
   }
 </style>
 </head>
 <body>
-  <h1>Mazí</h1>
-  <p class="tag">A shared organiser for one family or household.</p>
-  <ul>
-    <li><a href="./privacy.html">Privacy Policy</a></li>
-    <li><a href="./delete-account.html">Delete your account</a></li>
-  </ul>
+
+<header class="wrap top">
+  <a class="brand" href="/">
+    <img src="./assets/icon.png" alt="" width="44" height="44">
+    <span>Mazí</span>
+  </a>
+  <a class="top-cta" href="#get">Get the app</a>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div>
+      <h1>Keeps the household running without the group chat.</h1>
+      <p class="lead">One shared space for what to buy, who is doing what, what is for
+      dinner, and what is happening this week. Everyone in the household sees the same
+      lists, updated the moment something changes.</p>
+
+      <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
+        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
+      </a>
+      <p class="hero-note">Free for 30 days. One subscription covers the whole household.</p>
+    </div>
+
+    <div class="list-card" aria-hidden="true">
+      <p class="list-label">This week</p>
+      <ul>
+        <li><span class="tickbox" style="--d: 0.5s"></span> Bread, feta, kitchen roll</li>
+        <li><span class="tickbox" style="--d: 1.2s"></span> Take out the recycling</li>
+        <li><span class="tickbox" style="--d: 1.9s"></span> Wednesday: chicken thighs</li>
+        <li><span class="tickbox" style="--d: 2.6s"></span> Dentist, Friday 16:00</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="wrap features">
+    <section class="feature">
+      <div>
+        <p class="eyebrow">🛒 Groceries</p>
+        <h2>One list, sorted the way you shop.</h2>
+        <p>A shared shopping list, organised by category and by shop. Tick items off as
+        you go and watch the cart fill up. When a name is not enough, add a photo of the
+        exact brand your partner actually meant.</p>
+      </div>
+      <figure class="phone">
+        <img src="./assets/screens/groceries.png" alt="Groceries list with Supermarket and Pharmacy shop filters" width="1080" height="2126" loading="lazy">
+      </figure>
+    </section>
+
+    <section class="feature">
+      <div>
+        <p class="eyebrow">✅ Chores</p>
+        <h2>Claimed, assigned, or up for grabs.</h2>
+        <p>Assign a chore to someone, or leave it unclaimed for whoever gets there
+        first. Set due dates, and get one quiet digest each morning of what is due
+        today, instead of a stream of reminders.</p>
+      </div>
+      <figure class="phone">
+        <img src="./assets/screens/chores.png" alt="The chores screen with assigned and unclaimed chores" width="1080" height="2126" loading="lazy">
+      </figure>
+    </section>
+
+    <section class="feature">
+      <div>
+        <p class="eyebrow">🍽️ Kitchen</p>
+        <h2>From recipe to shopping list in one tap.</h2>
+        <p>Keep the recipes your household actually cooks, plan the week's meals, and
+        send a recipe's ingredients straight to the grocery list.</p>
+      </div>
+      <figure class="phone">
+        <img src="./assets/screens/kitchen.png" alt="The kitchen screen with the week's meal plan" width="1080" height="2126" loading="lazy">
+      </figure>
+    </section>
+
+    <section class="feature">
+      <div>
+        <p class="eyebrow">📅 Calendar</p>
+        <h2>Who is where this week.</h2>
+        <p>Appointments, school events, name days and everything else on one shared
+        family calendar, colour-coded by who added it.</p>
+      </div>
+      <figure class="phone">
+        <img src="./assets/screens/calendar.png" alt="The shared family calendar with colour-coded events" width="1080" height="2126" loading="lazy">
+      </figure>
+    </section>
+  </div>
+
+  <section class="wrap themes">
+    <h2>At home in light and dark.</h2>
+    <div class="theme-pair">
+      <figure class="phone">
+        <img src="./assets/screens/groceries.png" alt="Mazí in the light theme" width="1080" height="2126" loading="lazy">
+      </figure>
+      <figure class="phone">
+        <img src="./assets/screens/groceries-dark.png" alt="The same screen in the dark theme" width="1080" height="2126" loading="lazy">
+      </figure>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap band-cols">
+      <div>
+        <h2>Built for a household, not a social network.</h2>
+        <p class="together">Mazí is Greek for together. That is the whole idea.</p>
+      </div>
+      <div>
+        <ul>
+          <li>No ads.</li>
+          <li>No feeds.</li>
+          <li>No tracking.</li>
+        </ul>
+        <p style="margin-top: 1rem;">Your household's data is visible to your household
+        and nobody else. Join by invite code: start a household, share the code, done.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap get" id="get">
+    <h2>Bring the household together.</h2>
+    <p>Free for 30 days. After that, one subscription covers everyone you invite.</p>
+    <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
+      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
+    </a>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-links">
+      <a href="./privacy.html">Privacy policy</a>
+      <a href="./delete-account.html">Delete your account</a>
+      <a href="mailto:support@meetmazi.com">support@meetmazi.com</a>
+    </div>
+    <p>© 2026 Mazí</p>
+    <p class="fine">Google Play and the Google Play logo are trademarks of Google LLC.</p>
+  </div>
+</footer>
+
 </body>
 </html>
