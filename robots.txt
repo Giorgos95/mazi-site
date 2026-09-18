@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://meetmazi.com/sitemap.xml
