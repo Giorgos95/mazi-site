@@ -1,0 +1,89 @@
+/* Shared by the text pages, such as the FAQ. Tokens match index.html. */
+:root {
+  color-scheme: light dark;
+  --bg: #FAF4E8;
+  --card: #FFFFFF;
+  --ink: #1F2B1E;
+  --muted: #6E685A;
+  --green: #2F9E44;
+  --green-deep: #14522A;
+  --teal: #0D8478;
+  --line: rgba(31, 43, 30, 0.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #171512;
+    --card: #221F1A;
+    --ink: #ECE7DC;
+    --muted: #A39C8C;
+    --green: #4CC366;
+    --green-deep: #7FDB93;
+    --teal: #3FD3C3;
+    --line: rgba(236, 231, 220, 0.14);
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 17px/1.65 "Atkinson Hyperlegible", system-ui, sans-serif;
+}
+a { color: var(--green); }
+a:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 1.4rem; }
+
+/* Header, the same as the landing page */
+.top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-block: 1.4rem 0.5rem;
+}
+.brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+.brand img { width: 44px; height: 44px; border-radius: 11px; }
+.brand span {
+  font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.7rem;
+  color: var(--teal); letter-spacing: 0.01em;
+}
+.top-cta {
+  font-weight: 700; text-decoration: none; color: var(--green-deep);
+  border: 2px solid var(--line); border-radius: 999px; padding: 0.5rem 1.1rem;
+}
+.top-cta:hover { border-color: var(--green); }
+
+/* Article */
+.article { max-width: 44rem; margin: 0 auto; padding: 2.5rem 1.4rem 4rem; }
+h1, h2, h3 { font-family: Fredoka, sans-serif; font-weight: 500; color: var(--green-deep); }
+h1 {
+  font-size: clamp(2rem, 4.4vw, 2.8rem); line-height: 1.13;
+  letter-spacing: -0.015em; margin: 0 0 1rem;
+}
+h2 {
+  font-size: clamp(1.4rem, 2.8vw, 1.75rem); line-height: 1.2;
+  margin: 3rem 0 0.8rem; letter-spacing: -0.01em;
+}
+h3 { font-size: 1.2rem; line-height: 1.3; margin: 2rem 0 0.4rem; }
+.lead { font-size: 1.1rem; color: var(--muted); margin: 0 0 1rem; }
+.article p, .article li { margin: 0 0 0.9rem; }
+.article ul { padding-left: 1.2rem; margin: 0 0 1rem; }
+
+/* Closing call to action */
+.get {
+  margin-top: 3rem; padding: 1.8rem; border-radius: 22px;
+  background: var(--card); border: 1px solid var(--line);
+}
+.get h2 { margin-top: 0; }
+.get p { color: var(--muted); }
+.badge { display: inline-block; line-height: 0; }
+.badge img { height: 64px; width: auto; }
+
+/* Footer, the same as the landing page */
+footer { border-top: 1px solid var(--line); padding: 2rem 0 3rem; font-size: 0.92rem; color: var(--muted); }
+footer .foot-links { display: flex; gap: 0.6rem 1.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
+footer a { color: var(--green-deep); }
+footer .fine { font-size: 0.8rem; margin: 0.3rem 0 0; }
