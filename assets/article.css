@@ -79,8 +79,12 @@ h3 { font-size: 1.2rem; line-height: 1.3; margin: 2rem 0 0.4rem; }
 }
 .get h2 { margin-top: 0; }
 .get p { color: var(--muted); }
+.badges { display: flex; flex-wrap: wrap; align-items: center; }
 .badge { display: inline-block; line-height: 0; }
 .badge img { height: 64px; width: auto; }
+/* The Play PNG carries 10.5px of transparent padding around a 43px badge, so the
+   App Store SVG gets the same margin to match it in height and spacing. */
+.badge .apple { height: 43px; margin: 10.5px; }
 
 /* Footer, the same as the landing page */
 footer { border-top: 1px solid var(--line); padding: 2rem 0 3rem; font-size: 0.92rem; color: var(--muted); }

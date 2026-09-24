@@ -33,11 +33,17 @@
       "description": "Mazí is a shared organiser for one household: a shopping list sorted by category and by shop, tasks that can be assigned or left for whoever gets there first, recipes and a weekly meal plan that send ingredients to the shopping list, and a colour-coded family calendar. Everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together. 30-day free trial, then one subscription covers the whole household.",
       "applicationCategory": "LifestyleApplication",
       "applicationSubCategory": "Family organiser",
-      "operatingSystem": "Android",
+      "operatingSystem": "Android, iOS",
       "inLanguage": "en",
       "url": "https://meetmazi.com/",
-      "installUrl": "https://play.google.com/store/apps/details?id=com.mazi.family",
-      "sameAs": "https://play.google.com/store/apps/details?id=com.mazi.family",
+      "installUrl": [
+        "https://play.google.com/store/apps/details?id=com.mazi.family",
+        "https://apps.apple.com/app/mazi-family-organizer/id6807159485"
+      ],
+      "sameAs": [
+        "https://play.google.com/store/apps/details?id=com.mazi.family",
+        "https://apps.apple.com/app/mazi-family-organizer/id6807159485"
+      ],
       "image": "https://meetmazi.com/assets/icon.png",
       "screenshot": [
         "https://meetmazi.com/assets/screens/today.png",
@@ -175,11 +181,19 @@
   @keyframes tick-pop { to { transform: scale(1); } }
 
   /* Play badge */
+  .badges { display: flex; flex-wrap: wrap; align-items: center; }
   .badge { display: inline-block; line-height: 0; }
   .badge img { height: 74px; width: auto; }
+  /* The Play PNG carries 12px of transparent padding around a 50px badge, so the
+     App Store SVG gets the same margin to match it in height and spacing. */
+  .badge .apple { height: 50px; margin: 12px; }
+  /* Side by side at full size they need 365px, more than a 390px phone leaves. */
+  @media (max-width: 420px) {
+    .badge img { height: 64px; }
+    .badge .apple { height: 43px; margin: 10.5px; }
+  }
 
   .hero-note { margin: 0.55rem 0 0; font-size: 0.92rem; color: var(--muted); }
-  .ios-note { margin: 0.35rem 0 0; font-size: 0.85rem; color: var(--muted); }
 
   /* Phones */
   .phone {
@@ -230,6 +244,7 @@
 
   /* Final CTA */
   .get { text-align: center; padding-block: 5rem; }
+  .get .badges { justify-content: center; }
   .get p { color: var(--muted); margin: 0 auto 1.8rem; max-width: 30rem; }
 
   /* Footer */
@@ -266,11 +281,15 @@
       dinner, and what is happening this week. Everyone in the household sees the same
       lists, updated the moment something changes.</p>
 
-      <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
-      </a>
+      <div class="badges">
+        <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
+          <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
+        </a>
+        <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
+          <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="50">
+        </a>
+      </div>
       <p class="hero-note">Free for 30 days. One subscription covers the whole household.</p>
-      <p class="ios-note">Android today. iPhone on the way.</p>
     </div>
 
     <div class="list-card" aria-hidden="true">
@@ -369,10 +388,14 @@
   <section class="wrap get" id="get">
     <h2>Bring the household together.</h2>
     <p>Free for 30 days. After that, one subscription covers everyone you invite.</p>
-    <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
-    </a>
-    <p class="ios-note">Android today. iPhone on the way.</p>
+    <div class="badges">
+      <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
+        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
+      </a>
+      <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
+        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="50">
+      </a>
+    </div>
   </section>
 </main>
 
