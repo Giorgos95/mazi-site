@@ -152,10 +152,9 @@
     }
   } else if (ios) {
     hide('play');
-    if (valid) {
-      document.getElementById('ios-open').href = 'mazi://join?code=' + code;
-      show('ios');
-    }
+    // "Open it here" waits for an iOS bundle that has the app's join route; the
+    // iOS build out today would land on an unmatched route. To turn it on, set
+    // #ios-open's href to 'mazi://join?code=' + code and show('ios') here.
   } else {
     show('desktop');
   }
