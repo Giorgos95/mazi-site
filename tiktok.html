@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mazí. One list for the whole household.</title>
+<meta name="description" content="Mazí gives the household one shopping list, tasks, meal plans and a family calendar, shared. 30 days free, no card needed.">
+<!-- The page the TikTok bio links to. Its store links carry a tiktok_bio tag, so Play
+     Console and App Store Connect count the installs it sends; the site itself tracks
+     nothing. It stays out of search and out of sitemap.xml, so a visitor from Google is
+     never counted as one from TikTok. -->
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="./assets/icon.png">
+<meta property="og:title" content="Mazí">
+<meta property="og:description" content="One list for the whole household.">
+<meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
+<meta property="og:url" content="https://meetmazi.com/tiktok">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/article.css">
+<style>
+  /* The landing page's phone shadow, which article.css has no token for. */
+  :root { --shadow: 0 14px 40px rgba(31, 43, 30, 0.14); }
+  @media (prefers-color-scheme: dark) { :root { --shadow: 0 14px 40px rgba(0, 0, 0, 0.5); } }
+  .article { padding-top: 1.5rem; }
+  .note { font-size: 0.92rem; color: var(--muted); margin: 0.4rem 0 0; }
+  .greek { font-family: Fredoka, sans-serif; font-weight: 500; color: var(--teal); margin: 0 0 0.6rem; }
+  .article .what { list-style: none; padding: 0; margin: 2.2rem 0 0; }
+  .what li { padding: 0.75rem 0; border-top: 1px solid var(--line); margin: 0; }
+  .what li:first-child { border-top: 0; }
+  .what b { color: var(--green-deep); }
+  .phone {
+    margin: 2.4rem auto 0; background: var(--card); border: 1px solid var(--line);
+    border-radius: 30px; padding: 10px; width: min(280px, 100%);
+    box-shadow: var(--shadow);
+  }
+  .phone img { display: block; width: 100%; height: auto; border-radius: 21px; }
+  /* Side by side the badges need 315px at article.css's size, more than the closing
+     card leaves on a phone. Below 420px they shrink by an eighth and the card gives
+     back some padding, so both rows stay on one line down to a 360px phone. */
+  @media (max-width: 420px) {
+    .badge img { height: 56px; }
+    .badge .apple { height: 37.6px; margin: 9.2px; }
+    .get { padding: 1.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="brand" href="/">
+    <img src="./assets/icon.png" alt="" width="44" height="44">
+    <span>Mazí</span>
+  </a>
+</header>
+
+<main class="article">
+  <p class="greek">μαζί = together</p>
+  <h1>The family chat was never a good shopping list.</h1>
+  <p class="lead">Mazí gives the whole household one shopping list, plus tasks, meal plans
+  and a shared calendar. Everyone sees the same lists, updated the moment someone adds
+  something.</p>
+
+  <div class="badges">
+    <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dtiktok%26utm_medium%3Dsocial%26utm_campaign%3Dtiktok_bio">
+      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="64">
+    </a>
+    <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
+      <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="43">
+    </a>
+  </div>
+  <p class="note">30 days free with everything unlocked, no card needed.</p>
+
+  <ul class="what">
+    <li><b>Shopping.</b> One list, sorted by category and by shop, with a photo when
+    the brand matters.</li>
+    <li><b>Tasks.</b> Assigned to someone, or left for whoever gets there first.</li>
+    <li><b>Kitchen.</b> Plan the week's dinners and send every ingredient to the list.</li>
+    <li><b>Calendar.</b> Everyone's week in one place, coloured by who added it.</li>
+  </ul>
+
+  <figure class="phone">
+    <img src="./assets/screens/shopping.png" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
+  </figure>
+
+  <section class="get">
+    <h2>Try it with your household</h2>
+    <p>30 days free with everything unlocked, no card needed. After that, one
+    subscription covers everyone you invite.</p>
+    <div class="badges">
+      <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dtiktok%26utm_medium%3Dsocial%26utm_campaign%3Dtiktok_bio">
+        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="64">
+      </a>
+      <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
+        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="43">
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-links">
+      <a href="/">Home</a>
+      <a href="./faq.html">Questions</a>
+      <a href="./privacy.html">Privacy policy</a>
+      <a href="./terms.html">Terms of use</a>
+      <a href="./delete-account.html">Delete your account</a>
+      <a href="mailto:support@meetmazi.com">support@meetmazi.com</a>
+    </div>
+    <p>© 2026 Mazí</p>
+    <p class="fine">Google Play and the Google Play logo are trademarks of Google LLC.</p>
+  </div>
+</footer>
+
+</body>
+</html>
