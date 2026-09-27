@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You're invited to Mazí</title>
+<meta name="description" content="Join your household on Mazí: one shopping list, tasks, meal plans and a family calendar, shared.">
+<!-- Where every invite links: https://meetmazi.com/join?code=XXXXXXXX. The app
+     builds the link in src/features/household/inviteMessage.ts (FamilyApp repo).
+     It gets the person to the right store with the code in hand, and opens the
+     app's join route where Mazí is installed. The store links carry an invite
+     tag, so Play Console and App Store Connect count the installs it sends; the
+     page itself tracks nothing. Out of search and out of sitemap.xml: an invite
+     page means nothing without its code. -->
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="./assets/icon.png">
+<!-- What a chat app shows in its link preview under the invite. -->
+<meta property="og:title" content="You're invited to a household on Mazí">
+<meta property="og:description" content="One shopping list, tasks and calendar for the whole household.">
+<meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/article.css">
+<style>
+  .article { padding-top: 1.5rem; }
+  .code-card {
+    margin: 1.8rem 0 0; padding: 1.25rem; background: var(--card);
+    border: 1px solid var(--line); border-radius: 18px; text-align: center;
+  }
+  .code-card .label { margin: 0; color: var(--muted); font-size: 0.95rem; }
+  .code {
+    margin: 0.4rem 0 0.9rem; font-family: "Fredoka", sans-serif; font-weight: 600;
+    font-size: clamp(2rem, 11vw, 2.8rem); letter-spacing: 0.12em; color: var(--ink);
+    user-select: all; -webkit-user-select: all;
+  }
+  .button {
+    display: inline-block; padding: 0.8rem 1.4rem; border-radius: 999px; border: 0;
+    background: var(--teal); color: #fff; font: inherit; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+  }
+  .button.quiet { background: transparent; color: var(--teal); border: 2px solid var(--teal); }
+  .open { margin: 1.4rem 0 0; }
+  .steps { margin: 2rem 0 0; padding-left: 1.3rem; }
+  .steps li { margin: 0.5rem 0; }
+  .note { font-size: 0.92rem; color: var(--muted); margin: 0.6rem 0 0; }
+  [hidden] { display: none !important; }
+  @media (max-width: 420px) {
+    .badge img { height: 56px; }
+    .badge .apple { height: 37.6px; margin: 9.2px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a class="brand" href="/">
+    <img src="./assets/icon.png" alt="" width="44" height="44">
+    <span>Mazí</span>
+  </a>
+</header>
+
+<main class="article">
+  <h1>You're invited to a household on Mazí</h1>
+  <p class="lead">Mazí keeps the household's shopping list, tasks, meals and calendar in
+  one place, shared with everyone in it.</p>
+
+  <section id="invite" class="code-card" hidden>
+    <p class="label">Your invite code</p>
+    <p class="code" id="code"></p>
+    <button class="button quiet" id="copy" type="button">Copy code</button>
+  </section>
+
+  <p id="bad" class="note" hidden>This link is missing its invite code. Ask whoever sent it
+  for a fresh invite from Settings in their Mazí app.</p>
+
+  <!-- Android: opens Mazí where it is installed, Play where it is not. -->
+  <p id="android" class="open" hidden>
+    <a class="button" id="android-open" href="#">Open in Mazí</a>
+  </p>
+
+  <div class="badges" id="badges">
+    <a class="badge" id="play" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dinvite%26utm_medium%3Dlink%26utm_campaign%3Dinvite">
+      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="64">
+    </a>
+    <a class="badge" id="apple" href="https://apps.apple.com/app/apple-store/id6807159485?pt=129389033&amp;ct=invite&amp;mt=8">
+      <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="43">
+    </a>
+  </div>
+
+  <p id="ios" class="note" hidden>Already have Mazí? <a id="ios-open" href="#">Open it here</a>.</p>
+  <p id="desktop" class="note" hidden>Open this link on your phone to get Mazí there.</p>
+
+  <ol class="steps">
+    <li>Get Mazí on your phone.</li>
+    <li>Create your account.</li>
+    <li>Open this link again and your code is filled in. Or paste it under
+    "Join an existing one".</li>
+  </ol>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-links">
+      <a href="/">Home</a>
+      <a href="./faq.html">Questions</a>
+      <a href="./privacy.html">Privacy policy</a>
+      <a href="./terms.html">Terms of use</a>
+      <a href="mailto:support@meetmazi.com">support@meetmazi.com</a>
+    </div>
+    <p>© 2026 Mazí</p>
+    <p class="fine">Google Play and the Google Play logo are trademarks of Google LLC.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // The shape generate_invite_code produces. The app checks the same pattern in
+  // src/features/household/inviteLinkLogic.ts (FamilyApp repo); change both together.
+  var SHAPE = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{8}$/;
+  var raw = new URLSearchParams(location.search).get('code') || '';
+  var code = raw.trim().toUpperCase();
+  var valid = SHAPE.test(code);
+
+  var ua = navigator.userAgent;
+  var android = /Android/i.test(ua);
+  // iPadOS reports itself as a Mac; touch points tell them apart.
+  var ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  function show(id) { document.getElementById(id).hidden = false; }
+  function hide(id) { document.getElementById(id).hidden = true; }
+
+  if (valid) {
+    document.getElementById('code').textContent = code;
+    show('invite');
+  } else {
+    show('bad');
+  }
+
+  if (android) {
+    hide('apple');
+    if (valid) {
+      var play = document.getElementById('play').href;
+      document.getElementById('android-open').href =
+        'intent://join?code=' + code +
+        '#Intent;scheme=mazi;package=com.mazi.family;S.browser_fallback_url=' +
+        encodeURIComponent(play) + ';end';
+      show('android');
+    }
+  } else if (ios) {
+    hide('play');
+    if (valid) {
+      document.getElementById('ios-open').href = 'mazi://join?code=' + code;
+      show('ios');
+    }
+  } else {
+    show('desktop');
+  }
+
+  var copy = document.getElementById('copy');
+  copy.addEventListener('click', function () {
+    function selectCode() {
+      var range = document.createRange();
+      range.selectNodeContents(document.getElementById('code'));
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      copy.textContent = 'Selected, copy it from the menu';
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function () {
+        copy.textContent = 'Copied';
+      }, selectCode);
+    } else {
+      selectCode();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
