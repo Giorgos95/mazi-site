@@ -136,6 +136,12 @@
   if (valid) {
     document.getElementById('code').textContent = code;
     show('invite');
+    // Play hands the referrer to the app after the install, so a fresh install
+    // still finds the code without coming back here. Read by
+    // src/features/household/pendingInvite.ts (FamilyApp repo) from 1.2.1 on;
+    // older builds ignore it. The code needs no escaping, the shape above
+    // allows only letters and digits.
+    document.getElementById('play').href += '%26code%3D' + code;
   } else {
     show('bad');
   }
