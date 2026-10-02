@@ -97,7 +97,7 @@
   <ol class="steps">
     <li>Get Mazí on your phone.</li>
     <li>Create your account.</li>
-    <li>Open this link again and your code is filled in. Or paste it under
+    <li id="step-code">Open this link again and your code is filled in. Or paste it under
     "Join an existing one".</li>
   </ol>
 </main>
@@ -155,6 +155,11 @@
         '#Intent;scheme=mazi;package=com.mazi.family;S.browser_fallback_url=' +
         encodeURIComponent(play) + ';end';
       show('android');
+      // From 1.2.1 an install through the Play button above brings the code
+      // with it, so coming back here is only for an app installed some other way.
+      document.getElementById('step-code').textContent =
+        'Got Mazí from the button above? Your code is already filled in. ' +
+        'Otherwise open this link again, or paste it under "Join an existing one".';
     }
   } else if (ios) {
     hide('play');
