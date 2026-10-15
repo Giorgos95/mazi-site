@@ -3,6 +3,11 @@
 {
   "name": "mazi-site",
   "compatibility_date": "2026-10-01",
+  // The site's address. www.meetmazi.com is not here: a redirect rule in the
+  // Cloudflare dashboard (Rules) sends it to meetmazi.com before it gets here.
+  "routes": [
+    { "pattern": "meetmazi.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": ".",
     // An address with no page behind it gets 404.html, with a 404 status.

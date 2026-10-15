@@ -6,7 +6,3 @@
 .wrangler
 node_modules
 wrangler.jsonc
-
-# Only GitHub Pages reads these. Delete them once GitHub Pages is off.
-CNAME
-.nojekyll
