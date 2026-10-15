@@ -1,14 +1,15 @@
 # Mazí
 
-> Mazí (also written Mazi) is a shared organiser app for one household, on Android and iPhone. It keeps the shopping list, tasks, recipes and meal plan, and the family calendar in one place, and everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together.
+> Mazí (also written Mazi) is a shared organiser app for one household, on Android and iPhone. It keeps the shopping list, chores and tasks, recipes and meal plan, and the family calendar in one place, and everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together.
 
 ## What it does
 
-- Shopping: one shared list, grouped by category and filtered by shop, with photos on items for the exact brand.
-- Tasks: assigned to someone or left unclaimed for whoever gets there first, with due dates, times and repeats. One morning digest of what is due today, and a reminder at the time you set.
-- Kitchen: the household's recipes and a weekly meal plan that add their ingredients to the shopping list.
-- Calendar: a shared family calendar where each event is for one person or for everyone, in their colour, and reminds the people it is for. Events and tasks can repeat every day, week, 2 weeks, month or year.
+- Shopping list: one shared list, grouped by aisle (eight built-in categories plus up to 20 of your own) and filtered by shop, with photos on items for the exact brand. Mazí learns which category the household files each item under.
+- Chores and tasks: given to one person or left for anyone, with due dates, times and repeats (every day, week, 2 weeks, month or year). A morning digest at 9:00 lists the day's tasks, and a task with a time sends a reminder at that time.
+- Meal planner: the household's recipes and a weekly plan with breakfast, lunch and dinner. One tap adds the week's ingredients to the shopping list, merging what is already there.
+- Family calendar: each event is for one person or for everyone, shows in that person's colour (grey for everyone), and reminds the people it is for an hour before. Events can repeat and can run over several days.
 - Joining: one person starts a household and shares its invite code. Android and iPhone members share the same household.
+- Languages: English and Greek, following the phone's language.
 
 ## Price
 
@@ -24,12 +25,17 @@
 ## Limits
 
 - One household per person at a time, up to eight people per household.
-- It does not sync with Google Calendar.
-- The app is in English.
+- It does not sync with Google Calendar or other calendar apps.
+- It needs an internet connection; there is no offline mode.
+- No barcode scanning, prices, recipe import from websites, nutrition, or points and rewards for chores.
 
 ## Pages
 
 - [Home](https://meetmazi.com/): what Mazí is, with screenshots of each part of the app
+- [Shopping list](https://meetmazi.com/shopping-list): the shared shopping list in detail
+- [Chores and tasks](https://meetmazi.com/chores): assigning, repeating and reminders
+- [Meal planner](https://meetmazi.com/meal-planner): recipes, the weekly plan and the shopping list link
+- [Family calendar](https://meetmazi.com/family-calendar): events, colours, repeats and reminders
 - [Questions](https://meetmazi.com/faq): the trial, the subscription, how households and invites work, and privacy
 
 ## Get the app
