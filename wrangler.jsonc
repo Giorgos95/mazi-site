@@ -1,0 +1,11 @@
+// Cloudflare serves the site straight from this repo: every push to main
+// publishes it. There is no build step and no server code, only the files.
+{
+  "name": "mazi-site",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": ".",
+    // An address with no page behind it gets 404.html, with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}

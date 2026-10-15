@@ -1,0 +1,10 @@
+# Headers Cloudflare sends with the matching files. Pages themselves keep
+# Cloudflare's default, so a push shows up for every visitor at once.
+
+/*
+  X-Content-Type-Options: nosniff
+
+# Images keep their names when they change, so a browser holds them for a day
+# and then fetches the new one in the background for up to a week.
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

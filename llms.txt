@@ -1,0 +1,45 @@
+# Mazí
+
+> Mazí (also written Mazi) is a shared organiser app for one household, on Android and iPhone. It keeps the shopping list, tasks, recipes and meal plan, and the family calendar in one place, and everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together.
+
+## What it does
+
+- Shopping: one shared list, grouped by category and filtered by shop, with photos on items for the exact brand.
+- Tasks: assigned to someone or left unclaimed for whoever gets there first, with due dates, times and repeats. One morning digest of what is due today, and a reminder at the time you set.
+- Kitchen: the household's recipes and a weekly meal plan that add their ingredients to the shopping list.
+- Calendar: a shared family calendar where each event is for one person or for everyone, in their colour, and reminds the people it is for. Events and tasks can repeat every day, week, 2 weeks, month or year.
+- Joining: one person starts a household and shares its invite code. Android and iPhone members share the same household.
+
+## Price
+
+- A 30-day free trial with every feature unlocked. No card needed, and it never turns into a paid subscription by itself.
+- After the trial, a monthly or yearly subscription. One subscription covers the whole household, up to eight people, and the people invited pay nothing. There is no free plan.
+- When the trial ends without a subscription, the household becomes read-only. Nothing is deleted.
+
+## Privacy
+
+- No ads, no advertising identifiers, no analytics or tracking tools, no location collection.
+- Only members of the household can see its data. Data is stored in the EU, on servers in Ireland, and is never sold, shared or used to train anything.
+
+## Limits
+
+- One household per person at a time, up to eight people per household.
+- It does not sync with Google Calendar.
+- The app is in English.
+
+## Pages
+
+- [Home](https://meetmazi.com/): what Mazí is, with screenshots of each part of the app
+- [Questions](https://meetmazi.com/faq): the trial, the subscription, how households and invites work, and privacy
+
+## Get the app
+
+- [Google Play](https://play.google.com/store/apps/details?id=com.mazi.family)
+- [App Store](https://apps.apple.com/app/mazi-family-organizer/id6807159485)
+
+## Optional
+
+- [Privacy policy](https://meetmazi.com/privacy)
+- [Terms of use](https://meetmazi.com/terms)
+- [Delete your account](https://meetmazi.com/delete-account)
+- Support: support@meetmazi.com

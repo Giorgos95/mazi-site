@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://meetmazi.com/</loc>
+    <lastmod>2026-10-15</lastmod>
+  </url>
+  <url>
+    <loc>https://meetmazi.com/faq</loc>
     <lastmod>2026-09-24</lastmod>
   </url>
   <url>
-    <loc>https://meetmazi.com/faq.html</loc>
-    <lastmod>2026-09-24</lastmod>
+    <loc>https://meetmazi.com/privacy</loc>
+    <lastmod>2026-10-02</lastmod>
   </url>
   <url>
-    <loc>https://meetmazi.com/privacy.html</loc>
-    <lastmod>2026-08-01</lastmod>
+    <loc>https://meetmazi.com/terms</loc>
+    <lastmod>2026-09-20</lastmod>
   </url>
   <url>
-    <loc>https://meetmazi.com/terms.html</loc>
-    <lastmod>2026-08-28</lastmod>
-  </url>
-  <url>
-    <loc>https://meetmazi.com/delete-account.html</loc>
+    <loc>https://meetmazi.com/delete-account</loc>
     <lastmod>2026-08-01</lastmod>
   </url>
 </urlset>

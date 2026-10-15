@@ -19,11 +19,21 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://meetmazi.com/#organization",
+      "name": "Mazí",
+      "alternateName": "Mazi",
+      "url": "https://meetmazi.com/",
+      "logo": "https://meetmazi.com/assets/icon.png",
+      "email": "support@meetmazi.com"
+    },
+    {
       "@type": "WebSite",
       "@id": "https://meetmazi.com/#website",
       "name": "Mazí",
       "alternateName": "Mazi",
-      "url": "https://meetmazi.com/"
+      "url": "https://meetmazi.com/",
+      "publisher": { "@id": "https://meetmazi.com/#organization" }
     },
     {
       "@type": "MobileApplication",
@@ -36,6 +46,7 @@
       "operatingSystem": "Android, iOS",
       "inLanguage": "en",
       "url": "https://meetmazi.com/",
+      "publisher": { "@id": "https://meetmazi.com/#organization" },
       "installUrl": [
         "https://play.google.com/store/apps/details?id=com.mazi.family",
         "https://apps.apple.com/app/mazi-family-organizer/id6807159485"
@@ -406,10 +417,10 @@
 <footer>
   <div class="wrap">
     <div class="foot-links">
-      <a href="./faq.html">Questions</a>
-      <a href="./privacy.html">Privacy policy</a>
-      <a href="./terms.html">Terms of use</a>
-      <a href="./delete-account.html">Delete your account</a>
+      <a href="/faq">Questions</a>
+      <a href="/privacy">Privacy policy</a>
+      <a href="/terms">Terms of use</a>
+      <a href="/delete-account">Delete your account</a>
       <a href="mailto:support@meetmazi.com">support@meetmazi.com</a>
     </div>
     <p>© 2026 Mazí</p>

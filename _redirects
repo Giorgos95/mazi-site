@@ -1,0 +1,11 @@
+# Every page answers at its address without .html. The old .html addresses
+# move there permanently, so search engines carry them over, and links already
+# out in the world keep working: the app opens /privacy.html and /terms.html,
+# and the store listings may still point at the .html pages.
+/index.html            /                301
+/faq.html              /faq             301
+/privacy.html          /privacy         301
+/terms.html            /terms           301
+/delete-account.html   /delete-account  301
+/join.html             /join            301
+/tiktok.html           /tiktok          301

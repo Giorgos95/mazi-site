@@ -1,0 +1,12 @@
+# Files in the repo that are not part of the site, so Cloudflare does not
+# publish them. Same syntax as .gitignore.
+.git
+.gitignore
+.assetsignore
+.wrangler
+node_modules
+wrangler.jsonc
+
+# Only GitHub Pages reads these. Delete them once GitHub Pages is off.
+CNAME
+.nojekyll

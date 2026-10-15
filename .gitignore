@@ -1,0 +1,3 @@
+# Left behind by running the site locally with wrangler dev.
+.wrangler/
+node_modules/
