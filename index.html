@@ -79,10 +79,27 @@
   ]
 }
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="./assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* Served from this site, the same faces as article.css. */
+  @font-face {
+    font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 400;
+    font-display: swap; src: url("./assets/fonts/atkinson-hyperlegible-400.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Atkinson Hyperlegible"; font-style: italic; font-weight: 400;
+    font-display: swap; src: url("./assets/fonts/atkinson-hyperlegible-400-italic.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 700;
+    font-display: swap; src: url("./assets/fonts/atkinson-hyperlegible-700.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: Fredoka; font-style: normal; font-weight: 500 600;
+    font-display: swap; src: url("./assets/fonts/fredoka.woff2") format("woff2");
+  }
+
   :root {
     color-scheme: light dark;
     --bg: #FAF4E8;
@@ -295,10 +312,10 @@
 
       <div class="badges">
         <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-          <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
+          <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="191" height="74">
         </a>
         <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
-          <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="50">
+          <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="150" height="50">
         </a>
       </div>
       <p class="hero-note">Free for 30 days. One subscription covers the whole household.</p>
@@ -325,7 +342,7 @@
         exact brand your partner actually meant.</p>
       </div>
       <figure class="phone">
-        <img src="./assets/screens/shopping.png" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
+        <img src="./assets/screens/shopping-600.webp" srcset="./assets/screens/shopping-600.webp 600w, ./assets/screens/shopping-1080.webp 1080w" sizes="280px" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
       </figure>
     </section>
 
@@ -339,7 +356,7 @@
         of what is due today.</p>
       </div>
       <figure class="phone">
-        <img src="./assets/screens/tasks.png" alt="The tasks screen, grouped into today, later and done, each task showing who it belongs to" width="1080" height="2068" loading="lazy">
+        <img src="./assets/screens/tasks-600.webp" srcset="./assets/screens/tasks-600.webp 600w, ./assets/screens/tasks-1080.webp 1080w" sizes="280px" alt="The tasks screen, grouped into today, later and done, each task showing who it belongs to" width="1080" height="2068" loading="lazy">
       </figure>
     </section>
 
@@ -351,7 +368,7 @@
         send a recipe's ingredients straight to the shopping list.</p>
       </div>
       <figure class="phone">
-        <img src="./assets/screens/kitchen.png" alt="The kitchen screen with the week's meal plan and a button that adds the whole week to the shopping list" width="1080" height="2068" loading="lazy">
+        <img src="./assets/screens/kitchen-600.webp" srcset="./assets/screens/kitchen-600.webp 600w, ./assets/screens/kitchen-1080.webp 1080w" sizes="280px" alt="The kitchen screen with the week's meal plan and a button that adds the whole week to the shopping list" width="1080" height="2068" loading="lazy">
       </figure>
     </section>
 
@@ -365,7 +382,7 @@
         and they fill the calendar.</p>
       </div>
       <figure class="phone">
-        <img src="./assets/screens/calendar.png" alt="The shared family calendar with colour-coded events" width="1080" height="2068" loading="lazy">
+        <img src="./assets/screens/calendar-600.webp" srcset="./assets/screens/calendar-600.webp 600w, ./assets/screens/calendar-1080.webp 1080w" sizes="280px" alt="The shared family calendar with colour-coded events" width="1080" height="2068" loading="lazy">
       </figure>
     </section>
   </div>
@@ -374,10 +391,10 @@
     <h2>At home in light and dark.</h2>
     <div class="theme-pair">
       <figure class="phone">
-        <img src="./assets/screens/today.png" alt="The Today screen in the light theme, showing the day's events, what is due and the meals" width="1080" height="2068" loading="lazy">
+        <img src="./assets/screens/today-600.webp" srcset="./assets/screens/today-600.webp 600w, ./assets/screens/today-1080.webp 1080w" sizes="240px" alt="The Today screen in the light theme, showing the day's events, what is due and the meals" width="1080" height="2068" loading="lazy">
       </figure>
       <figure class="phone">
-        <img src="./assets/screens/today-dark.png" alt="The same Today screen in the dark theme" width="1080" height="2068" loading="lazy">
+        <img src="./assets/screens/today-dark-600.webp" srcset="./assets/screens/today-dark-600.webp 600w, ./assets/screens/today-dark-1080.webp 1080w" sizes="240px" alt="The same Today screen in the dark theme" width="1080" height="2068" loading="lazy">
       </figure>
     </div>
   </section>
@@ -405,10 +422,10 @@
     <p>Free for 30 days. After that, one subscription covers everyone you invite.</p>
     <div class="badges">
       <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="74">
+        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="191" height="74">
       </a>
       <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
-        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="50">
+        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="150" height="50">
       </a>
     </div>
   </section>

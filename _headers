@@ -8,3 +8,9 @@
 # and then fetches the new one in the background for up to a week.
 /assets/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# A font file never changes under its name (a new version gets a new name), so
+# a browser keeps it for a year. "!" drops the /assets/* value above first.
+/assets/fonts/*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable

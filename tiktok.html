@@ -18,9 +18,8 @@
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./assets/article.css">
 <style>
   /* The landing page's phone shadow, which article.css has no token for. */
@@ -65,10 +64,10 @@
 
   <div class="badges">
     <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dtiktok%26utm_medium%3Dsocial%26utm_campaign%3Dtiktok_bio">
-      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="64">
+      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
     </a>
     <a class="badge" href="https://apps.apple.com/app/apple-store/id6807159485?pt=129389033&amp;ct=tiktok_bio&amp;mt=8">
-      <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="43">
+      <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
     </a>
   </div>
   <p class="note">30 days free with everything unlocked, no card needed.</p>
@@ -82,7 +81,7 @@
   </ul>
 
   <figure class="phone">
-    <img src="./assets/screens/shopping.png" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
+    <img src="./assets/screens/shopping-600.webp" srcset="./assets/screens/shopping-600.webp 600w, ./assets/screens/shopping-1080.webp 1080w" sizes="280px" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
   </figure>
 
   <section class="get">
@@ -91,10 +90,10 @@
     subscription covers everyone you invite.</p>
     <div class="badges">
       <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dtiktok%26utm_medium%3Dsocial%26utm_campaign%3Dtiktok_bio">
-        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" height="64">
+        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
       </a>
       <a class="badge" href="https://apps.apple.com/app/apple-store/id6807159485?pt=129389033&amp;ct=tiktok_bio&amp;mt=8">
-        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" height="43">
+        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
       </a>
     </div>
   </section>
