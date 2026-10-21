@@ -131,3 +131,9 @@ footer { border-top: 1px solid var(--line); padding: 2rem 0 3rem; font-size: 0.9
 footer .foot-links { display: flex; gap: 0.6rem 1.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
 footer a { color: var(--green-deep); }
 footer .fine { font-size: 0.8rem; margin: 0.3rem 0 0; }
+footer .foot-social { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
+footer .foot-social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.5rem; height: 2.5rem; border: 2px solid var(--line); border-radius: 999px;
+}
+footer .foot-social a:hover { border-color: var(--green); }
