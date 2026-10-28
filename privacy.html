@@ -24,7 +24,7 @@
 
 <main class="article">
 <h1>Mazí Privacy Policy</h1>
-<p class="updated">Last updated: 2 October 2026</p>
+<p class="updated">Last updated: 28 October 2026</p>
 
 <p>
   Mazí is a shared organiser for one family or household: groceries, chores,
@@ -60,11 +60,19 @@
     <td>Your phone's time zone</td>
     <td>So due dates, repeating tasks and reminders follow your local day and time. It is read from the phone's settings, not from its location.</td>
   </tr>
+  <tr>
+    <td>Your household's subscription status and purchase history, from Apple or Google</td>
+    <td>So the app knows whether your household has paid. Payment itself is handled by Apple or Google, and we never see your card details.</td>
+  </tr>
+  <tr>
+    <td>On iPhone, if you installed Mazí from one of our ads on the App Store: which ad campaign and search keyword it was, and the country</td>
+    <td>So we can tell which of our App Store ads bring families who keep using Mazí, and stop paying for the ones that do not. Apple provides this to the app directly, without any advertising identifier, and has it only for installs that came from one of our ads.</td>
+  </tr>
 </table>
 
 <h2>What we do not do</h2>
 <ul>
-  <li>No advertising, and no advertising identifiers.</li>
+  <li>No advertising inside the app, and no advertising identifiers. We advertise Mazí on the App Store, but nothing in the app follows you across other apps or websites.</li>
   <li>No analytics or behavioural tracking SDKs.</li>
   <li>No selling or sharing of personal data with third parties.</li>
   <li>No location collection.</li>
@@ -72,9 +80,10 @@
 </ul>
 
 <h2>Who processes your data</h2>
-<p>Mazí relies on three service providers, and no others:</p>
+<p>Mazí relies on four service providers, and no others:</p>
 <ul>
   <li><strong>Supabase</strong> for the database, authentication and photo storage.</li>
+  <li><strong>RevenueCat</strong> for subscriptions. It receives your purchases from Apple or Google, your account id, and on iPhone the App Store ad that brought you, if there was one.</li>
   <li><strong>Expo</strong> for delivery of push notifications.</li>
   <li><strong>Google Firebase Cloud Messaging</strong> for the Android transport that actually delivers a push to your device.</li>
 </ul>
