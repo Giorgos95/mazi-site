@@ -72,6 +72,13 @@ for (const { file } of PAGES) {
       ['Shopping /shopping-list', 'Tasks /chores', 'Calendar /family-calendar', 'Meals /meal-planner', 'FAQ /faq']);
   });
 
+  // The footer lists the parts of Mazí in the same order as the menu.
+  test(`${file}: the footer reads shopping, chores, calendar, meals`, () => {
+    const footer = html.match(/<footer>[\s\S]*?<\/footer>/)?.[0] ?? '';
+    const order = [...footer.matchAll(/href="\/(shopping-list|chores|family-calendar|meal-planner)"/g)].map((m) => m[1]);
+    assert.deepEqual(order, ['shopping-list', 'chores', 'family-calendar', 'meal-planner']);
+  });
+
   test(`${file}: no free text`, () => {
     assert.doesNotMatch(html, /<input|<textarea|contenteditable/i);
   });
