@@ -242,6 +242,39 @@ test('a stored choice beats the system', async () => {
   }
 });
 
+// Back restores the page from the back-forward cache as it was left, so it
+// must take up a choice made on the page the visitor came back from.
+test('Back shows the choice made on the next page', async () => {
+  try {
+    // A choice is stored all along, so the system theme plays no part.
+    await withPage('/privacy', {}, (page) => page.eval(`localStorage.setItem('mazi-theme', 'day')`));
+    let restored = false;
+    // Chrome now and then empties its cache; the page then simply loads
+    // again, which proves nothing here, so that try does not count.
+    for (let attempt = 0; attempt < 3 && !restored; attempt++) {
+      await withPage('/privacy', { colorScheme: 'light' }, async (page) => {
+        await page.eval('window.left = true');
+        assert.equal(await page.eval('document.documentElement.dataset.theme'), 'day');
+        await page.goto(server.origin + '/terms');
+        await page.click('#theme-switch');
+        assert.equal(await page.eval('document.documentElement.dataset.theme'), 'night');
+        await page.eval('history.back()');
+        await sleep(800);
+        if (!(await page.eval('window.left === true'))) return;
+        restored = true;
+        assert.equal(await page.eval('location.pathname'), '/privacy');
+        assert.equal(await page.eval('document.documentElement.dataset.theme'), 'night');
+        assert.equal(await page.eval(`document.getElementById('theme-switch').getAttribute('aria-pressed')`), 'true');
+        assert.deepEqual(await page.eval(THEME_COLOURS), ['#141E33', '#141E33']);
+        assert.deepEqual(page.errors, []);
+      });
+    }
+    assert.ok(restored, 'Chrome never restored the page from its back-forward cache');
+  } finally {
+    await forget();
+  }
+});
+
 // Review Focus 1: Safari with storage blocked, and some private modes, throw on any use of localStorage.
 test('storage that throws does not break the switch', async () => {
   const initScript = `Object.defineProperty(window, 'localStorage', { get() { throw new Error('blocked') } })`;
@@ -250,6 +283,9 @@ test('storage that throws does not break the switch', async () => {
     await page.click('#theme-switch');
     assert.equal(await page.eval('document.documentElement.dataset.theme'), 'night');
     await page.click('#theme-switch');
+    assert.equal(await page.eval('document.documentElement.dataset.theme'), 'day');
+    // Shown again from the back-forward cache, it keeps what was picked here.
+    await page.eval(`dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }))`);
     assert.equal(await page.eval('document.documentElement.dataset.theme'), 'day');
     assert.deepEqual(page.errors, []);
   });

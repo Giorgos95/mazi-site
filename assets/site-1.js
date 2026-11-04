@@ -57,6 +57,15 @@ export function setupThemeSwitch() {
     if (picked || storedTheme()) return;
     change(system.matches ? 'night' : 'day', false);
   });
+
+  // Back (or Forward) can show the page from the browser's back-forward
+  // cache exactly as it was left, so it takes up a choice made on another
+  // page since. Nothing stored: what was picked here, or else the system.
+  addEventListener('pageshow', (e) => {
+    if (!e.persisted) return;
+    const theme = storedTheme() ?? (picked ? root.dataset.theme : system.matches ? 'night' : 'day');
+    if (theme !== root.dataset.theme) change(theme, false);
+  });
 }
 
 export function setupReveal() {
