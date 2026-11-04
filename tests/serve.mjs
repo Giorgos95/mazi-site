@@ -3,6 +3,7 @@
 // same thing the live site will show.
 import http from 'node:http';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
@@ -37,7 +38,9 @@ function readIgnored() {
 
 const isFile = (p) => { try { return fs.statSync(p).isFile(); } catch { return false; } };
 
-export function startServer({ port = 0, fixtures = false } = {}) {
+// The tests listen on this computer only; host '0.0.0.0' also lets a phone on
+// the same network in.
+export function startServer({ port = 0, fixtures = false, host = '127.0.0.1' } = {}) {
   const redirects = readRedirects();
   const ignored = readIgnored();
 
@@ -88,15 +91,19 @@ export function startServer({ port = 0, fixtures = false } = {}) {
 
   return new Promise((ok, fail) => {
     server.once('error', fail);
-    server.listen(port, '127.0.0.1', () => ok({
+    server.listen(port, host, () => ok({
       origin: `http://localhost:${server.address().port}`,
       close: () => new Promise((done) => { server.close(() => done()); server.closeAllConnections(); }),
     }));
   });
 }
 
-// `node tests/serve.mjs` is how to click through the branch.
+// `node tests/serve.mjs` is how to click through the branch, on this
+// computer or on a phone on the same Wi-Fi (at one of the other addresses).
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const { origin } = await startServer({ port: 8788 });
-  console.log(origin);
+  const port = 8788;
+  await startServer({ port, host: '0.0.0.0' });
+  const ips = Object.values(os.networkInterfaces()).flat()
+    .filter((a) => a && (a.family === 'IPv4' || a.family === 4) && !a.internal).map((a) => a.address);
+  for (const host of ['localhost', ...ips]) console.log(`http://${host}:${port}`);
 }
