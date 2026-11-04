@@ -125,6 +125,80 @@ for (const { path, kind, pose, prop } of PAGES) {
   });
 }
 
+// ---------- Speech bubbles ----------
+
+// The page's column keeps 1.25rem clear at each side of the screen; a bubble
+// stays inside it, and never makes the page wider than the screen.
+const OUTSIDE = (width) => `(() => {
+  const out = [];
+  for (const b of document.querySelectorAll('.say.show')) {
+    const r = b.getBoundingClientRect();
+    const column = b.closest('.wrap, .article');
+    const pad = column ? parseFloat(getComputedStyle(column).paddingLeft) : 0;
+    if (r.left < pad - 0.5 || r.right > ${width} - pad + 0.5) out.push(b.textContent + ' at ' + r.left.toFixed(1) + '..' + r.right.toFixed(1));
+  }
+  if (innerWidth !== ${width}) out.push('the page grew to ' + innerWidth + 'px');
+  if (document.documentElement.scrollWidth > ${width}) out.push('the page scrolls sideways to ' + document.documentElement.scrollWidth + 'px');
+  return out;
+})()`;
+const DEFAULT_LINES = `import('/assets/mascot-1.js').then((m) => m.DEFAULT_REACTIONS.map(([, text]) => text))`;
+
+// The í beside the title stands at the right edge of a phone's screen.
+for (const path of ['/faq', '/join', '/nope/deeper']) {
+  test(`${path}: what the í says stays on a 360px screen`, async () => {
+    await withPage(path, { width: 360, height: 780, mobile: true }, async (page) => {
+      await sleep(500);
+      for (const line of await page.eval(DEFAULT_LINES)) {
+        await page.click('[data-i-pose]');
+        await sleep(400);
+        assert.deepEqual(await page.eval(`[...document.querySelectorAll('.say.show')].map((b) => b.textContent)`), [line]);
+        assert.deepEqual(await page.eval(OUTSIDE(360)), [], line);
+      }
+      assert.deepEqual(page.errors, []);
+    });
+  });
+}
+
+// Every bubble on every page, with every line it can say, from a small phone
+// to a desktop. The homepage's own lines are listed here; every other í says
+// DEFAULT_REACTIONS. Motion is off, so each bubble is at once where it ends up.
+const OWN_LINES = {
+  '#hero .say': ['hi! 👋', 'hehe', 'checking the list…', 'oh! you again', 'yes! that one!', 'is it bedtime already?', 'good morning! ☀️'],
+  '#sort-i .say': ['help…', 'watch this', 'that\'s better 😌', 'oh no, not again', 'much better.', 'press the button 🥺'],
+  '#fam [data-who="Maria"] .say': ['parents’ evening, don’t let me forget'],
+  '#fam [data-who="George"] .say': ['bins are mine today'],
+  '#fam [data-who="Sofia"] .say': ['football on saturday!!'],
+};
+test('every speech bubble stays on the screen at 320 to 1280px', async () => {
+  for (const { path } of PAGES) {
+    await withPage(path, { reducedMotion: true }, async (page) => {
+      await sleep(500);
+      if (!(await page.eval(`document.querySelectorAll('.say').length`))) return;
+      const defaults = await page.eval(DEFAULT_LINES);
+      for (const width of [320, 360, 390, 768, 1024, 1280]) {
+        await page.send('Emulation.setDeviceMetricsOverride', { width, height: 800, deviceScaleFactor: 1, mobile: width <= 1024 });
+        const outside = await page.eval(`(async () => {
+          const own = ${JSON.stringify(OWN_LINES)};
+          const frame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const out = [];
+          for (const b of document.querySelectorAll('.say')) {
+            const lines = Object.entries(own).find(([s]) => b.matches(s))?.[1] ?? ${JSON.stringify(defaults)};
+            for (const line of lines) {
+              b.textContent = line;
+              b.classList.add('show');
+              await frame();
+              out.push(...${OUTSIDE(width)});
+              b.classList.remove('show');
+            }
+          }
+          return out;
+        })()`);
+        assert.deepEqual(outside, [], `${path} at ${width}px`);
+      }
+    });
+  }
+});
+
 // The contrast test above runs with motion on, so every section below the
 // fold is waiting to rise in (opacity 0). It must still be measured.
 test('contrast measures sections still waiting to rise in', async () => {

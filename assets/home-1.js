@@ -398,6 +398,14 @@ export function setupFamily() {
       m.setAttribute('aria-pressed', String(m.dataset.who === who));
     }
     title.textContent = one ? who + '’s week' : 'This week, everyone';
+    // Only the one picked speaks: anyone else's line goes at once (and back
+    // to everyone, the last one's goes too).
+    for (const el of members) {
+      if (el.dataset.who === who) continue;
+      const say = el.querySelector('.say');
+      clearTimeout(say._timer);
+      say.classList.remove('show');
+    }
     const m = members.find((el) => el.dataset.who === who);
     if (!m) return;
     hop(m.querySelector('.ch'));

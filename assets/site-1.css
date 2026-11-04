@@ -452,10 +452,22 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
 @keyframes teeter { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
 
 /* What the í says. It only shows for a moment, and screen readers skip it
-   (aria-hidden): it is decoration, never the only place something is said. */
-.say { position: absolute; z-index: 8; left: 50%; top: -14px; background: var(--card); color: var(--fg); border: 2.5px solid var(--line); border-radius: 16px; padding: 6px 14px; font: 500 1rem Fredoka, sans-serif; box-shadow: 3px 4px 0 var(--line); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, 8px) scale(.7); transition: opacity .18s, transform .3s cubic-bezier(.34,1.56,.64,1); }
-.say.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
-.say::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 12px; height: 12px; background: var(--card); border-right: 2.5px solid var(--line); border-bottom: 2.5px solid var(--line); transform: translateX(-50%) rotate(45deg); }
+   (aria-hidden): it is decoration, never the only place something is said.
+   It sits over its speaker with the tail (at --tail) over the speaker's
+   middle, and pops out of the tail. By default it is centred: --sx moves it
+   left by half its width. It is one line, and wraps only if it would be
+   wider than the page's column. */
+.say { --sx: -50%; --tail: 50%; position: absolute; z-index: 8; left: 50%; top: -14px; width: max-content; max-width: calc(100vw - 2.5rem); background: var(--card); color: var(--fg); border: 2.5px solid var(--line); border-radius: 16px; padding: 6px 14px; font: 500 1rem Fredoka, sans-serif; box-shadow: 3px 4px 0 var(--line); pointer-events: none; opacity: 0; transform: translate(var(--sx), 8px) scale(.7); transform-origin: var(--tail) 100%; transition: opacity .18s, transform .3s cubic-bezier(.34,1.56,.64,1); }
+.say.show { opacity: 1; transform: translate(var(--sx), 0) scale(1); }
+.say::after { content: ""; position: absolute; left: var(--tail); bottom: -8px; width: 12px; height: 12px; background: var(--card); border-right: 2.5px solid var(--line); border-bottom: 2.5px solid var(--line); transform: translateX(-50%) rotate(45deg); }
+/* Near the edge of a phone's screen a centred bubble would stick out, so
+   there the speaker says its line away from the edge: the bubble ends 36px
+   past the speaker's middle, on the edge's side, and grows inwards, its tail
+   36px from that end. Every such speaker is at least 80px wide, so the
+   bubble's end stays within the speaker's own width, inside the page's
+   column. The í beside a page title stands at the right edge; the homepage
+   has more (home-1.css). */
+.faq-head .say, .page-head .say { --sx: calc(36px - 100%); --tail: calc(100% - 36px); }
 
 /* Things the í carries or thinks about, placed by their own inline styles. */
 .prop { position: absolute; z-index: 2; overflow: visible; }

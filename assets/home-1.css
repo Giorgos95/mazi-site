@@ -373,6 +373,9 @@ html.js .tk { display: grid; }
   .col-list { grid-template-columns: minmax(0, 1fr); }
   html.js .chat-body { height: 320px; }
   .sort-i { width: 96px; }
+  /* The í stands at the left end of its row, so its lines grow rightwards
+     (see .say in site-1.css). */
+  .sort-i .say { --sx: -36px; --tail: 36px; }
 }
 
 
@@ -423,6 +426,10 @@ html.js .floor { display: flex; align-items: flex-end; gap: 10px; border-bottom:
 }
 .member.dim { opacity: .35; filter: grayscale(.6); }
 .member .say { top: -14px; font-size: .9rem; }
+/* The first and last of the family stand at the edges of the column, so
+   their lines grow inwards (see .say in site-1.css). */
+.member:first-child .say { --sx: -36px; --tail: 36px; }
+.member:last-child .say { --sx: calc(36px - 100%); --tail: calc(100% - 36px); }
 /* The letters shrink with the column on a narrow phone; the aspect ratio keeps
    their height reserved before they are drawn, so nothing shifts. */
 .member .ch { display: block; width: 100%; aspect-ratio: 104 / 141; }

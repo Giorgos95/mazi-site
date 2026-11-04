@@ -43,6 +43,16 @@ async function until(page, expression, ms = 3000) {
 
 const HERO_STATE = `[document.querySelector('#hero [data-pose]').dataset.pose, document.querySelector('#hero .say').textContent, document.querySelector('#hero .say').classList.contains('show')]`;
 const CTA_DRAWN = `document.querySelectorAll('#get .cta-row svg').length === 4`;
+// A speech bubble: what it says, whether it shows, where it is, how wide the
+// page is, and the text of every bubble showing among those matching all.
+const BUBBLE = (selector, all = '.say') => `(() => {
+  const b = document.querySelector(${JSON.stringify(selector)});
+  const r = b.getBoundingClientRect();
+  return { text: b.textContent, show: b.classList.contains('show'), left: r.left, right: r.right,
+    inner: innerWidth, scroll: document.documentElement.scrollWidth,
+    shown: [...document.querySelectorAll(${JSON.stringify(all)})].filter((s) => s.classList.contains('show')).map((s) => s.textContent) };
+})()`;
+const FAMILY_LINES = { Maria: 'parents’ evening, don’t let me forget', George: 'bins are mine today', Sofia: 'football on saturday!!' };
 
 test('sections in order', async () => {
   await withPage('/', {}, async (page) => {
@@ -571,6 +581,36 @@ test('avatar initials read at 4.5:1 and wear their person’s colour', async () 
   }
 });
 
+// Each thing the í beside the button says, in the order a visitor meets
+// them, inside a phone's screen and the page's gutter.
+test('what the sorter í says stays on a 360px screen', async () => {
+  await withPage('/', PHONE, async (page) => {
+    const pad = await page.eval(`parseFloat(getComputedStyle(document.querySelector('#problem .wrap')).paddingLeft)`);
+    const says = async (line) => {
+      await sleep(400);
+      const b = await page.eval(BUBBLE('#sort-i .say'));
+      assert.deepEqual([b.text, b.show], [line, true]);
+      assert.equal(b.inner, 360, `${line}: the page grew sideways`);
+      assert.ok(b.scroll <= 360, `${line}: the page scrolls sideways (${b.scroll})`);
+      assert.ok(b.left >= pad - 0.5 && b.right <= 360 - pad + 0.5, `${line}: the bubble is at ${b.left}..${b.right}`);
+    };
+    await page.eval(`document.querySelector('#problem .chat').scrollIntoView({ block: 'center' })`);
+    assert.equal(await until(page, `document.querySelector('#sort-i .say').classList.contains('show')`, 1500), true, 'the í did not ask for help');
+    await says('help…');
+    await page.click('#sort-i');
+    await says('press the button 🥺');
+    await page.click('#sort-btn');
+    await says('watch this');
+    await sleep(2400);
+    await says('that\'s better 😌');
+    await page.click('#sort-i');
+    await says('much better.');
+    await page.click('#sort-btn');
+    await says('oh no, not again');
+    assert.deepEqual(page.errors, []);
+  });
+});
+
 // Stacked, the sorter is taller than three landscape phone screens; the
 // chat must still start once it is in view.
 test('the chat plays on a landscape phone', async () => {
@@ -641,7 +681,7 @@ test('tapping her again goes back to everyone', async () => {
   });
 });
 
-test('the family stays on the screen at 320, 360 and 390px', async () => {
+test('the family, and what each one says, stays on the screen at 320, 360 and 390px', async () => {
   for (const width of [320, 360, 390]) {
     await withPage('/', { width, height: 800, mobile: true }, async (page) => {
       await page.eval(`document.querySelector('#fam').scrollIntoView()`);
@@ -656,6 +696,23 @@ test('the family stays on the screen at 320, 360 and 390px', async () => {
       assert.equal(m.inner, width, `${width}px: the page scrolls sideways`);
       assert.ok(m.floorRight <= m.inner - m.pad + 0.5, `${width}px: the floor pokes out (${m.floorRight})`);
       for (const [l, r] of m.members) assert.ok(l >= m.floorLeft - 0.5 && r <= m.floorRight + 0.5, `${width}px: a member leaves the floor`);
+
+      // Picked in turn, quicker than a bubble lasts: each says their line
+      // inside the screen and its gutter, and nobody else's is still up.
+      for (const who of ['Maria', 'George', 'Sofia']) {
+        await page.click(`#fam .member[data-who="${who}"]`);
+        await sleep(450);
+        const b = await page.eval(BUBBLE(`#fam .member[data-who="${who}"] .say`, `#fam .say`));
+        assert.deepEqual(b.shown, [b.text], `${width}px, ${who}: the bubbles up`);
+        assert.equal(b.text, FAMILY_LINES[who]);
+        assert.equal(b.inner, width, `${width}px, ${who}: the page grew sideways`);
+        assert.ok(b.scroll <= width, `${width}px, ${who}: the page scrolls sideways (${b.scroll})`);
+        assert.ok(b.left >= m.pad - 0.5 && b.right <= width - m.pad + 0.5, `${width}px, ${who}: the bubble is at ${b.left}..${b.right}`);
+      }
+      // Back to everyone: the last one's bubble goes too.
+      await page.click('#fam .member[data-who="Sofia"]');
+      assert.equal(await page.eval(`document.querySelectorAll('#fam .say.show').length`), 0, `${width}px: a bubble stayed up`);
+      assert.deepEqual(page.errors, []);
     });
   }
 });
