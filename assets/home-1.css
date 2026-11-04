@@ -398,6 +398,51 @@ html.js .tk { display: grid; }
 .feature .fstage.reveal { transition-delay: .12s; }
 
 
+/* ---------- Everyone knows what's theirs ---------- */
+
+.fam { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 40px; align-items: center; }
+.fam .sec-lead { margin-bottom: 1.1rem; }
+/* The tabs and the floor need JavaScript to do anything; without it the
+   week below simply shows everyone's items. */
+.who-tabs, .floor { display: none; }
+html.js .who-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.who-tabs button {
+  display: flex; align-items: center; gap: 7px; padding: 5px 14px 5px 8px;
+  font-family: inherit; font-size: 1rem; font-weight: 700; line-height: 1.3; color: var(--fg); cursor: pointer;
+  background: var(--card); border: 2.5px solid var(--line); border-radius: 999px; box-shadow: 2px 3px 0 var(--line);
+  transition: transform .12s, background-color .3s;
+}
+.who-tabs button i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line); }
+.who-tabs button[aria-pressed="true"] { background: var(--fg); color: var(--bg); transform: translateY(-2px); }
+html.js .floor { display: flex; align-items: flex-end; gap: 10px; border-bottom: 4px solid var(--line); padding: 40px 0 0; }
+.member {
+  position: relative; display: flex; flex-direction: column; align-items: center;
+  padding: 0; font: inherit; color: var(--fg); background: none; border: 0; cursor: pointer;
+  transition: opacity .3s, filter .3s;
+}
+.member.dim { opacity: .35; filter: grayscale(.6); }
+.member .say { top: -14px; font-size: .9rem; }
+/* The letter's height is kept before it is drawn, so nothing shifts. */
+.member .ch { display: block; width: 104px; height: 141px; }
+.member .ch svg { display: block; width: 100%; height: auto; overflow: visible; }
+[data-theme="night"] .member .ch svg { filter: drop-shadow(0 0 1.6px rgba(243,238,223,.75)); }
+.mname { margin: -2px 0 6px; font-weight: 700; font-size: .85rem; }
+.week {
+  padding: 16px; background: var(--card); border: 3px solid var(--line); border-radius: 26px; box-shadow: 6px 8px 0 var(--line);
+  transition: background-color .7s, border-color .7s;
+}
+.week h3 { margin: 0 0 8px; font: 600 1.25rem/1.2 Fredoka, system-ui, sans-serif; }
+.week ul { margin: 0; padding: 0; list-style: none; }
+.wk {
+  display: flex; align-items: center; gap: 10px; margin-top: 6px; padding: 9px 10px;
+  background: var(--soft); border: 2px solid var(--line); border-left-width: 8px; border-radius: 12px;
+  transition: opacity .35s, transform .35s, background-color .7s;
+}
+.wk.off { opacity: .2; transform: scale(.97); }
+.wk .k { font-size: 1.1rem; }
+.wk .w { margin-left: auto; font-size: .75rem; font-weight: 700; color: var(--muted); }
+
+
 /* ---------- Built for a household ---------- */
 
 .why {
@@ -440,7 +485,7 @@ html.js .cta-row { display: flex; }
 
 /* One column: the words first, then the picture. */
 @media (max-width: 999.98px) {
-  .hero, .feature, .why { grid-template-columns: minmax(0, 1fr); }
+  .hero, .feature, .why, .fam { grid-template-columns: minmax(0, 1fr); }
   .hero { gap: 1.5rem; }
   .feature { gap: 1.5rem; }
   .feature.flip .fstage { order: 0; }

@@ -586,3 +586,48 @@ test('the chat, the í and the panel stack below 1000px', async () => {
     });
   }
 });
+
+// ---------- Everyone knows what's theirs ----------
+
+test('the family is M, G and S', async () => {
+  await withPage('/', { reducedMotion: true }, async (page) => {
+    assert.equal(await until(page, `document.querySelectorAll('#fam .member svg').length === 3`), true, 'the letters never drew');
+    assert.deepEqual(await page.eval(`[...document.querySelectorAll('#fam .member .ch')].map((ch) => [...new Set([...ch.querySelectorAll('ellipse[stroke]')].map((e) => e.getAttribute('fill')))].join())`),
+      ['#E64980', '#3B5BDB', '#E8590C']);
+    assert.deepEqual(await page.eval(`[...document.querySelectorAll('#fam .member .ch')].map((ch) => ch.querySelector('text').textContent)`), ['M', 'G', 'S']);
+    assert.deepEqual(page.errors, []);
+  });
+});
+
+test('the week is in the HTML', async () => {
+  await withPage('/', { javascript: false }, async (page) => {
+    assert.equal(await page.eval(shown('#fam .wk')), 8);
+    assert.equal(await page.eval(shown('#fam .who-tabs')), 0);
+  });
+});
+
+test('picking Sofia shows her week', async () => {
+  await withPage('/', { reducedMotion: true }, async (page) => {
+    await page.eval(`document.querySelector('#fam').scrollIntoView()`);
+    await page.click('#fam .who-tabs [data-who="Sofia"]');
+    assert.equal(await page.eval(`document.getElementById('week-title').textContent`), 'Sofia’s week');
+    assert.deepEqual(await page.eval(`[...document.querySelectorAll('#fam .wk:not(.off)')].map((w) => w.dataset.who)`), ['Sofia', 'Sofia', 'Sofia', 'Everyone']);
+    assert.equal(await page.eval(`document.querySelector('#fam .who-tabs [data-who="Sofia"]').getAttribute('aria-pressed')`), 'true');
+    assert.equal(await page.eval(`document.querySelectorAll('#fam .member.dim').length`), 2);
+    assert.equal(await page.eval(`document.querySelector('#fam .member[data-who="Sofia"] .say').textContent`), 'football on saturday!!');
+    assert.deepEqual(page.errors, []);
+  });
+});
+
+test('tapping her again goes back to everyone', async () => {
+  await withPage('/', { reducedMotion: true }, async (page) => {
+    await page.eval(`document.querySelector('#fam').scrollIntoView()`);
+    assert.equal(await until(page, `document.querySelectorAll('#fam .member svg').length === 3`), true);
+    await page.click('#fam .member[data-who="Sofia"]');
+    assert.equal(await page.eval(`document.querySelectorAll('#fam .wk.off').length`), 4);
+    await page.click('#fam .member[data-who="Sofia"]');
+    assert.equal(await page.eval(`document.getElementById('week-title').textContent`), 'This week, everyone');
+    assert.equal(await page.eval(`document.querySelectorAll('#fam .wk.off').length`), 0);
+    assert.equal(await page.eval(`document.querySelectorAll('#fam .member.dim').length`), 0);
+  });
+});

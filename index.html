@@ -282,7 +282,39 @@
     </div>
   </section>
 
-  <section class="band band-yellow" id="fam"></section>
+  <section class="band band-yellow" id="fam">
+    <div class="wrap fam">
+      <div class="reveal">
+        <p class="eyebrow">👨‍👩‍👧 Everyone in their colour</p>
+        <h2>Everyone knows what's theirs.</h2>
+        <p class="sec-lead">Each person has a colour, so a glance tells you whose job, whose dentist and whose football it is. <span class="js-only">Tap someone to see their week.</span></p>
+        <div class="who-tabs" role="group" aria-label="Whose week">
+          <button type="button" data-who="Everyone" aria-pressed="true"><i style="background: var(--blob)"></i>Everyone</button>
+          <button type="button" data-who="Maria" aria-pressed="false"><i style="background: #E64980"></i>Maria</button>
+          <button type="button" data-who="George" aria-pressed="false"><i style="background: #3B5BDB"></i>George</button>
+          <button type="button" data-who="Sofia" aria-pressed="false"><i style="background: #E8590C"></i>Sofia</button>
+        </div>
+        <div class="floor">
+          <button type="button" class="member" data-who="Maria" aria-pressed="false"><span class="say" aria-hidden="true"></span><span class="ch" data-letter="M" data-colour="#E64980" data-looker></span><span class="mname">Maria</span></button>
+          <button type="button" class="member" data-who="George" aria-pressed="false"><span class="say" aria-hidden="true"></span><span class="ch" data-letter="G" data-colour="#3B5BDB" data-looker></span><span class="mname">George</span></button>
+          <button type="button" class="member" data-who="Sofia" aria-pressed="false"><span class="say" aria-hidden="true"></span><span class="ch" data-letter="S" data-colour="#E8590C" data-looker></span><span class="mname">Sofia</span></button>
+        </div>
+      </div>
+      <div class="week reveal">
+        <h3 id="week-title" aria-live="polite">This week, everyone</h3>
+        <ul id="week-list">
+          <li class="wk" data-who="Sofia" style="border-left-color: #E8590C"><span class="k" aria-hidden="true">⚽</span><span>Football · Sat 17:00</span><span class="w">Sofia</span></li>
+          <li class="wk" data-who="George" style="border-left-color: #3B5BDB"><span class="k" aria-hidden="true">🗑️</span><span>Take out the bins · today</span><span class="w">George</span></li>
+          <li class="wk" data-who="Maria" style="border-left-color: #E64980"><span class="k" aria-hidden="true">🏫</span><span>Parents’ evening · Tue 18:30</span><span class="w">Maria</span></li>
+          <li class="wk" data-who="Sofia" style="border-left-color: #E8590C"><span class="k" aria-hidden="true">🦷</span><span>Dentist · Fri 16:00</span><span class="w">Sofia</span></li>
+          <li class="wk" data-who="George" style="border-left-color: #3B5BDB"><span class="k" aria-hidden="true">🧹</span><span>Hoover before grandma comes</span><span class="w">George</span></li>
+          <li class="wk" data-who="Maria" style="border-left-color: #E64980"><span class="k" aria-hidden="true">🛒</span><span>Added feta and milk</span><span class="w">Maria</span></li>
+          <li class="wk" data-who="Sofia" style="border-left-color: #E8590C"><span class="k" aria-hidden="true">🐕</span><span>Feed the dog</span><span class="w">Sofia</span></li>
+          <li class="wk" data-who="Everyone" style="border-left-color: #12B3A6"><span class="k" aria-hidden="true">🎉</span><span>Grandma’s name day · Sun</span><span class="w">Everyone</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
 
   <section class="wrap why" id="why">
     <div class="reveal">

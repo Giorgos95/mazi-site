@@ -372,6 +372,55 @@ export function setupCta() {
   }, { threshold: 0.6 }).observe(section);
 }
 
+// ---------- Everyone knows what's theirs: pick a person, see their week ----------
+
+// What each letter says when picked.
+const FAMILY_LINES = { Maria: 'parents’ evening, don’t let me forget', George: 'bins are mine today', Sofia: 'football on saturday!!' };
+
+export function setupFamily() {
+  const section = document.getElementById('fam');
+  if (!section) return;
+  const tabs = [...section.querySelectorAll('.who-tabs button')];
+  const members = [...section.querySelectorAll('.member')];
+  const items = [...section.querySelectorAll('.wk')];
+  const title = document.getElementById('week-title');
+  let picked = 'Everyone';
+
+  function pick(who) {
+    picked = who;
+    const one = who !== 'Everyone';
+    for (const b of tabs) b.setAttribute('aria-pressed', String(b.dataset.who === who));
+    // Everyone's own items stay lit whoever is picked.
+    for (const w of items) w.classList.toggle('off', one && w.dataset.who !== who && w.dataset.who !== 'Everyone');
+    for (const m of members) {
+      m.classList.toggle('dim', one && m.dataset.who !== who);
+      m.setAttribute('aria-pressed', String(m.dataset.who === who));
+    }
+    title.textContent = one ? who + '’s week' : 'This week, everyone';
+    const m = members.find((el) => el.dataset.who === who);
+    if (!m) return;
+    hop(m.querySelector('.ch'));
+    const say = m.querySelector('.say');
+    say.textContent = FAMILY_LINES[who];
+    say.classList.add('show');
+    clearTimeout(say._timer);
+    say._timer = setTimeout(() => say.classList.remove('show'), 1800);
+  }
+
+  for (const b of tabs) b.addEventListener('click', () => pick(b.dataset.who));
+  // The picked letter again goes back to everyone.
+  for (const m of members) m.addEventListener('click', () => pick(picked === m.dataset.who ? 'Everyone' : m.dataset.who));
+
+  fontsReady().then(() => {
+    for (const ch of section.querySelectorAll('.member .ch')) {
+      ch.innerHTML = letterSvg(ch.dataset.letter);
+      dressLetter(ch, ch.dataset.colour);
+    }
+    startLooking();
+  });
+}
+
 setupHero();
 setupSorter();
 setupCta();
+setupFamily();
