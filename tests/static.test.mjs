@@ -127,3 +127,28 @@ test('site-1.css: the colours are the agreed ones', () => {
   assert.ok(day['--accent-text'] && day['--accent-text'] !== '#0d8478', 'a darker day --accent-text');
   assert.ok(day['--shadow'], 'a --shadow token');
 });
+
+test('old stylesheets are gone', () => {
+  for (const f of ['assets/article.css', 'assets/feature.css']) assert.equal(fs.existsSync(path.join(ROOT, f)), false, f);
+  for (const f of fs.readdirSync(ROOT).filter((n) => n.endsWith('.html'))) {
+    const html = read(f);
+    assert.ok(!/article\.css|feature\.css/.test(html), `${f} still mentions an old stylesheet`);
+  }
+});
+
+test('every published page is tested', () => {
+  const onDisk = fs.readdirSync(ROOT).filter((n) => n.endsWith('.html')).sort();
+  assert.deepEqual(onDisk, PAGES.map((p) => p.file).sort());
+});
+
+test('page titles are unique and under 70 characters', () => {
+  const seen = new Map();
+  for (const f of fs.readdirSync(ROOT).filter((n) => n.endsWith('.html'))) {
+    const m = read(f).match(/<title>([^<]*)<\/title>/);
+    assert.ok(m, `${f} has no title`);
+    const title = m[1].trim();
+    assert.ok(title.length < 70, `${f} title is ${title.length} characters`);
+    assert.ok(!seen.has(title), `${f} repeats the title of ${seen.get(title)}`);
+    seen.set(title, f);
+  }
+});
