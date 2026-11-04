@@ -147,7 +147,7 @@ The mockup is the reference for layout, motion and copy, except where noted.
    - "↺ Back to the chat" resets it.
    - The í's speech bubbles must not suggest that it does the sorting for you either. "leave it to me" and "sorted! 🎉"
      become, for example, "watch this" and "that's better 😌".
-   - Rows in the panel can be ticked.
+   - Shopping and task rows in the panel can be ticked. Calendar rows cannot, because Mazí events have no done state (decided during the build, 2026-11-04).
    - **Sofia is an adult.** She has her own account and colour, and accounts are for adults (FAQ, terms, and
      `mazi-promo/TIKTOK-PLAN.md`). Reword any line that makes her sound like a child. For example, "dentist friday,
      who's taking her?" becomes an appointment she mentions herself. Children may appear only as calendar events, never
