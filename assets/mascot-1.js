@@ -71,7 +71,7 @@ const armSvg = (a, cls) => `<g class="${cls}"><path d="M${a.s} Q${a.b} ${a.h}" f
 const legs = `<path d="M100 198 L98 216 M120 198 L122 216" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><ellipse cx="94" cy="221" rx="12" ry="6.5" fill="${TEAL}" stroke="${INK}" stroke-width="3.5"/><ellipse cx="126" cy="221" rx="12" ry="6.5" fill="${TEAL}" stroke="${INK}" stroke-width="3.5"/>`;
 
 export function iSvg(pose) {
-  if (!Object.hasOwn(POSES, pose)) throw new Error('unknown pose: ' + pose);
+  if (!Object.prototype.hasOwnProperty.call(POSES, pose)) throw new Error('unknown pose: ' + pose);
   const p = POSES[pose];
   const arms = armSvg(p.l, 'arm-l') + armSvg(p.r, p.wave ? 'arm-wave' : 'arm-r');
   const phone = p.phone ? `<rect x="94" y="136" width="32" height="50" rx="7" fill="${TEAL}" stroke="${INK}" stroke-width="4.5"/><circle cx="102" cy="145" r="3" fill="${INK}"/>` : '';
@@ -118,7 +118,7 @@ const PROPS = {
 };
 
 export function propHtml(name) {
-  if (!Object.hasOwn(PROPS, name)) throw new Error('unknown prop: ' + name);
+  if (!Object.prototype.hasOwnProperty.call(PROPS, name)) throw new Error('unknown prop: ' + name);
   return PROPS[name];
 }
 

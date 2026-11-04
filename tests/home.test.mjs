@@ -155,6 +155,8 @@ test('the hero phone shows the dark screen at night, also without JavaScript', a
         const [light, dark] = await page.eval(`['.scr-day', '.scr-night'].map((s) => getComputedStyle(document.querySelector('#hero ' + s)).opacity)`);
         assert.equal(light, '1', `${colorScheme}, javascript ${javascript}`);
         assert.equal(dark, want, `${colorScheme}, javascript ${javascript}`);
+        // The day screen is the page's main image; the night one waits its turn.
+        assert.deepEqual(await page.eval(`['.scr-day', '.scr-night'].map((s) => document.querySelector('#hero ' + s).getAttribute('fetchpriority'))`), ['high', 'low']);
       });
     }
   }
@@ -217,6 +219,16 @@ test('every rise-in has risen by the end of the page', async () => {
         .map((el) => el.closest('section')?.id)`), [], `${opts.width}px`);
     });
   }
+});
+
+// A printout shows every section, also those still waiting to rise in.
+test('printing shows the sections still waiting to rise in', async () => {
+  await withPage('/', {}, async (page) => {
+    assert.ok(await page.eval(`document.querySelectorAll('.reveal.pending').length`) > 0, 'nothing waits to rise in');
+    await page.send('Emulation.setEmulatedMedia', { media: 'print' });
+    assert.deepEqual(await page.eval(`[...new Set([...document.querySelectorAll('.reveal.pending')]
+      .map((el) => getComputedStyle(el)).map((s) => s.opacity + ' ' + s.transform))]`), ['1 none']);
+  });
 });
 
 test('the í is as tall as the M', async () => {
@@ -665,6 +677,21 @@ test('picking Sofia shows her week', async () => {
     assert.equal(await page.eval(`document.querySelectorAll('#fam .member.dim').length`), 2);
     assert.equal(await page.eval(`document.querySelector('#fam .member[data-who="Sofia"] .say').textContent`), 'football on saturday!!');
     assert.deepEqual(page.errors, []);
+  });
+});
+
+// The dimmed letters stay reachable by keyboard, and the one with the focus
+// shows clearly, focus ring and all.
+test('a dimmed letter with the keyboard focus is not faded', async () => {
+  await withPage('/', { reducedMotion: true }, async (page) => {
+    await page.click('#fam .who-tabs [data-who="Sofia"]');
+    // From the Sofia tab, Tab goes to the first letter, Maria, who is dimmed.
+    for (const type of ['keyDown', 'keyUp']) await page.send('Input.dispatchKeyEvent', { type, key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+    assert.deepEqual(await page.eval(`(() => {
+      const m = document.activeElement;
+      const s = getComputedStyle(m);
+      return [m.dataset.who, m.classList.contains('dim'), m.matches(':focus-visible'), s.opacity, s.filter, s.outlineStyle];
+    })()`), ['Maria', true, true, '1', 'none', 'solid']);
   });
 });
 

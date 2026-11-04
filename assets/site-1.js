@@ -94,4 +94,6 @@ export function setupReveal() {
 setupThemeSwitch();
 setupReveal();
 // The í is drawn only where a page has one, so other pages never load it.
-if (document.querySelector('[data-i-pose]')) import('./mascot-1.js').then((m) => m.drawAll());
+// It is decoration: if it fails to load (a dropped connection, a blocker),
+// the page simply goes without it, with no unhandled error.
+if (document.querySelector('[data-i-pose]')) import('./mascot-1.js').then((m) => m.drawAll()).catch(() => {});

@@ -148,6 +148,8 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outlin
   display: flex; align-items: center; gap: 1.25rem;
   min-height: 4.5rem;
   padding: 0.5rem max(1.25rem, calc((100% - 1120px) / 2 + 1.25rem));
+  /* Solid for browsers without color-mix() (Safari before 16.2). */
+  background: var(--bg);
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   border-bottom: 3px solid var(--line);
@@ -482,6 +484,11 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
    its final state. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal.pending { opacity: 1; transform: none; }
+}
+
+/* A printout has every section, also those still waiting to rise in. */
+@media print {
   .reveal.pending { opacity: 1; transform: none; }
 }
 

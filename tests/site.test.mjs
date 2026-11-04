@@ -159,6 +159,15 @@ for (const path of ['/faq', '/join', '/nope/deeper']) {
   });
 }
 
+// The í is decoration: a page whose mascot-1.js fails to load is still fine.
+test('a page whose í fails to load shows no errors', async () => {
+  await withPage('/faq', { blockUrls: ['*mascot-1.js'] }, async (page) => {
+    await sleep(500);
+    assert.equal(await page.eval(`document.querySelectorAll('[data-i-pose] svg').length`), 0);
+    assert.deepEqual(page.errors, []);
+  });
+});
+
 // Every bubble on every page, with every line it can say, from a small phone
 // to a desktop. The homepage's own lines are listed here; every other í says
 // DEFAULT_REACTIONS. Motion is off, so each bubble is at once where it ends up.

@@ -425,6 +425,9 @@ html.js .floor { display: flex; align-items: flex-end; gap: 10px; border-bottom:
   transition: opacity .3s, filter .3s;
 }
 .member.dim { opacity: .35; filter: grayscale(.6); }
+/* Faded, the focus ring would fade with it: the letter with the keyboard
+   focus shows clearly. */
+.member.dim:focus-visible { opacity: 1; filter: none; }
 .member .say { top: -14px; font-size: .9rem; }
 /* The first and last of the family stand at the edges of the column, so
    their lines grow inwards (see .say in site-1.css). */

@@ -107,6 +107,17 @@ test('dressLetter shrugs off a box with nothing to measure', async () => {
   });
 });
 
+// Safari before 15.4 has no Object.hasOwn.
+test('works without Object.hasOwn', async () => {
+  await withPage({ initScript: 'delete Object.hasOwn' }, async (page) => {
+    assert.equal(await page.eval('typeof Object.hasOwn'), 'undefined');
+    assert.equal(await page.eval('M.drawAll().length'), 1);
+    assert.equal(await page.eval(`(() => { try { M.iSvg('nope'); } catch (e) { return e.message; } })()`), 'unknown pose: nope');
+    assert.equal(await page.eval(`(() => { try { M.propHtml('nope'); } catch (e) { return e.message; } })()`), 'unknown prop: nope');
+    assert.deepEqual(page.errors, []);
+  });
+});
+
 test('letters survive a missing font', async () => {
   await withPage({ blockUrls: ['*fredoka.woff2'] }, async (page) => {
     await page.eval(DRESS('cl-1', 'M', '#3B5BDB'));
