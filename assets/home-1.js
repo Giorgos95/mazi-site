@@ -266,7 +266,8 @@ export function setupSorter() {
     sorter.sorted = false;
     for (const row of rows.values()) {
       row.classList.remove('in', 'pop', 'done');
-      row.querySelector('.tk').setAttribute('aria-pressed', 'false');
+      // Calendar rows have no tick: an event is never "done".
+      row.querySelector('.tk')?.setAttribute('aria-pressed', 'false');
     }
     quiet.hidden = true;
     count();
@@ -304,7 +305,7 @@ export function setupSorter() {
     if (sorter.sorted) buddy.act('cheeky', 1500, 'much better.');
     else buddy.act('sad', 1500, 'press the button 🥺');
   });
-  // The ticks in the panel.
+  // The ticks in the panel (shopping and tasks; calendar events have none).
   box.addEventListener('click', (e) => {
     const tk = e.target.closest('.tk');
     if (!tk) return;

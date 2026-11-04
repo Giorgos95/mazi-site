@@ -326,9 +326,10 @@ html.js .big-btn { display: inline-block; }
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
-/* The tick, a real button, only with JavaScript. Its ::before covers the
-   whole row, so a tap anywhere on the row ticks it, and the focus ring goes
-   round the row. The teal is the darker text teal, 5.7:1 by day. */
+/* The tick, a real button, only with JavaScript, on shopping and task rows
+   (a calendar event has no done state, so its rows have none). Its ::before
+   covers the whole row, so a tap anywhere on the row ticks it, and the focus
+   ring goes round the row. The teal is the darker text teal, 5.7:1 by day. */
 .tk {
   display: none; flex: none; place-items: center; width: 18px; height: 18px; padding: 0;
   cursor: pointer; background: transparent; border: 2.5px solid var(--accent-text); border-radius: 6px;

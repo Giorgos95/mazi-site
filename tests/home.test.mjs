@@ -357,11 +357,15 @@ test('problem copy', async () => {
           sec.querySelector('h3').firstChild.textContent.trim(),
           [...sec.querySelectorAll('.row')].map((r) => [text(r.querySelector('.txt')), text(r.querySelector('.av')), r.dataset.from]),
         ]),
+        // A row without a tick is null.
         ticks: [...s.querySelectorAll('.row')].map((r) => {
           const tk = r.querySelector('.tk');
+          if (!tk) return null;
           return tk.tagName === 'BUTTON' && tk.type === 'button' && tk.getAttribute('aria-pressed') === 'false'
             && tk.getAttribute('aria-label') === 'Tick ' + text(r.querySelector('.txt'));
         }),
+        calendarTicks: [...s.querySelectorAll('.mz-sec')].find((sec) => text(sec.querySelector('h3')).startsWith('📅 Calendar'))
+          .querySelectorAll('.tk').length,
         avatars: Object.fromEntries([...s.querySelectorAll('.row .av')].map((av) => [av.textContent, getComputedStyle(av).borderTopColor])),
         header: text(s.querySelector('.mz-top')),
       };
@@ -375,7 +379,9 @@ test('problem copy', async () => {
     assert.equal(copy.chat, 'OL');
     assert.deepEqual(copy.messages, MESSAGES.map(([who, msg], i) => [String(i), who, `${who} ${msg}`]));
     assert.deepEqual(copy.panel, PANEL);
-    assert.deepEqual(copy.ticks, Array(9).fill(true));
+    // Ruling R16: shopping and tasks can be ticked; a calendar event has no done state.
+    assert.deepEqual(copy.ticks, [...Array(6).fill(true), null, null, null]);
+    assert.equal(copy.calendarTicks, 0);
     assert.deepEqual(copy.avatars, { M: 'rgb(230, 73, 128)', G: 'rgb(59, 91, 219)', S: 'rgb(232, 89, 12)' });
     assert.equal(copy.header, 'Mazí Our Home · 3 people');
     // Ruling R6: every bubble, the í and the avatars' initials are skipped by screen readers.
@@ -482,6 +488,9 @@ test('rows tick', async () => {
     assert.deepEqual(await page.eval(TICK), ['true', true]);
     await page.click('#problem .row .tk');
     assert.deepEqual(await page.eval(TICK), ['false', false]);
+    // A calendar event has nothing to tick: tapping it marks nothing done.
+    await page.click('#problem .row[data-from="2"]');
+    assert.equal(await page.eval(`document.querySelectorAll('#problem .row.done').length`), 0);
     // A tick does not survive going back to the chat.
     await page.click('#problem .row .tk');
     await page.click('#sort-btn');
