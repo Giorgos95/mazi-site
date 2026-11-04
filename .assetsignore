@@ -7,5 +7,6 @@
 node_modules
 wrangler.jsonc
 
-# Design documents and plans for the site, not pages of it.
+# Design documents, plans and test tools for the site, not pages of it.
 docs
+tests
