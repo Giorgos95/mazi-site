@@ -275,7 +275,9 @@ html.js .switch { display: block; }
    assets/site-1.js adds .pending, and only to what starts below the fold,
    so without JavaScript nothing is ever hidden. */
 .reveal { transition: opacity .8s, transform .9s cubic-bezier(.2, .8, .2, 1); }
-.reveal.pending { opacity: 0; transform: translateY(36px); }
+/* Hiding is instant (the script adds .pending after the first paint); only
+   the rise-in is animated. */
+.reveal.pending { opacity: 0; transform: translateY(36px); transition: none; }
 
 
 /* ---------- Article ---------- */

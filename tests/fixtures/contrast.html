@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contrast fixture</title>
+<!-- For tests/site.test.mjs: a section far below the fold, which
+     assets/site-1.js hides until it rises in, holding text that is too
+     faint. The contrast check must still find it. -->
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
+<link rel="stylesheet" href="/assets/site-1.css">
+<script type="module" src="/assets/site-1.js"></script>
+</head>
+<body>
+<main class="article">
+  <h1>Contrast fixture</h1>
+  <p>Readable text at the top.</p>
+  <div style="height: 3000px"></div>
+  <section class="reveal">
+    <p style="color: #bbb">Too faint, below the fold</p>
+  </section>
+</main>
+</body>
+</html>

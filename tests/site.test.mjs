@@ -8,7 +8,7 @@ import { PAGES } from './pages.mjs';
 import { CONTRAST_JS } from './contrast.mjs';
 
 let server, browser;
-before(async () => { server = await startServer(); browser = await launch(); });
+before(async () => { server = await startServer({ fixtures: true }); browser = await launch(); });
 after(async () => { await browser?.close(); await server?.close(); });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -79,6 +79,16 @@ for (const { path, kind } of PAGES) {
     }
   });
 }
+
+// The contrast test above runs with motion on, so every section below the
+// fold is waiting to rise in (opacity 0). It must still be measured.
+test('contrast measures sections still waiting to rise in', async () => {
+  await withPage('/__test/contrast.html', { colorScheme: 'light' }, async (page) => {
+    assert.equal(await page.eval(`document.querySelectorAll('.reveal.pending').length`), 1, 'the section is hidden, waiting');
+    assert.deepEqual((await page.eval(CONTRAST_JS)).map((f) => f.text), ['Too faint, below the fold']);
+    assert.deepEqual(page.errors, []);
+  });
+});
 
 test('the switch flips and remembers', async () => {
   try {

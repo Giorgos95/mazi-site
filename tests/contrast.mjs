@@ -7,7 +7,15 @@
 // background colour from the element upwards, see-through ones laid over
 // the next one down, ending on the page's own background. Anything inside
 // aria-hidden="true" is decoration and is skipped.
+//
+// Sections still waiting to rise in (.reveal.pending, opacity 0) are shown
+// first, and their fade finished, so they are measured as they will look.
 export const CONTRAST_JS = `(() => {
+  for (const el of document.querySelectorAll('.reveal.pending')) {
+    el.classList.remove('pending');
+    for (const a of el.getAnimations()) if (a instanceof CSSTransition) a.finish();
+  }
+
   // The canvas turns any CSS colour (rgb, color-mix's color(srgb ...), ...) into bytes.
   const ctx = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
   ctx.canvas.width = ctx.canvas.height = 1;
