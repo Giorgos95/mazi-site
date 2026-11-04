@@ -6,3 +6,6 @@
 .wrangler
 node_modules
 wrangler.jsonc
+
+# Design documents and plans for the site, not pages of it.
+docs

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<!-- Throwaway mockup of the redesigned homepage, chosen on 2026-11-04. A reference for the look and the behaviour, not production code: see 2026-11-04-site-redesign-design.md. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mazí homepage, put together</title>
+<style>
+  @font-face { font-family: Fredoka; font-weight: 500 600; src: url("../../../assets/fonts/fredoka.woff2") format("woff2"); }
+  @font-face { font-family: "Atkinson Hyperlegible"; font-weight: 400; src: url("../../../assets/fonts/atkinson-hyperlegible-400.woff2") format("woff2"); }
+  @font-face { font-family: "Atkinson Hyperlegible"; font-weight: 700; src: url("../../../assets/fonts/atkinson-hyperlegible-700.woff2") format("woff2"); }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #EFEDE8; font: 16px/1.55 "Atkinson Hyperlegible", system-ui, sans-serif; }
+  .note-bar { max-width: 1160px; margin: 0 auto; padding: 22px 20px 14px; color: #55555a; }
+  .note-bar b { font-family: Fredoka; font-weight: 600; font-size: 1.5rem; color: #1F2D3A; display: block; }
+  .frame { max-width: 1160px; margin: 0 auto 120px; padding: 0 20px; }
+
+  #s { --bg: #FFF7EC; --fg: #1F2D3A; --muted: #56636f; --card: #fff; --blob: #12B3A6; --line: #1F2D3A; --soft: #EEF8F6; --hi: #FFE9A8; --accent: #0D8478; --tint1: #E3F5F1; --tint2: #FFF1C9; --tint3: #FDE2E4; --tint4: #E9E4FB;
+       background: var(--bg); color: var(--fg); border-radius: 18px; border: 1px solid #e0ddd6; overflow: clip; position: relative; transition: background-color .7s, color .7s; }
+  #s.night { --bg: #141E33; --fg: #F3EEDF; --muted: #AEB8C8; --card: #1F2B45; --blob: #0B7B72; --line: #070C18; --soft: #26375A; --hi: #2E2A55; --accent: #3FD3C3; --tint1: #17364A; --tint2: #3A3350; --tint3: #3E2C45; --tint4: #2B2F57; }
+  #s svg { overflow: visible; display: block; }
+  #s button { font: inherit; color: inherit; }
+  .blink { transform-origin: 110px 107px; animation: blink 4.2s ease-in-out infinite; }
+  .arm-wave { transform-origin: 133px 140px; animation: wave .9s ease-in-out infinite alternate; }
+  @keyframes blink { 0%, 91%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.08); } }
+  @keyframes wave { from { transform: rotate(-12deg); } to { transform: rotate(16deg); } }
+  @keyframes hop2 { 0% { transform: none; } 35% { transform: translateY(-22px) scale(.95, 1.06); } 65% { transform: translateY(0) scale(1.07, .93); } 100% { transform: none; } }
+  @keyframes idlehop { 0%, 82%, 100% { transform: none; } 87% { transform: translateY(-14px) scale(.97, 1.04); } 92% { transform: scale(1.05, .95); } 96% { transform: none; } }
+  @keyframes bob { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-10px) rotate(calc(var(--r, 0deg) + 2deg)); } }
+  @keyframes notif { 0% { opacity: 0; transform: translateY(-14px) scale(.94); } 4%, 29% { opacity: 1; transform: none; } 33%, 100% { opacity: 0; transform: translateY(-14px) scale(.94); } }
+  @keyframes twinkle { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.2); } }
+  @keyframes steam { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: .9; } 100% { opacity: 0; transform: translateY(-30px); } }
+  @keyframes teeter { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+  @keyframes pop { 0% { transform: scale(.5); opacity: 0; } 100% { transform: none; opacity: 1; } }
+  @keyframes shake { 20% { transform: translateX(-5px) rotate(-1deg); } 40% { transform: translateX(5px) rotate(1deg); } 60% { transform: translateX(-3px); } 80% { transform: translateX(3px); } }
+  @keyframes msgin { from { opacity: 0; transform: translateY(14px) scale(.9); } }
+  @keyframes dot { 0%, 100% { transform: translateY(0); opacity: .4; } 50% { transform: translateY(-3px); opacity: 1; } }
+  @keyframes pulse { 0%, 100% { box-shadow: 4px 5px 0 var(--line), 0 0 0 0 rgba(18,179,166,.5); } 50% { box-shadow: 4px 5px 0 var(--line), 0 0 0 12px rgba(18,179,166,0); } }
+  #s .hop { animation: hop2 .55s ease-out; }
+
+  /* header */
+  #s .top { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 22px; padding: 14px 30px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 3px solid var(--line); transition: background-color .7s; }
+  #s .brand { display: flex; align-items: center; gap: 10px; font: 600 1.5rem Fredoka; color: var(--accent); }
+  #s .brand img { width: 38px; height: 38px; border-radius: 10px; border: 2.5px solid var(--line); }
+  #s .nav { display: flex; gap: 20px; font-weight: 700; font-size: .92rem; margin-left: auto; }
+  #s .nav a { color: inherit; text-decoration: none; position: relative; }
+  #s .nav a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px; border-radius: 3px; background: var(--blob); transform: scaleX(0); transition: transform .25s; }
+  #s .nav a:hover::after { transform: scaleX(1); }
+  #s .toggle { width: 64px; height: 34px; border-radius: 999px; border: 2.5px solid var(--line); background: #8ED8F0; position: relative; cursor: pointer; padding: 0; box-shadow: 2px 3px 0 var(--line); transition: background-color .5s; flex: none; }
+  #s .toggle::before { content: "☀️"; position: absolute; top: 2px; left: 3px; width: 24px; height: 24px; display: grid; place-items: center; font-size: 15px; background: #fff; border-radius: 50%; border: 2px solid var(--line); transition: transform .45s cubic-bezier(.34,1.56,.64,1); }
+  #s.night .toggle { background: #3B3F8F; }
+  #s.night .toggle::before { content: "🌙"; transform: translateX(29px); background: #1F2B45; }
+  #s .get { font: 600 1rem Fredoka; background: var(--blob); color: #fff; border: 2.5px solid var(--line); border-radius: 999px; padding: 7px 18px; box-shadow: 3px 4px 0 var(--line); white-space: nowrap; transition: transform .12s, background-color .7s; cursor: pointer; }
+  #s .get:hover { transform: translate(-1px, -2px) rotate(-1.5deg); }
+
+  /* hero (A) */
+  #s .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 20px; align-items: center; padding: 30px 30px 44px 44px; position: relative; }
+  #s .chip { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: .85rem; background: var(--card); border: 2.5px solid var(--line); border-radius: 999px; padding: 4px 12px; box-shadow: 2px 3px 0 var(--line); transition: background-color .7s; }
+  #s h1 { font: 600 3rem/1.07 Fredoka; margin: 16px 0 14px; letter-spacing: -.01em; }
+  #s .strike { position: relative; color: #8a96a3; }
+  #s .strike::after { content: ""; position: absolute; left: -4px; right: -4px; top: 52%; height: 5px; background: #FF6B81; border-radius: 4px; transform: rotate(-3deg); }
+  #s .lead { font-size: 1.08rem; color: var(--muted); max-width: 30rem; margin: 0 0 20px; }
+  #s .store { display: flex; gap: 12px; flex-wrap: wrap; }
+  #s .store span { background: var(--fg); color: var(--bg); border-radius: 14px; padding: 9px 18px; font-weight: 700; font-size: .92rem; box-shadow: 3px 4px 0 rgba(31,45,58,.25); cursor: pointer; transition: transform .15s, background-color .7s, color .7s; }
+  #s .store span:hover { transform: translateY(-3px) rotate(-1.5deg); }
+  #s .store small { display: block; font-weight: 400; font-size: .68rem; opacity: .8; }
+  #s .small { margin: 12px 0 0; font-size: .85rem; color: var(--muted); }
+  #s .stage { position: relative; height: 480px; }
+  #s .blob { position: absolute; inset: 40px 30px 30px 50px; background: var(--blob); border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%; border: 3px solid var(--line); transition: background-color .7s; }
+  #s .star { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff; opacity: 0; transition: opacity .8s; pointer-events: none; }
+  #s.night .star { opacity: 1; animation: twinkle 2.8s ease-in-out infinite; }
+  #s .phone { position: absolute; left: 50%; top: 24px; width: 222px; margin-left: -60px; background: var(--card); border: 3px solid var(--line); border-radius: 34px; padding: 7px; box-shadow: 8px 10px 0 var(--line); rotate: 4deg; transition: background-color .7s; }
+  #s .phone .scr { position: relative; border-radius: 26px; overflow: hidden; }
+  #s .phone img { display: block; width: 100%; transition: opacity .7s; }
+  #s .phone img.dark { position: absolute; inset: 0; opacity: 0; }
+  #s.night .phone img.dark { opacity: 1; }
+  #s #hero-i { position: absolute; left: -6px; bottom: 0; width: 215px; z-index: 3; cursor: pointer; animation: idlehop 5s ease-out infinite; transform-origin: 50% 95%; }
+  #s .notifs { position: absolute; left: 34%; top: 4px; width: 252px; height: 54px; z-index: 4; }
+  #s .notif { position: absolute; inset: 0; display: flex; align-items: center; gap: 10px; background: var(--card); border: 2.5px solid var(--line); border-radius: 16px; padding: 8px 12px; box-shadow: 4px 5px 0 var(--line); font-size: .85rem; opacity: 0; animation: notif 9s ease-in-out infinite; }
+  #s .notif b { display: block; font-size: .72rem; color: var(--muted); letter-spacing: .04em; }
+  #s .av { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font: 600 .8rem Fredoka; color: #fff; }
+  #s .floaty { position: absolute; width: 50px; height: 50px; background: var(--card); border: 2.5px solid var(--line); border-radius: 14px; box-shadow: 3px 4px 0 var(--line); display: grid; place-items: center; font-size: 1.45rem; animation: bob 4.5s ease-in-out infinite; z-index: 2; transition: background-color .7s; }
+  #s .say { position: absolute; z-index: 8; left: 50%; background: var(--card); color: var(--fg); border: 2.5px solid var(--line); border-radius: 16px; padding: 6px 14px; font: 500 1rem Fredoka, sans-serif; box-shadow: 3px 4px 0 var(--line); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, 8px) scale(.7); transition: opacity .18s, transform .3s cubic-bezier(.34,1.56,.64,1); }
+  #s .say.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  #s .say::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 12px; height: 12px; background: var(--card); border-right: 2.5px solid var(--line); border-bottom: 2.5px solid var(--line); transform: translateX(-50%) rotate(45deg); }
+  #s #hero-bubble { top: -12px; }
+
+
+  #s section { padding: 70px 44px; position: relative; }
+  #s .eyebrow { font-weight: 700; color: var(--accent); font-size: .92rem; margin: 0; }
+  #s h2 { font: 600 2.4rem/1.08 Fredoka; margin: 6px 0 10px; }
+  #s .sec-lead { color: var(--muted); max-width: 34rem; margin: 0 0 26px; font-size: 1.05rem; }
+  #s .band { background: var(--hi); border-top: 3px solid var(--line); border-bottom: 3px solid var(--line); transition: background-color .7s; }
+  #s .reveal { opacity: 0; transform: translateY(36px); transition: opacity .8s, transform .9s cubic-bezier(.2,.8,.2,1); }
+  #s .reveal.in { opacity: 1; transform: none; }
+
+  /* the problem (D) */
+  #s .sorter { display: grid; grid-template-columns: 280px 160px minmax(0, 1fr); gap: 20px; align-items: center; }
+  #s .chat { background: var(--card); border: 3px solid var(--line); border-radius: 28px; box-shadow: 6px 8px 0 var(--line); overflow: hidden; transition: background-color .7s; }
+  #s .chat.shake { animation: shake .4s; }
+  #s .chat-top { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-bottom: 2.5px solid var(--line); background: var(--soft); }
+  #s .chat-top .gi { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #FFD43B; border: 2px solid var(--line); }
+  #s .chat-top b { display: block; line-height: 1.1; }
+  #s .chat-top small { color: var(--muted); }
+  #s .unread { margin-left: auto; background: #FF6B81; color: #fff; font-weight: 700; border-radius: 999px; min-width: 28px; padding: 1px 8px; text-align: center; font-size: .82rem; border: 2px solid var(--line); }
+  #s .chat-body { height: 330px; display: flex; flex-direction: column; justify-content: flex-end; gap: 7px; padding: 12px; overflow: hidden; position: relative; }
+  .dmsg { align-self: flex-start; max-width: 90%; background: var(--soft); color: var(--fg); border: 2px solid var(--line); border-radius: 16px 16px 16px 4px; padding: 5px 11px 6px; font-size: .86rem; line-height: 1.3; }
+  .dmsg .who { display: block; font-weight: 700; font-size: .7rem; }
+  .dmsg.new { animation: msgin .35s cubic-bezier(.34,1.56,.64,1); }
+  .dmsg.flying { position: fixed; margin: 0; z-index: 999; pointer-events: none; box-shadow: 5px 7px 0 rgba(0,0,0,.18); }
+  #s .typing { align-self: flex-start; font-size: .76rem; color: var(--muted); display: none; }
+  #s .typing.on { display: block; }
+  #s .typing i { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--muted); margin-left: 2px; animation: dot 1s infinite; }
+  #s .typing i:nth-child(3) { animation-delay: .15s; } #s .typing i:nth-child(4) { animation-delay: .3s; }
+  #s .quiet { position: absolute; inset: 0; display: none; place-items: center; text-align: center; color: var(--muted); font: 500 1.05rem Fredoka; }
+  #s .quiet.on { display: grid; animation: msgin .5s; }
+  #s .mid { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  #s #sort-i { width: 120px; position: relative; cursor: pointer; }
+  #s #sort-bubble { top: -34px; }
+  #s .big-btn { font: 600 1.02rem Fredoka, sans-serif; background: var(--blob); color: #fff; border: 3px solid var(--line); border-radius: 999px; padding: 11px 16px; box-shadow: 4px 5px 0 var(--line); cursor: pointer; transition: transform .1s, box-shadow .1s, background-color .7s; white-space: nowrap; }
+  #s .big-btn:hover { transform: translate(-1px, -2px); box-shadow: 5px 7px 0 var(--line); }
+  #s .big-btn:active { transform: translate(3px, 4px); box-shadow: 1px 1px 0 var(--line); }
+  #s .big-btn:disabled { opacity: .6; cursor: default; }
+  #s .big-btn.pulse { animation: pulse 1.6s ease-in-out infinite; }
+  #s .mz { background: var(--card); border: 3px solid var(--line); border-radius: 26px; box-shadow: 6px 8px 0 var(--line); overflow: hidden; transition: background-color .7s; }
+  #s .mz-top { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--blob); color: #fff; border-bottom: 3px solid var(--line); font: 600 1.15rem Fredoka; transition: background-color .7s; }
+  #s .mz-top img { width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--line); }
+  #s .mz-top small { margin-left: auto; font: 700 .78rem "Atkinson Hyperlegible"; opacity: .92; }
+  #s .mz-sec { padding: 10px 16px 12px; border-top: 2px dashed color-mix(in srgb, var(--fg) 18%, transparent); }
+  #s .mz-top + .mz-sec { border-top: 0; }
+  #s .mz-sec h5 { margin: 0 0 2px; font: 600 1rem Fredoka; display: flex; gap: 8px; align-items: center; }
+  #s .mz-sec h5 span { font: 700 .72rem "Atkinson Hyperlegible"; background: var(--soft); border: 2px solid var(--line); border-radius: 999px; padding: 0 8px; }
+  #s .col-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 8px; min-height: 40px; }
+  #s .col-list:empty::before { content: "nothing here yet"; grid-column: 1 / -1; display: block; color: var(--muted); font-size: .82rem; border: 2px dashed color-mix(in srgb, var(--fg) 25%, transparent); border-radius: 12px; padding: 6px 10px; text-align: center; margin-top: 6px; }
+  #s .row { display: flex; align-items: center; gap: 8px; background: var(--soft); border: 2px solid var(--line); border-radius: 12px; padding: 6px 8px; margin-top: 6px; font-size: .84rem; cursor: pointer; line-height: 1.25; user-select: none; }
+  #s .row .tk { flex: none; width: 18px; height: 18px; border-radius: 6px; border: 2.5px solid var(--blob); }
+  #s .row.done .tk { background: var(--blob) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4.5 4.5L19 7"/></svg>') center/72% no-repeat; }
+  #s .row.done .txt { text-decoration: line-through; opacity: .55; }
+  #s .row .av { margin-left: auto; width: 22px; height: 22px; font-size: .68rem; }
+  #s .pop { animation: pop .45s cubic-bezier(.34,1.56,.64,1); }
+  .confetti { position: fixed; width: 8px; height: 11px; border-radius: 2px; pointer-events: none; z-index: 999; }
+
+  /* features (A) */
+  #s .feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; padding: 60px 44px; }
+  #s .feature.flip .fstage { order: -1; }
+  #s .feature p { color: var(--muted); margin: 0 0 12px; font-size: 1.05rem; }
+  #s .feature p.eyebrow { color: var(--accent); font-size: .92rem; margin: 0; }
+  #s.night #hero-i svg, #s.night .fi svg, #s.night #sort-i svg, #s.night .ch svg, #s.night .cta-row svg { filter: drop-shadow(0 0 1.6px rgba(243,238,223,.75)); }
+  #s .more { font-weight: 700; color: var(--accent); text-decoration: none; border-bottom: 2.5px solid currentColor; }
+  #s .fstage { position: relative; height: 430px; }
+  #s .tint { position: absolute; inset: 30px 10px 14px 20px; border: 3px solid var(--line); border-radius: 40px; transition: background-color .7s; }
+  #s .fphone { position: absolute; right: 40px; top: 6px; width: 200px; background: var(--card); border: 3px solid var(--line); border-radius: 32px; padding: 6px; box-shadow: 7px 9px 0 var(--line); rotate: 3deg; transition: background-color .7s; }
+  #s .feature.flip .fphone { rotate: -3deg; }
+  #s .fphone img { display: block; width: 100%; border-radius: 25px; }
+  #s .fi { position: absolute; left: 30px; bottom: 16px; width: 170px; z-index: 3; }
+  #s .prop { position: absolute; z-index: 2; }
+  #s .steam { animation: steam 2.4s ease-out infinite; }
+  #s .tower { transform-origin: 50% 100%; animation: teeter 2.2s ease-in-out infinite; }
+  #s .thought { position: absolute; z-index: 4; width: 46px; height: 46px; border-radius: 50%; background: var(--card); border: 2.5px solid var(--line); display: grid; place-items: center; font-size: 1.3rem; box-shadow: 2px 3px 0 var(--line); animation: bob 3.6s ease-in-out infinite; transition: background-color .7s; }
+
+  /* household (fixed cast, no typing) */
+  #s .fam { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 380px); gap: 40px; align-items: center; }
+  #s .who-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+  #s .who-tabs button { display: flex; align-items: center; gap: 7px; background: var(--card); border: 2.5px solid var(--line); border-radius: 999px; padding: 5px 14px 5px 8px; box-shadow: 2px 3px 0 var(--line); cursor: pointer; font-weight: 700; transition: transform .12s, background-color .3s; }
+  #s .who-tabs button i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line); }
+  #s .who-tabs button[aria-pressed="true"] { background: var(--fg); color: var(--bg); transform: translateY(-2px); }
+  #s .floor { display: flex; align-items: flex-end; gap: 10px; border-bottom: 4px solid var(--line); padding: 40px 0 0; }
+  #s .member { background: none; border: 0; padding: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; position: relative; transition: opacity .3s, filter .3s; }
+  #s .member.dim { opacity: .35; filter: grayscale(.6); }
+  #s .member .say { top: -14px; font-size: .9rem; }
+  #s .member .ch { width: 104px; }
+  #s .member:hover .ch { animation: hop2 .5s ease-out; }
+  #s .mname { font-weight: 700; font-size: .85rem; margin: -2px 0 6px; }
+  #s .week { background: var(--card); border: 3px solid var(--line); border-radius: 26px; box-shadow: 6px 8px 0 var(--line); padding: 16px; transition: background-color .7s; }
+  #s .week h4 { margin: 0 0 8px; font: 600 1.25rem Fredoka; }
+  #s .wk { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; margin-top: 6px; border: 2px solid var(--line); border-left-width: 8px; background: var(--soft); transition: opacity .35s, transform .35s; }
+  #s .wk.off { opacity: .2; transform: scale(.97); }
+  #s .wk .k { font-size: 1.1rem; }
+  #s .wk .w { margin-left: auto; font-size: .75rem; font-weight: 700; color: var(--muted); }
+
+  /* principles + cta + footer */
+  #s .why { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+  #s .why ul { list-style: none; padding: 0; margin: 0 0 14px; display: flex; gap: 12px; flex-wrap: wrap; }
+  #s .why li { font: 600 1.25rem Fredoka; background: var(--card); border: 3px solid var(--line); border-radius: 18px; padding: 10px 18px; box-shadow: 4px 5px 0 var(--line); transition: background-color .7s; }
+  #s .why li:nth-child(1) { rotate: -2deg; } #s .why li:nth-child(3) { rotate: 2deg; }
+  #s .cta { text-align: center; padding: 80px 30px 90px; }
+  #s .cta .store { justify-content: center; margin-top: 18px; }
+  #s .cta-row { display: flex; justify-content: center; align-items: flex-end; gap: 0; margin-bottom: 12px; }
+  #s .cta-row .cl svg { height: 140px; width: auto; }
+  #s .cta-row .ci svg { height: 140px; width: auto; margin: 0 0 7px -10px; }
+  #s footer { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 18px 30px; border-top: 3px solid var(--line); font-size: .85rem; color: var(--muted); }
+
+  @media (max-width: 1000px) {
+    #s .hero, #s .sorter, #s .feature, #s .fam, #s .why { grid-template-columns: minmax(0, 1fr); }
+    #s .feature.flip .fstage { order: 0; }
+    #s .nav { display: none; }
+    #s h1 { font-size: 2.2rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { #s *, #s *::before, #s *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="note-bar"><b>The homepage, put together</b>A's top part, the day/night switch, "the problem" from D, the four app sections, and a new household part with no typing. Scroll all the way down.</div>
+<div class="frame">
+<div id="s">
+  <header class="top">
+    <div class="brand"><img src="../../../assets/icon.png" alt="">Mazí</div>
+    <nav class="nav"><a href="#f-shop">Shopping</a><a href="#f-tasks">Tasks</a><a href="#f-meals">Meals</a><a href="#f-cal">Calendar</a><a href="#">FAQ</a></nav>
+    <button class="toggle" id="night" aria-label="Switch day and night" aria-pressed="false"></button>
+    <span class="get">Get the app</span>
+  </header>
+
+  <!-- hero: A -->
+  <div class="hero">
+    <div>
+      <span class="chip">🏠 for the whole household</span>
+      <h1>Keeps the household running without the <span class="strike">group chat</span>.</h1>
+      <p class="lead">One shared space for what to buy, who's doing what, what's for dinner and what's on this week. Everyone sees the same lists, the moment something changes.</p>
+      <div class="store" id="hero-store"><span><small>GET IT ON</small>Google Play</span><span><small>Download on the</small>App Store</span></div>
+      <p class="small">Free for 30 days. One subscription covers the whole household.</p>
+    </div>
+    <div class="stage" id="stage">
+      <div class="blob"></div>
+      <div class="floaty" style="left: 18px; top: 40px; --r: -8deg;">🛒</div>
+      <div class="floaty" style="right: 6px; top: 120px; --r: 6deg; animation-delay: -1.5s;">✅</div>
+      <div class="floaty" style="right: 30px; bottom: 30px; --r: -4deg; animation-delay: -3s;">📅</div>
+      <div class="phone"><div class="scr"><img src="../../../assets/screens/today-600.webp" alt="The Today screen"><img class="dark" src="../../../assets/screens/today-dark-600.webp" alt=""></div></div>
+      <div class="notifs">
+        <div class="notif" style="animation-delay: 0s;"><span class="av" style="background:#E64980">M</span><span><b>SHOPPING</b>Maria added feta</span></div>
+        <div class="notif" style="animation-delay: 3s;"><span class="av" style="background:#3B5BDB">G</span><span><b>TASKS</b>George took out the recycling</span></div>
+        <div class="notif" style="animation-delay: 6s;"><span class="av" style="background:#E8590C">S</span><span><b>CALENDAR</b>Sofia: dentist, Fri 16:00</span></div>
+      </div>
+      <div id="hero-i" data-looker><div class="say" id="hero-bubble"></div></div>
+    </div>
+  </div>
+
+  <!-- the problem: D -->
+  <section class="band" id="problem">
+    <div class="reveal">
+      <p class="eyebrow">💬 The problem</p>
+      <h2>Your family group chat, sorted in one tap.</h2>
+      <p class="sec-lead">Nine messages, three jobs nobody claimed, one football match at the wrong time. Press the button.</p>
+    </div>
+    <div class="sorter reveal" id="sorter">
+      <div class="chat" id="chat">
+        <div class="chat-top"><span class="gi">🏠</span><span><b>Family</b><small>Maria, George, Sofia</small></span><span class="unread" id="unread">0</span></div>
+        <div class="chat-body" id="chat-body">
+          <div class="typing" id="typing"><b>Sofia</b> is typing <i></i><i></i><i></i></div>
+          <div class="quiet" id="quiet">All quiet.<br>Everything has a place. 😌</div>
+        </div>
+      </div>
+      <div class="mid">
+        <div id="sort-i" data-looker><div class="say" id="sort-bubble"></div></div>
+        <button class="big-btn pulse" id="sort-btn">Hand it to the í →</button>
+      </div>
+      <div class="mz">
+        <div class="mz-top"><img src="../../../assets/icon.png" alt="">Mazí<small>Our Home · 3 people</small></div>
+        <div class="mz-sec"><h5>🛒 Shopping <span id="n-shop">0</span></h5><div class="col-list" id="col-shop"></div></div>
+        <div class="mz-sec"><h5>✅ Tasks <span id="n-tasks">0</span></h5><div class="col-list" id="col-tasks"></div></div>
+        <div class="mz-sec"><h5>📅 Calendar <span id="n-cal">0</span></h5><div class="col-list" id="col-cal"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- features: A -->
+  <div class="feature" id="f-shop">
+    <div class="reveal">
+      <p class="eyebrow">🛒 Shopping</p>
+      <h2>One list, sorted the way you shop.</h2>
+      <p>A shared shopping list, organised by category and by shop. Tick items off as you go and watch the cart fill up. When a name is not enough, add a photo of the exact brand your partner actually meant.</p>
+      <a class="more" href="#">More about the shopping list</a>
+    </div>
+    <div class="fstage reveal">
+      <div class="tint" style="background: var(--tint1)"></div>
+      <div class="fphone"><img src="../../../assets/screens/shopping-600.webp" alt="The shopping list"></div>
+      <div class="fi" id="fi-shop" data-looker></div>
+      <svg class="prop" style="left: 168px; bottom: 26px; width: 96px;" viewBox="-14 -10 84 76" aria-hidden="true"><g stroke="#1F2D3A" stroke-width="3.5" fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M-10 0 H6 L14 44 H58 L66 12 H10" fill="#fff"/><circle cx="22" cy="56" r="6" fill="#1F2D3A"/><circle cx="52" cy="56" r="6" fill="#1F2D3A"/><rect x="18" y="-4" width="12" height="18" rx="3" fill="#FFD43B"/><rect x="34" y="0" width="14" height="14" rx="3" fill="#74C0FC"/><rect x="50" y="-2" width="10" height="16" rx="3" fill="#FF8FA3"/></g></svg>
+    </div>
+  </div>
+
+  <div class="feature flip" id="f-tasks">
+    <div class="reveal">
+      <p class="eyebrow">✅ Tasks</p>
+      <h2>Claimed, assigned, or up for grabs.</h2>
+      <p>Assign a task to someone, or leave it unclaimed for whoever gets there first. Give it a date, add a time to get a reminder right then, or make a chore repeat every day, week or month. Each morning brings one quiet digest of what is due today.</p>
+      <a class="more" href="#">More about chores and tasks</a>
+    </div>
+    <div class="fstage reveal">
+      <div class="tint" style="background: var(--tint2)"></div>
+      <div class="fphone"><img src="../../../assets/screens/tasks-600.webp" alt="The tasks screen"></div>
+      <div class="fi" id="fi-tasks" data-looker style="bottom: 16px;"></div>
+      <svg class="prop tower" style="left: 58px; bottom: 196px; width: 118px;" viewBox="0 0 118 96" aria-hidden="true"><g stroke="#1F2D3A" stroke-width="3" stroke-linejoin="round"><rect x="6" y="62" width="106" height="30" rx="9" fill="#fff"/><rect x="14" y="32" width="92" height="30" rx="9" fill="#fff"/><rect x="2" y="2" width="100" height="30" rx="9" fill="#fff"/></g><g font-family="Fredoka" font-weight="600" font-size="11" fill="#1F2D3A"><text x="16" y="82">🗑 bins</text><text x="24" y="52">🐕 feed the dog</text><text x="12" y="22">🧹 hoover</text></g></svg>
+    </div>
+  </div>
+
+  <div class="feature" id="f-meals">
+    <div class="reveal">
+      <p class="eyebrow">🍽️ Kitchen</p>
+      <h2>From recipe to shopping list in one tap.</h2>
+      <p>Keep the recipes your household actually cooks, plan the week's meals, and send a recipe's ingredients straight to the shopping list.</p>
+      <a class="more" href="#">More about the meal planner</a>
+    </div>
+    <div class="fstage reveal">
+      <div class="tint" style="background: var(--tint3)"></div>
+      <div class="fphone"><img src="../../../assets/screens/kitchen-600.webp" alt="The kitchen screen"></div>
+      <div class="fi" id="fi-meals" data-looker></div>
+      <svg class="prop" style="left: 176px; bottom: 26px; width: 92px;" viewBox="0 -40 92 110" aria-hidden="true"><path class="steam" d="M30 -4 q-7 -9 0 -18 q7 -9 0 -18" fill="none" stroke="#1F2D3A" stroke-width="3" stroke-linecap="round"/><path class="steam" style="animation-delay:-1.2s" d="M56 -4 q-7 -9 0 -18 q7 -9 0 -18" fill="none" stroke="#1F2D3A" stroke-width="3" stroke-linecap="round"/><g stroke="#1F2D3A" stroke-width="3.5" stroke-linejoin="round"><rect x="4" y="4" width="84" height="12" rx="6" fill="#F28C6B"/><path d="M10 16 H82 V52 Q82 66 68 66 H24 Q10 66 10 52 Z" fill="#F28C6B"/><rect x="38" y="-4" width="16" height="8" rx="4" fill="#1F2D3A"/></g></svg>
+    </div>
+  </div>
+
+  <div class="feature flip" id="f-cal">
+    <div class="reveal">
+      <p class="eyebrow">📅 Calendar</p>
+      <h2>Who is where this week.</h2>
+      <p>Appointments, school events, name days and everything else on one shared family calendar. Each event is for one person or for everyone, shows in their colour and reminds the people it is for. Enter the weekly ones once and they fill the calendar.</p>
+      <a class="more" href="#">More about the family calendar</a>
+    </div>
+    <div class="fstage reveal">
+      <div class="tint" style="background: var(--tint4)"></div>
+      <div class="fphone"><img src="../../../assets/screens/calendar-600.webp" alt="The family calendar"></div>
+      <div class="fi" id="fi-cal" data-looker></div>
+      <div class="thought" style="left: 22px; top: 178px;">⚽</div>
+      <div class="thought" style="left: 96px; top: 138px; animation-delay: -1s;">🦷</div>
+      <div class="thought" style="left: 172px; top: 180px; animation-delay: -2s;">🎂</div>
+    </div>
+  </div>
+
+  <!-- household: fixed cast, nothing to type -->
+  <section class="band" id="fam">
+    <div class="fam">
+      <div class="reveal">
+        <p class="eyebrow">👨‍👩‍👧 Everyone in their colour</p>
+        <h2>Everyone knows what's theirs.</h2>
+        <p class="sec-lead">Each person has a colour, so a glance tells you whose job, whose dentist and whose football it is. Tap someone to see their week.</p>
+        <div class="who-tabs" id="who-tabs"></div>
+        <div class="floor" id="floor"></div>
+      </div>
+      <div class="week reveal"><h4 id="week-title">This week, everyone</h4><div id="week-list"></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="why reveal">
+      <div>
+        <h2>Built for a household, not a social network.</h2>
+        <p class="sec-lead">Mazí is Greek for together. That is the whole idea.</p>
+      </div>
+      <div>
+        <ul><li>No ads.</li><li>No feeds.</li><li>No tracking.</li></ul>
+        <p class="sec-lead" style="margin:0">Your household's data is visible to your household and nobody else. Join by invite code: start a household, share the code, done.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta band" id="cta">
+    <div class="cta-row" id="cta-row"></div>
+    <h2>Bring the household together.</h2>
+    <p class="sec-lead" style="margin: 0 auto;">Free for 30 days. After that, one subscription covers everyone you invite.</p>
+    <div class="store" id="cta-store"><span><small>GET IT ON</small>Google Play</span><span><small>Download on the</small>App Store</span></div>
+  </div>
+  <footer><span>Shopping list · Chores and tasks · Meal planner · Family calendar · Questions</span><span>Privacy · Terms · Delete your account</span></footer>
+</div>
+</div>
+
+<script>
+(() => {
+  /* the í, from mazi-promo/src/mascot/figure.ts */
+  const INK = '#1F2D3A', TEAL = '#12B3A6', CHEEK = '#FF8FA3', TEAR = '#74C0FC';
+  const A = (s, b, h, dot = true) => ({ s, b, h, dot });
+  const DL = A([87, 144], [80, 156], [80, 170]), DR = A([133, 144], [140, 156], [140, 170]);
+  const POSES = {
+    idle: { face: 'smile', l: DL, r: DR },
+    wave: { face: 'smile', l: DL, r: A([133, 140], [151, 126], [155, 104]), wave: true },
+    joy: { face: 'joy', l: A([87, 138], [70, 126], [64, 104]), r: A([133, 138], [150, 126], [156, 104]) },
+    cheeky: { face: 'cheeky', l: A([87, 138], [50, 154], [87, 170], false), r: A([133, 138], [170, 154], [133, 170], false) },
+    surprised: { face: 'surprised', l: A([87, 140], [60, 132], [58, 108]), r: A([133, 140], [160, 132], [162, 108]) },
+    sleepy: { face: 'sleepy', l: DL, r: DR },
+    phone: { face: 'down', l: A([87, 146], [88, 158], [96, 162], false), r: A([133, 146], [132, 158], [124, 162], false), phone: true },
+    strain: { face: 'strain', l: A([87, 140], [56, 90], [67, 22]), r: A([133, 140], [164, 90], [153, 22]) },
+    sad: { face: 'sad', l: A([87, 142], [78, 158], [76, 176]), r: A([133, 142], [142, 158], [144, 176]) },
+    push: { face: 'joy', l: A([87, 150], [120, 166], [150, 170]), r: A([133, 150], [160, 160], [186, 168]) },
+    stir: { face: 'smile', l: DL, r: A([133, 146], [168, 150], [190, 170]) },
+    awake: { face: 'awake', l: A([87, 142], [78, 156], [96, 152]), r: A([133, 142], [142, 156], [124, 152]) },
+  };
+  const ln = (d, w = 3.5) => `<path d="${d}" fill="none" stroke="${INK}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const so = (d, f = INK) => `<path d="${d}" fill="${f}"/>`;
+  const cheeks = `<ellipse cx="94" cy="120" rx="5.5" ry="3.5" fill="${CHEEK}" opacity=".75"/><ellipse cx="126" cy="120" rx="5.5" ry="3.5" fill="${CHEEK}" opacity=".75"/>`;
+  const eyes = (y, ry, gdx, gy) => `<g class="look"><g class="blink"><ellipse cx="101" cy="${y}" rx="5.5" ry="${ry}" fill="${INK}"/><ellipse cx="119" cy="${y}" rx="5.5" ry="${ry}" fill="${INK}"/><circle cx="${101 + gdx}" cy="${gy}" r="2.1" fill="#fff"/><circle cx="${119 + gdx}" cy="${gy}" r="2.1" fill="#fff"/></g></g>`;
+  const drop = (d) => `<path d="${d}" fill="${TEAR}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>`;
+  const FACES = {
+    smile: () => eyes(106, 7.5, 2, 103) + cheeks + so('M102 119 H118 Q118 130 110 130 Q102 130 102 119 Z'),
+    joy: () => ln('M95 108 Q101 100 107 108 M113 108 Q119 100 125 108', 4) + cheeks + so('M101 118 H119 Q119 131 110 131 Q101 131 101 118 Z') + so('M104.5 126.5 Q110 122.5 115.5 126.5 Q113 130 110 130 Q107 130 104.5 126.5 Z', '#FF6B81'),
+    cheeky: () => `<g class="look"><g class="blink">${so('M94 108 H108 A7 7 0 0 1 94 108 Z')}${so('M112 108 H126 A7 7 0 0 1 112 108 Z')}</g></g>` + ln('M93 100 L108 101 M112 97 Q119 90 127 95') + cheeks + ln('M103 126 Q112 130 119 121'),
+    surprised: () => ln('M94 94 Q100 89 106 93 M114 93 Q120 89 126 94') + eyes(106, 8.5, 2, 102.5) + cheeks + `<ellipse cx="110" cy="125" rx="4.5" ry="5.5" fill="${INK}"/>`,
+    sleepy: () => ln('M95 107 H106 M114 107 H125', 4) + cheeks + ln('M106 122 Q110 125 114 122'),
+    down: () => eyes(108, 7, 1, 111.5) + cheeks + ln('M105 123 Q110 127 115 123'),
+    strain: () => ln('M95 101 L104 106 L95 111 M125 101 L116 106 L125 111') + cheeks + `<ellipse cx="110" cy="125" rx="5" ry="4.5" fill="${INK}"/>` + drop('M141 82 Q146.5 91 141 96 Q135.5 91 141 82 Z'),
+    sad: () => ln('M94 99 L105 95 M115 95 L126 99') + eyes(109, 7, 1.5, 112) + cheeks + ln('M103 127 Q110 121 117 127') + drop('M128 113 Q132.5 120.5 128 124 Q123.5 120.5 128 113 Z'),
+    awake: () => `<g class="look"><g class="blink"><ellipse cx="101" cy="107" rx="6.5" ry="8" fill="${INK}"/><ellipse cx="119" cy="107" rx="6.5" ry="8" fill="${INK}"/><circle cx="103" cy="104" r="2.4" fill="#fff"/><circle cx="121" cy="104" r="2.4" fill="#fff"/></g></g><path d="M95 118.5 Q101 121.5 107 118.5 M113 118.5 Q119 121.5 125 118.5" fill="none" stroke="${INK}" stroke-width="2.5" opacity=".45" stroke-linecap="round"/>` + ln('M105 127 H115'),
+  };
+  const armSvg = (a, cls) => `<g class="${cls}"><path d="M${a.s} Q${a.b} ${a.h}" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>${a.dot ? `<circle cx="${a.h[0]}" cy="${a.h[1]}" r="6" fill="${INK}"/>` : ''}</g>`;
+  const legs = `<path d="M100 198 L98 216 M120 198 L122 216" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><ellipse cx="94" cy="221" rx="12" ry="6.5" fill="${TEAL}" stroke="${INK}" stroke-width="3.5"/><ellipse cx="126" cy="221" rx="12" ry="6.5" fill="${TEAL}" stroke="${INK}" stroke-width="3.5"/>`;
+  function iSvg(name) {
+    const p = POSES[name];
+    const arms = armSvg(p.l, 'arm-l') + armSvg(p.r, p.wave ? 'arm-wave' : 'arm-r');
+    const phone = p.phone ? `<rect x="94" y="136" width="32" height="50" rx="7" fill="${TEAL}" stroke="${INK}" stroke-width="4.5"/><circle cx="102" cy="145" r="3" fill="${INK}"/>` : '';
+    const sparkles = p.face === 'joy' ? `<path d="M70 70 L79 77 M64 87 L75 88 M150 74 L142 80 M156 90 L145 91" fill="none" stroke="${TEAL}" stroke-width="4" stroke-linecap="round"/>` : '';
+    return `<svg viewBox="0 0 220 240" aria-hidden="true"><ellipse cx="110" cy="230" rx="60" ry="6" fill="#000" opacity=".1"/>${legs}${sparkles}${p.phone ? '' : arms}<rect x="112" y="30" width="18" height="46" rx="9" fill="#fff" stroke="${INK}" stroke-width="5" transform="rotate(35 121 53)"/><rect x="86" y="72" width="48" height="130" rx="24" fill="#fff" stroke="${INK}" stroke-width="5"/>${FACES[p.face]()}${p.phone ? phone + arms : ''}</svg>`;
+  }
+
+  const S = document.getElementById('s');
+  const $ = (q, r = S) => r.querySelector(q), $$ = (q, r = S) => [...r.querySelectorAll(q)];
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const hopEl = (el) => { el.classList.remove('hop'); void el.offsetWidth; el.classList.add('hop'); };
+  function sayEl(b, text, ms = 1800) { b.textContent = text; b.classList.add('show'); clearTimeout(b._t); b._t = setTimeout(() => b.classList.remove('show'), ms); }
+
+  let px = null, py = null, raf = 0;
+  function trackLooks() {
+    raf = 0; if (px === null) return;
+    for (const el of $$('[data-looker]')) {
+      const g = el.querySelector('.look'); if (!g) continue;
+      const r = el.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight || !r.width) continue;
+      const ex = r.left + r.width * (+el.dataset.ex || .5), ey = r.top + r.height * (+el.dataset.ey || .44);
+      const dx = px - ex, dy = py - ey, d = Math.hypot(dx, dy) || 1, m = Math.min(1, d / 160) * (+el.dataset.max || 3.2);
+      g.setAttribute('transform', `translate(${(dx / d * m).toFixed(2)} ${(dy / d * m).toFixed(2)})`);
+    }
+  }
+  const queueLook = () => { if (!raf) raf = requestAnimationFrame(trackLooks); };
+  addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; queueLook(); }, { passive: true });
+  addEventListener('scroll', queueLook, { passive: true });
+
+  class Buddy {
+    constructor(el, base = 'idle', bubble = null) { this.el = el; this.base = base; this.bubble = bubble; this.t = 0; this.set(base); }
+    set(pose) { this.pose = pose; this.el.querySelector('svg')?.remove(); this.el.insertAdjacentHTML('beforeend', iSvg(pose)); if (this.bubble && this.bubble.parentNode === this.el) this.el.append(this.bubble); queueLook(); }
+    act(pose, ms = 1600, text) { clearTimeout(this.t); this.set(pose); hopEl(this.el); if (text && this.bubble) sayEl(this.bubble, text, ms); this.t = setTimeout(() => this.set(this.base), ms); }
+  }
+
+  /* hero */
+  const hero = new Buddy($('#hero-i'), 'wave', $('#hero-bubble'));
+  const REACT = [['joy', 'hi! 👋'], ['cheeky', 'hehe'], ['phone', 'checking the list…'], ['surprised', 'oh! you again']];
+  let ri = 0;
+  $('#hero-i').addEventListener('click', () => { const [p, t] = REACT[ri++ % REACT.length]; hero.act(p, 1600, t); });
+  $('#hero-store').addEventListener('mouseenter', () => hero.act('joy', 1400, 'yes! that one!'));
+  const stage = $('#stage');
+  for (let i = 0; i < 26; i++) { const st = document.createElement('i'); st.className = 'star'; st.style.left = (Math.random() * 96) + '%'; st.style.top = (Math.random() * 40) + '%'; st.style.animationDelay = (-Math.random() * 3) + 's'; stage.prepend(st); }
+
+  /* day and night */
+  $('#night').addEventListener('click', () => {
+    const n = S.classList.toggle('night'); $('#night').setAttribute('aria-pressed', n);
+    hero.base = n ? 'sleepy' : 'wave';
+    if (n) { clearTimeout(hero.t); hero.set('sleepy'); sayEl(hero.bubble, 'is it bedtime already?', 2200); }
+    else hero.act('joy', 1600, 'good morning! ☀️');
+  });
+
+  /* sections rise in */
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+  $$('.reveal').forEach((el) => io.observe(el));
+
+  function confetti(x, y, n = 14) {
+    const colors = ['#12B3A6', '#FFD43B', '#FF6B81', '#4C6EF5', '#F59F00', '#B197FC'];
+    for (let i = 0; i < n; i++) {
+      const c = document.createElement('i'); c.className = 'confetti'; c.style.left = x + 'px'; c.style.top = y + 'px'; c.style.background = colors[i % colors.length]; S.append(c);
+      const a = Math.random() * Math.PI * 2, dist = 40 + Math.random() * 70;
+      c.animate([{ transform: 'translate(-50%,-50%)', opacity: 1 }, { transform: `translate(calc(-50% + ${(Math.cos(a) * dist).toFixed(0)}px), calc(-50% + ${(Math.sin(a) * dist + 40).toFixed(0)}px)) rotate(${(Math.random() * 540).toFixed(0)}deg) scale(.6)`, opacity: 0 }], { duration: 750 + Math.random() * 400, easing: 'cubic-bezier(.2,.8,.3,1)' }).onfinish = () => c.remove();
+    }
+  }
+
+  /* the problem */
+  const MEMBERS = { Maria: '#E64980', George: '#3B5BDB', Sofia: '#E8590C' };
+  const CHAT = [
+    { who: 'Maria', text: 'we’re out of milk AGAIN 🙃', to: 'shop', row: 'Milk', f: 'Maria' },
+    { who: 'George', text: 'who’s taking the bins out??', to: 'tasks', row: 'Take out the bins', f: 'George' },
+    { who: 'Sofia', text: 'football is at 5 not 6!!', to: 'cal', row: 'Football · Sat 17:00', f: 'Sofia' },
+    { who: 'Maria', text: 'can someone grab feta', to: 'shop', row: 'Feta', f: 'Maria' },
+    { who: 'Sofia', text: 'did anyone feed the dog', to: 'tasks', row: 'Feed the dog', f: 'Sofia' },
+    { who: 'George', text: 'dentist friday, who’s taking her?', to: 'cal', row: 'Dentist · Fri 16:00', f: 'Sofia' },
+    { who: 'Sofia', text: 'and kitchen roll pls', to: 'shop', row: 'Kitchen roll', f: 'Sofia' },
+    { who: 'George', text: 'someone hoover before grandma comes', to: 'tasks', row: 'Hoover the living room', f: 'George' },
+    { who: 'Maria', text: 'parents’ evening tue 18:30, don’t forget', to: 'cal', row: 'Parents’ evening · Tue 18:30', f: 'Maria' },
+  ];
+  const chat = $('#chat'), chatBody = $('#chat-body'), typing = $('#typing'), quiet = $('#quiet'), unreadEl = $('#unread'), sortBtn = $('#sort-btn');
+  const cols = { shop: $('#col-shop'), tasks: $('#col-tasks'), cal: $('#col-cal') };
+  const sorter = new Buddy($('#sort-i'), 'sad', $('#sort-bubble'));
+  let ci = 0, chatT = 0, unread = 0, sorted = false, busy = false;
+  const bump = () => { unread++; unreadEl.textContent = unread; hopEl(unreadEl); };
+  function addMsg(i, anim = true) { const m = CHAT[i]; const b = document.createElement('div'); b.className = 'dmsg' + (anim ? ' new' : ''); b.dataset.i = i; b.innerHTML = `<span class="who" style="color:${MEMBERS[m.who]}">${m.who}</span>${esc(m.text)}`; chatBody.insertBefore(b, typing); }
+  function chatTick() {
+    if (sorted) return;
+    if (ci < CHAT.length) { typing.querySelector('b').textContent = CHAT[ci].who; typing.classList.add('on'); chatT = setTimeout(() => { typing.classList.remove('on'); addMsg(ci++); bump(); chatT = setTimeout(chatTick, 450); }, 650); }
+    else { bump(); chat.classList.remove('shake'); void chat.offsetWidth; chat.classList.add('shake'); chatT = setTimeout(chatTick, 1700); }
+  }
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { chatTick(); sayEl(sorter.bubble, 'help…', 1600); o.disconnect(); } }, { threshold: .3 }).observe($('#sorter'));
+  const updateCounts = () => { for (const k in cols) $('#n-' + k).textContent = cols[k].children.length; };
+  async function sortOut() {
+    if (busy) return; if (sorted) return resetChat();
+    busy = true; sorted = true; clearTimeout(chatT); typing.classList.remove('on'); sortBtn.disabled = true; sortBtn.classList.remove('pulse');
+    while (ci < CHAT.length) addMsg(ci++, false);
+    sorter.base = 'strain'; sorter.set('strain'); sayEl(sorter.bubble, 'leave it to me', 1500);
+    const bubbles = $$('.dmsg', chatBody);
+    const rows = bubbles.map((b) => { const m = CHAT[b.dataset.i]; const row = document.createElement('div'); row.className = 'row'; row.innerHTML = `<span class="tk"></span><span class="txt">${esc(m.row)}</span><span class="av" style="background:${MEMBERS[m.f]}">${m.f[0]}</span>`; row.style.visibility = 'hidden'; cols[m.to].append(row); return row; });
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await Promise.all(bubbles.map((b, i) => new Promise((res) => {
+      const f = b.getBoundingClientRect(), t = rows[i].getBoundingClientRect();
+      const fly = b.cloneNode(true); fly.classList.remove('new'); fly.classList.add('flying');
+      Object.assign(fly.style, { left: f.left + 'px', top: f.top + 'px', width: f.width + 'px' }); S.append(fly); b.style.visibility = 'hidden';
+      const dx = t.left - f.left, dy = t.top - f.top;
+      fly.animate([{ transform: 'none' }, { transform: `translate(${dx * .45}px, ${dy * .45 - 110}px) rotate(${i % 2 ? 12 : -12}deg) scale(1.08)`, offset: .5 }, { transform: `translate(${dx}px, ${dy}px) scale(.92)`, opacity: .1 }], { duration: 850, delay: 250 + i * 140, easing: 'cubic-bezier(.45,0,.25,1)', fill: 'forwards' }).onfinish = () => { fly.remove(); rows[i].style.visibility = ''; rows[i].classList.add('pop'); updateCounts(); res(); };
+    })));
+    $$('.dmsg', chatBody).forEach((m) => m.remove()); quiet.classList.add('on'); unread = 0; unreadEl.textContent = '0';
+    sorter.base = 'idle'; sorter.act('joy', 2400, 'sorted! 🎉');
+    const r = $('#sort-i').getBoundingClientRect(); confetti(r.left + r.width / 2, r.top + 30, 24);
+    sortBtn.disabled = false; sortBtn.textContent = '↺ Chaos again'; busy = false;
+  }
+  function resetChat() { sorted = false; for (const k in cols) cols[k].innerHTML = ''; updateCounts(); quiet.classList.remove('on'); ci = 0; unread = 0; unreadEl.textContent = '0'; sortBtn.textContent = 'Hand it to the í →'; sortBtn.classList.add('pulse'); sorter.base = 'sad'; sorter.act('sad', 1500, 'oh no, not again'); chatTick(); }
+  sortBtn.addEventListener('click', sortOut);
+  $('#sort-i').addEventListener('click', () => { if (!busy) sorter.act(sorted ? 'cheeky' : 'sad', 1500, sorted ? 'easy.' : 'press the button 🥺'); });
+  S.addEventListener('click', (e) => { const row = e.target.closest('.row'); if (!row) return; row.classList.toggle('done'); if (row.classList.contains('done')) { const r = row.querySelector('.tk').getBoundingClientRect(); confetti(r.left + 9, r.top + 9, 10); } });
+
+  /* the í in each app section */
+  new Buddy($('#fi-shop'), 'push'); new Buddy($('#fi-tasks'), 'strain'); new Buddy($('#fi-meals'), 'stir'); new Buddy($('#fi-cal'), 'awake');
+  $$('.fi').forEach((el) => el.addEventListener('click', () => hopEl(el)));
+
+  /* household: a fixed family, nothing to type */
+  const FAM = [{ n: 'Maria', c: '#E64980' }, { n: 'George', c: '#3B5BDB' }, { n: 'Sofia', c: '#E8590C' }];
+  const WEEK = [
+    { who: 'Sofia', k: '⚽', t: 'Football · Sat 17:00' },
+    { who: 'George', k: '🗑️', t: 'Take out the bins · today' },
+    { who: 'Maria', k: '🏫', t: 'Parents’ evening · Tue 18:30' },
+    { who: 'Sofia', k: '🦷', t: 'Dentist · Fri 16:00' },
+    { who: 'George', k: '🧹', t: 'Hoover before grandma comes' },
+    { who: 'Maria', k: '🛒', t: 'Added feta and milk' },
+    { who: 'Sofia', k: '🐕', t: 'Feed the dog' },
+    { who: 'Everyone', k: '🎉', t: 'Grandma’s name day · Sun' },
+  ];
+  const colourOf = (w) => (FAM.find((f) => f.n === w) || { c: TEAL }).c;
+  $('#week-list').innerHTML = WEEK.map((w) => `<div class="wk" data-who="${w.who}" style="border-left-color:${colourOf(w.who)}"><span class="k">${w.k}</span><span>${esc(w.t)}</span><span class="w">${w.who}</span></div>`).join('');
+  const letterSvg = (ch) => `<svg viewBox="0 0 140 190" aria-hidden="true"><g class="legs"></g><text x="70" y="150" text-anchor="middle" font-family="Fredoka" font-weight="600" font-size="150" fill="#fff" stroke="${INK}" stroke-width="9" stroke-linejoin="round" paint-order="stroke">${ch}</text><g class="lface"></g></svg>`;
+  function dress(box, color) {
+    const svg = box.querySelector('svg'), t = svg.querySelector('text'); let bb; try { bb = t.getBBox(); } catch (e) { return; } if (!bb.width) return;
+    const cx = bb.x + bb.width / 2, bottom = Math.min(bb.y + bb.height, 156), ey = bb.y + bb.height * .4, lx = Math.min(bb.width * .24, 20);
+    svg.querySelector('.legs').innerHTML = `<ellipse cx="${cx}" cy="${bottom + 24}" rx="44" ry="5" fill="#000" opacity=".1"/><path d="M${cx - lx} ${bottom - 3} L${cx - lx - 1} ${bottom + 12} M${cx + lx} ${bottom - 3} L${cx + lx + 1} ${bottom + 12}" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><ellipse cx="${cx - lx - 5}" cy="${bottom + 16}" rx="11" ry="6" fill="${color}" stroke="${INK}" stroke-width="3.5"/><ellipse cx="${cx + lx + 5}" cy="${bottom + 16}" rx="11" ry="6" fill="${color}" stroke="${INK}" stroke-width="3.5"/>`;
+    svg.querySelector('.lface').innerHTML = `<g class="look"><g class="blink" style="transform-origin:${cx}px ${ey}px; animation-delay:${(-Math.random() * 4).toFixed(2)}s"><ellipse cx="${cx - 9}" cy="${ey}" rx="4.6" ry="6" fill="${INK}"/><ellipse cx="${cx + 9}" cy="${ey}" rx="4.6" ry="6" fill="${INK}"/><circle cx="${cx - 7.4}" cy="${ey - 2.4}" r="1.8" fill="#fff"/><circle cx="${cx + 10.6}" cy="${ey - 2.4}" r="1.8" fill="#fff"/></g></g><ellipse cx="${cx - 17}" cy="${ey + 11}" rx="5" ry="3.2" fill="${CHEEK}" opacity=".75"/><ellipse cx="${cx + 17}" cy="${ey + 11}" rx="5" ry="3.2" fill="${CHEEK}" opacity=".75"/><path d="M${cx - 5} ${ey + 11} Q${cx} ${ey + 16} ${cx + 5} ${ey + 11}" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>`;
+    box.dataset.ex = (cx / 140).toFixed(3); box.dataset.ey = (ey / 190).toFixed(3); box.dataset.max = '2.6';
+  }
+  const tabs = $('#who-tabs'), floor = $('#floor');
+  tabs.innerHTML = [{ n: 'Everyone', c: TEAL }, ...FAM].map((f, i) => `<button type="button" data-who="${f.n}" aria-pressed="${i === 0}"><i style="background:${f.c}"></i>${f.n}</button>`).join('');
+  const LINES = { Maria: 'parents’ evening, don’t let me forget', George: 'bins are mine today', Sofia: 'football on saturday!!' };
+  function pick(who) {
+    $$('button', tabs).forEach((b) => b.setAttribute('aria-pressed', b.dataset.who === who));
+    $$('.wk').forEach((w) => w.classList.toggle('off', who !== 'Everyone' && w.dataset.who !== who && w.dataset.who !== 'Everyone'));
+    $$('.member', floor).forEach((m) => m.classList.toggle('dim', who !== 'Everyone' && m.dataset.who !== who));
+    $('#week-title').textContent = who === 'Everyone' ? 'This week, everyone' : `${who}’s week`;
+    const m = $(`.member[data-who="${who}"]`, floor); if (m) { hopEl(m.querySelector('.ch')); sayEl(m.querySelector('.say'), LINES[who], 1800); }
+  }
+  tabs.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) pick(b.dataset.who); });
+  function buildFloor() {
+    FAM.forEach((f) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'member'; b.dataset.who = f.n;
+      b.innerHTML = `<span class="say"></span><div class="ch" data-looker>${letterSvg(f.n[0])}</div><span class="mname">${f.n}</span>`;
+      floor.append(b); dress(b.querySelector('.ch'), f.c);
+      b.addEventListener('click', () => pick(b.dataset.who === $('button[aria-pressed="true"]', tabs).dataset.who ? 'Everyone' : f.n));
+    });
+    const row = $('#cta-row');
+    [['M', '#3B5BDB'], ['a', '#E64980'], ['z', '#E8590C']].forEach(([ch, c]) => {
+      const d = document.createElement('div'); d.className = 'cl'; d.dataset.looker = ''; d.innerHTML = letterSvg(ch); row.append(d); dress(d, c);
+      const svg = d.querySelector('svg'), bb = svg.querySelector('text').getBBox(); svg.setAttribute('viewBox', `${bb.x - 10} 0 ${bb.width + 20} 190`); d.dataset.ex = '0.5';
+    });
+    const iBox = document.createElement('div'); iBox.className = 'ci'; iBox.dataset.looker = ''; iBox.dataset.ex = '0.45'; iBox.innerHTML = iSvg('wave'); row.append(iBox); iBox.querySelector('svg').setAttribute('viewBox', '58 0 116 240');
+  }
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(buildFloor);
+  const cheer = () => $$('#cta-row > div').forEach((el, i) => setTimeout(() => hopEl(el), i * 110));
+  $('#cta-store').addEventListener('mouseenter', cheer);
+  new IntersectionObserver((es) => { if (es[0].isIntersecting) cheer(); }, { threshold: .6 }).observe($('#cta'));
+
+  $$('.nav a').forEach((a) => a.addEventListener('click', (e) => { const h = a.getAttribute('href'); if (h.length < 2) return; e.preventDefault(); const t = $(h); scrollTo({ top: t.getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); }));
+  window.__s = { sortOut };
+})();
+</script>
+</body>
+</html>

@@ -1,3 +1,6 @@
 # Left behind by running the site locally with wrangler dev.
 .wrangler/
 node_modules/
+
+# The brainstorm's mockups and local servers, not part of the site.
+.superpowers/
