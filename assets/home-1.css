@@ -104,13 +104,22 @@
 .notif:nth-child(2) { animation-delay: 3s; }
 .notif:nth-child(3) { animation-delay: 6s; }
 .notif b { display: block; font-size: .72rem; letter-spacing: .04em; color: var(--muted); }
+/* A person's avatar, here and in "the problem": their initial in ink on the
+   card colour, inside a ring of their own colour. The app's colours are too
+   light to have small text on them (white or ink, 3.6 to 3.9:1 on Maria's
+   and Sofia's), so the colour is the ring and the initial reads at 12:1 or
+   more by day and at night. */
 .av {
-  flex: none; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line);
-  display: grid; place-items: center; color: #fff;
+  flex: none; width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--line);
+  display: grid; place-items: center; color: var(--fg); background: var(--card);
   font: 600 .8rem/1 Fredoka, system-ui, sans-serif;
+  transition: background-color .7s, color .7s;
 }
+.av.george { border-color: #3B5BDB; }
+.av.maria { border-color: #E64980; }
+.av.sofia { border-color: #E8590C; }
 /* The app's own notification shows the app icon, which is a rounded square. */
-img.av { border-radius: 8px; }
+img.av { border-radius: 8px; border-width: 2px; }
 @keyframes notif {
   0% { opacity: 0; transform: translateY(-14px) scale(.94); }
   4%, 29% { opacity: 1; transform: none; }
@@ -310,12 +319,9 @@ html.js .big-btn { display: inline-block; }
 .row .txt { min-width: 0; }
 .row.done .txt { color: var(--muted); text-decoration: line-through; }
 .row.pop { animation: pop .45s cubic-bezier(.34, 1.56, .64, 1); }
-/* Who it came from. The initial is decoration (white on these colours is
-   below 4.5:1); the name is there for screen readers in .vh. */
-.row .av { margin-left: auto; width: 22px; height: 22px; font-size: .68rem; }
-.av.george { background: #3B5BDB; }
-.av.maria { background: #E64980; }
-.av.sofia { background: #E8590C; }
+/* Who it came from, as an avatar (see .av above). Screen readers skip the
+   initial and read the name in .vh instead. */
+.row .av { margin-left: auto; width: 22px; height: 22px; border-width: 2.5px; font-size: .68rem; }
 .vh {
   position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;

@@ -282,14 +282,17 @@ export function setupSorter() {
   count();
   if (still()) play();
 
-  // Once 30% of it is on screen: the í asks for help and the chat starts.
+  // Once 30% of the chat is on screen: the í asks for help and the chat
+  // starts. The chat, not the whole sorter: stacked, the sorter is over
+  // 1100px tall, and 30% of it never fits on a landscape phone (320px). The
+  // chat is under 460px, so 30% of it fits on any screen.
   new IntersectionObserver(([entry]) => {
     sorter.inView = entry.isIntersecting;
     if (sorter.seen || entry.intersectionRatio < 0.3) return;
     sorter.seen = true;
     buddy.say('help…', 1600);
     if (!still()) play();
-  }, { threshold: [0, 0.3] }).observe(box);
+  }, { threshold: [0, 0.3] }).observe(chat);
 
   button.addEventListener('click', () => {
     if (sorter.busy) return;

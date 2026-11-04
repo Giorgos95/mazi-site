@@ -64,7 +64,8 @@ test('notifications are real ones', async () => {
       return {
         label: n.querySelector('b').textContent,
         text: n.querySelector('.msg').textContent,
-        avatar: av.tagName === 'IMG' ? av.getAttribute('src') : [av.textContent, getComputedStyle(av).backgroundColor],
+        // A person's avatar wears their colour as its ring.
+        avatar: av.tagName === 'IMG' ? av.getAttribute('src') : [av.textContent, getComputedStyle(av).borderTopColor],
       };
     })`);
     assert.deepEqual(cards, [
@@ -361,7 +362,7 @@ test('problem copy', async () => {
           return tk.tagName === 'BUTTON' && tk.type === 'button' && tk.getAttribute('aria-pressed') === 'false'
             && tk.getAttribute('aria-label') === 'Tick ' + text(r.querySelector('.txt'));
         }),
-        avatars: Object.fromEntries([...s.querySelectorAll('.row .av')].map((av) => [av.textContent, getComputedStyle(av).backgroundColor])),
+        avatars: Object.fromEntries([...s.querySelectorAll('.row .av')].map((av) => [av.textContent, getComputedStyle(av).borderTopColor])),
         header: text(s.querySelector('.mz-top')),
       };
     })()`);
@@ -532,6 +533,44 @@ test('the chat and the panel are readable, day and night', async () => {
       });
     }
   }
+});
+
+// The initials are aria-hidden, so the page-wide contrast check skips them,
+// but for a sighted visitor they are the only sign of whose a row is.
+test('avatar initials read at 4.5:1 and wear their person’s colour', async () => {
+  const MEMBER = { G: 'rgb(59, 91, 219)', M: 'rgb(230, 73, 128)', S: 'rgb(232, 89, 12)' };
+  for (const colorScheme of ['light', 'dark']) {
+    await withPage('/', { colorScheme, reducedMotion: true }, async (page) => {
+      const avatars = await page.eval(`(() => {
+        const rgb = (css) => css.match(/[\\d.]+/g).map(Number);
+        const lum = ([r, g, b]) => [r, g, b].map((c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; })
+          .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+        return [...document.querySelectorAll('#hero span.av, #problem .av')].map((av) => {
+          const s = getComputedStyle(av);
+          const bg = rgb(s.backgroundColor);
+          const [hi, lo] = [lum(rgb(s.color)), lum(bg)].sort((a, b) => b - a);
+          return { initial: av.textContent, ratio: (hi + 0.05) / (lo + 0.05), opaque: bg.length === 3 || bg[3] === 1, ring: s.borderTopColor };
+        });
+      })()`);
+      assert.equal(avatars.length, 11, 'two in the hero, nine in the panel');
+      for (const a of avatars) {
+        assert.ok(a.opaque, `${colorScheme}: ${a.initial} has a see-through fill`);
+        assert.ok(a.ratio >= 4.5, `${colorScheme}: ${a.initial} is ${a.ratio.toFixed(2)}:1`);
+        assert.equal(a.ring, MEMBER[a.initial], `${colorScheme}: ${a.initial}'s ring`);
+      }
+    });
+  }
+});
+
+// Stacked, the sorter is taller than three landscape phone screens; the
+// chat must still start once it is in view.
+test('the chat plays on a landscape phone', async () => {
+  await withPage('/', { width: 740, height: 320, mobile: true }, async (page) => {
+    await page.eval(`document.querySelector('#problem .chat').scrollIntoView({ block: 'center' })`);
+    assert.equal(await until(page, `${shown('#problem .dmsg')} >= 1`, 2500), true, 'no message played');
+    assert.equal(await page.eval(`document.querySelector('#sort-i .say').textContent`), 'help…');
+    assert.deepEqual(page.errors, []);
+  });
 });
 
 test('the chat, the í and the panel stack below 1000px', async () => {
