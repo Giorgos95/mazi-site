@@ -33,7 +33,10 @@ test('unknown addresses get the 404 page', async () => {
 });
 
 test('does not publish docs or tests', async () => {
-  for (const p of ['/docs/superpowers/specs/2026-11-04-site-redesign-design.md', '/tests/serve.mjs']) {
+  // .superpowers holds the brainstorm and the review notes: git ignores it,
+  // but a wrangler deploy from this folder would publish it.
+  for (const p of ['/docs/superpowers/specs/2026-11-04-site-redesign-design.md', '/tests/serve.mjs',
+    '/.superpowers/sdd/2026-11-04-site-redesign/final-fix-brief.md']) {
     assert.equal((await get(p)).status, 404, p);
   }
 });

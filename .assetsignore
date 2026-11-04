@@ -10,3 +10,6 @@ wrangler.jsonc
 # Design documents, plans and test tools for the site, not pages of it.
 docs
 tests
+
+# The brainstorm's mockups and the review notes (git ignores them too).
+.superpowers
