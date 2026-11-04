@@ -455,3 +455,58 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .reveal.pending { opacity: 1; transform: none; }
 }
+
+
+/* ---------- Invite, TikTok and not-found pages ---------- */
+
+/* The invite page's header is only the brand and the switch: leaving would
+   drop the invite code. */
+.top.bare .brand { margin-right: auto; }
+
+/* The i beside the title, as on the questions page. */
+.page-head { display: flex; align-items: center; gap: 1.2rem; }
+.page-head > div:first-child { flex: 1 1 auto; min-width: 0; }
+.page-head .fi { position: relative; left: auto; bottom: auto; flex: none; width: 110px; }
+.page-head .say { top: -22px; }
+.page-head.lost-head .fi { width: 130px; }
+@media (max-width: 480px) {
+  .page-head .fi, .page-head.lost-head .fi { width: 80px; }
+}
+
+/* The invite page (its script lives in join.html and is shared with the app). */
+.code-card {
+  margin: 1.8rem 0 0; padding: 1.25rem; text-align: center;
+  background: var(--card); border: 3px solid var(--line); border-radius: 22px; box-shadow: var(--shadow);
+  transition: background-color .7s, border-color .7s;
+}
+.code-card .label { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.code {
+  margin: 0.4rem 0 0.9rem; font-family: "Fredoka", sans-serif; font-weight: 600;
+  font-size: clamp(2rem, 11vw, 2.8rem); letter-spacing: 0.12em; color: var(--fg);
+  user-select: all; -webkit-user-select: all;
+}
+.button {
+  display: inline-block; padding: 0.7rem 1.4rem; border-radius: 999px;
+  border: 2.5px solid var(--line); background: var(--blob); color: var(--on-blob);
+  font: 600 1rem/1.2 Fredoka, system-ui, sans-serif; text-decoration: none; cursor: pointer;
+  box-shadow: 3px 4px 0 var(--line);
+  transition: transform .12s, box-shadow .12s, background-color .7s;
+}
+.button:hover { transform: translate(-1px, -2px) rotate(-1.5deg); box-shadow: 4px 6px 0 var(--line); }
+.button:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--line); }
+.button.quiet { background: var(--card); color: var(--accent-text); }
+.open { margin: 1.4rem 0 0; }
+.steps { margin: 2rem 0 0; padding-left: 1.3rem; }
+.steps li { margin: 0.5rem 0; }
+.article .note { font-size: 0.92rem; color: var(--muted); margin: 0.6rem 0 0; }
+.article .note a { color: var(--accent-text); font-weight: 700; }
+[hidden] { display: none !important; }
+
+/* The TikTok page: what the app does, as sticker rows, and the phone below. */
+.article .what { list-style: none; padding: 0; margin: 2.2rem 0 0; display: grid; gap: 0.9rem; }
+.what li { margin: 0; padding: 0.9rem 1.1rem; }
+.what b { color: var(--accent-text); }
+.fstage.tiktok-phone { height: auto; max-width: 420px; margin: 2.4rem auto 0; padding: 1rem 0 1.6rem; }
+.fstage.tiktok-phone::before { inset: 20px 0 10px; }
+.tiktok-phone .fphone { position: relative; right: auto; top: auto; margin: 0 auto; }
+#badges { margin-top: 1.2rem; }

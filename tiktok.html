@@ -10,90 +10,75 @@
      nothing. It stays out of search and out of sitemap.xml, so a visitor from Google is
      never counted as one from TikTok. -->
 <meta name="robots" content="noindex">
-<link rel="icon" type="image/png" href="./assets/icon.png">
+<link rel="icon" type="image/png" href="/assets/icon.png">
 <meta property="og:title" content="Mazí">
 <meta property="og:description" content="One list for the whole household.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:url" content="https://meetmazi.com/tiktok">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFF7EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141E33" media="(prefers-color-scheme: dark)">
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./assets/article.css">
-<style>
-  /* The landing page's phone shadow, which article.css has no token for. */
-  :root { --shadow: 0 14px 40px rgba(31, 43, 30, 0.14); }
-  @media (prefers-color-scheme: dark) { :root { --shadow: 0 14px 40px rgba(0, 0, 0, 0.5); } }
-  .article { padding-top: 1.5rem; }
-  .note { font-size: 0.92rem; color: var(--muted); margin: 0.4rem 0 0; }
-  .article .what { list-style: none; padding: 0; margin: 2.2rem 0 0; }
-  .what li { padding: 0.75rem 0; border-top: 1px solid var(--line); margin: 0; }
-  .what li:first-child { border-top: 0; }
-  .what b { color: var(--green-deep); }
-  .phone {
-    margin: 2.4rem auto 0; background: var(--card); border: 1px solid var(--line);
-    border-radius: 30px; padding: 10px; width: min(280px, 100%);
-    box-shadow: var(--shadow);
-  }
-  .phone img { display: block; width: 100%; height: auto; border-radius: 21px; }
-  /* Side by side the badges need 315px at article.css's size, more than the closing
-     card leaves on a phone. Below 420px they shrink by an eighth and the card gives
-     back some padding, so both rows stay on one line down to a 360px phone. */
-  @media (max-width: 420px) {
-    .badge img { height: 56px; }
-    .badge .apple { height: 37.6px; margin: 9.2px; }
-    .get { padding: 1.5rem 1rem; }
-  }
-</style>
+<link rel="stylesheet" href="/assets/site-1.css">
+<script type="module" src="/assets/site-1.js"></script>
+<link rel="modulepreload" href="/assets/mascot-1.js">
 </head>
 <body>
 
-<header class="wrap top">
-  <a class="brand" href="/">
-    <img src="./assets/icon.png" alt="" width="44" height="44">
-    <span>Mazí</span>
-  </a>
+<header class="top">
+  <a class="brand" href="/"><img src="/assets/icon.png" alt="" width="40" height="40"><span>Mazí</span></a>
+  <nav class="nav" aria-label="Mazí"><a href="/shopping-list">Shopping</a><a href="/chores">Tasks</a><a href="/meal-planner">Meals</a><a href="/family-calendar">Calendar</a><a href="/faq">FAQ</a></nav>
+  <button class="switch" id="theme-switch" type="button" aria-label="Night colours" aria-pressed="false"></button>
+  <a class="get-btn" href="#get">Get the app</a>
 </header>
 
 <main class="article">
+  <div class="page-head">
+  <div>
   <h1>The family chat was never a good shopping list.</h1>
   <p class="lead">Mazí gives the whole household one shopping list, plus tasks, meal plans
   and a shared calendar. Everyone sees the same lists, updated the moment someone adds
   something.</p>
+  </div>
+  <div class="fi" data-i-pose="wave" aria-hidden="true"></div>
+  </div>
 
   <div class="badges">
     <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dtiktok%26utm_medium%3Dsocial%26utm_campaign%3Dtiktok_bio">
-      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
+      <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
     </a>
     <a class="badge" href="https://apps.apple.com/app/apple-store/id6807159485?pt=129389033&amp;ct=tiktok_bio&amp;mt=8">
-      <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
+      <img class="apple" src="/assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
     </a>
   </div>
   <p class="note">30 days free with everything unlocked, no card needed.</p>
 
   <ul class="what">
-    <li><b>Shopping.</b> One list, sorted by category and by shop, with a photo when
+    <li class="sticker"><b>Shopping.</b> One list, sorted by category and by shop, with a photo when
     the brand matters.</li>
-    <li><b>Tasks.</b> Assigned to someone, or left for whoever gets there first.</li>
-    <li><b>Kitchen.</b> Plan the week's dinners and send every ingredient to the list.</li>
-    <li><b>Calendar.</b> Everyone's week in one place, each event in the colour of who it is for.</li>
+    <li class="sticker"><b>Tasks.</b> Assigned to someone, or left for whoever gets there first.</li>
+    <li class="sticker"><b>Kitchen.</b> Plan the week's dinners and send every ingredient to the list.</li>
+    <li class="sticker"><b>Calendar.</b> Everyone's week in one place, each event in the colour of who it is for.</li>
   </ul>
 
-  <figure class="phone">
-    <img src="./assets/screens/shopping-600.webp" srcset="./assets/screens/shopping-600.webp 600w, ./assets/screens/shopping-1080.webp 1080w" sizes="280px" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
+  <div class="fstage tiktok-phone">
+  <figure class="fphone">
+    <img src="/assets/screens/shopping-600.webp" srcset="/assets/screens/shopping-600.webp 600w, /assets/screens/shopping-1080.webp 1080w" sizes="280px" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
   </figure>
+  </div>
 
-  <section class="get">
+  <section class="get" id="get">
     <h2>Try it with your household</h2>
     <p>30 days free with everything unlocked, no card needed. After that, one
     subscription covers everyone you invite.</p>
     <div class="badges">
       <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dtiktok%26utm_medium%3Dsocial%26utm_campaign%3Dtiktok_bio">
-        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
+        <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
       </a>
       <a class="badge" href="https://apps.apple.com/app/apple-store/id6807159485?pt=129389033&amp;ct=tiktok_bio&amp;mt=8">
-        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
+        <img class="apple" src="/assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
       </a>
     </div>
   </section>

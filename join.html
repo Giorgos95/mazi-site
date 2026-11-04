@@ -13,59 +13,37 @@
      page itself tracks nothing. Out of search and out of sitemap.xml: an invite
      page means nothing without its code. -->
 <meta name="robots" content="noindex">
-<link rel="icon" type="image/png" href="./assets/icon.png">
+<link rel="icon" type="image/png" href="/assets/icon.png">
 <!-- What a chat app shows in its link preview under the invite. -->
 <meta property="og:title" content="You're invited to a household on Mazí">
 <meta property="og:description" content="One shopping list, tasks and calendar for the whole household.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFF7EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141E33" media="(prefers-color-scheme: dark)">
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./assets/article.css">
-<style>
-  .article { padding-top: 1.5rem; }
-  .code-card {
-    margin: 1.8rem 0 0; padding: 1.25rem; background: var(--card);
-    border: 1px solid var(--line); border-radius: 18px; text-align: center;
-  }
-  .code-card .label { margin: 0; color: var(--muted); font-size: 0.95rem; }
-  .code {
-    margin: 0.4rem 0 0.9rem; font-family: "Fredoka", sans-serif; font-weight: 600;
-    font-size: clamp(2rem, 11vw, 2.8rem); letter-spacing: 0.12em; color: var(--ink);
-    user-select: all; -webkit-user-select: all;
-  }
-  .button {
-    display: inline-block; padding: 0.8rem 1.4rem; border-radius: 999px; border: 0;
-    background: var(--teal); color: #fff; font: inherit; font-weight: 700;
-    text-decoration: none; cursor: pointer;
-  }
-  .button.quiet { background: transparent; color: var(--teal); border: 2px solid var(--teal); }
-  .open { margin: 1.4rem 0 0; }
-  .steps { margin: 2rem 0 0; padding-left: 1.3rem; }
-  .steps li { margin: 0.5rem 0; }
-  .note { font-size: 0.92rem; color: var(--muted); margin: 0.6rem 0 0; }
-  [hidden] { display: none !important; }
-  @media (max-width: 420px) {
-    .badge img { height: 56px; }
-    .badge .apple { height: 37.6px; margin: 9.2px; }
-  }
-</style>
+<link rel="stylesheet" href="/assets/site-1.css">
+<script type="module" src="/assets/site-1.js"></script>
+<link rel="modulepreload" href="/assets/mascot-1.js">
 </head>
 <body>
 
-<header class="wrap top">
-  <a class="brand" href="/">
-    <img src="./assets/icon.png" alt="" width="44" height="44">
-    <span>Mazí</span>
-  </a>
+<header class="top bare">
+  <a class="brand" href="/"><img src="/assets/icon.png" alt="" width="40" height="40"><span>Mazí</span></a>
+  <button class="switch" id="theme-switch" type="button" aria-label="Night colours" aria-pressed="false"></button>
 </header>
 
 <main class="article">
+  <div class="page-head">
+  <div>
   <h1>You're invited to a household on Mazí</h1>
   <p class="lead">Mazí keeps the household's shopping list, tasks, meals and calendar in
   one place, shared with everyone in it.</p>
+  </div>
+  <div class="fi" data-i-pose="wave" aria-hidden="true"></div>
+  </div>
 
   <section id="invite" class="code-card" hidden>
     <p class="label">Your invite code</p>
@@ -83,10 +61,10 @@
 
   <div class="badges" id="badges">
     <a class="badge" id="play" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dinvite%26utm_medium%3Dlink%26utm_campaign%3Dinvite">
-      <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
+      <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
     </a>
     <a class="badge" id="apple" href="https://apps.apple.com/app/apple-store/id6807159485?pt=129389033&amp;ct=invite&amp;mt=8">
-      <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
+      <img class="apple" src="/assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
     </a>
   </div>
 

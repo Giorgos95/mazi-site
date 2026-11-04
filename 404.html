@@ -8,26 +8,42 @@
      behind it (not_found_handling in wrangler.jsonc). Links are from the root
      because the address can be any depth. -->
 <link rel="icon" type="image/png" href="/assets/icon.png">
-<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFF7EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141E33" media="(prefers-color-scheme: dark)">
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/article.css">
+<link rel="stylesheet" href="/assets/site-1.css">
+<script type="module" src="/assets/site-1.js"></script>
+<link rel="modulepreload" href="/assets/mascot-1.js">
 </head>
 <body>
 
-<header class="wrap top">
-  <a class="brand" href="/">
-    <img src="/assets/icon.png" alt="" width="44" height="44">
-    <span>Mazí</span>
-  </a>
+<header class="top">
+  <a class="brand" href="/"><img src="/assets/icon.png" alt="" width="40" height="40"><span>Mazí</span></a>
+  <nav class="nav" aria-label="Mazí"><a href="/shopping-list">Shopping</a><a href="/chores">Tasks</a><a href="/meal-planner">Meals</a><a href="/family-calendar">Calendar</a><a href="/faq">FAQ</a></nav>
+  <button class="switch" id="theme-switch" type="button" aria-label="Night colours" aria-pressed="false"></button>
+  <a class="get-btn" href="/#get">Get the app</a>
 </header>
 
 <main class="article">
+  <div class="page-head lost-head">
+  <div>
   <h1>There is no page here</h1>
   <p class="lead">The link may be old or mistyped. If someone sent you an invite, ask them
   for a fresh one from Settings in their Mazí app.</p>
+  </div>
+  <div class="fi" data-i-pose="dizzy" aria-hidden="true"></div>
+  </div>
   <p><a href="/">Go to the Mazí homepage</a> or read the <a href="/faq">questions</a>.</p>
+
+  <h2>Or look around</h2>
+  <ul class="more">
+    <li><a href="/shopping-list"><b>Shopping list</b>One list for the whole household.</a></li>
+    <li><a href="/chores"><b>Chores and tasks</b>Given to someone, or up for grabs.</a></li>
+    <li><a href="/meal-planner"><b>Meal planner</b>The week's meals, and the list they need.</a></li>
+    <li><a href="/family-calendar"><b>Family calendar</b>Everyone's week, each in their own colour.</a></li>
+  </ul>
 </main>
 
 <footer>
