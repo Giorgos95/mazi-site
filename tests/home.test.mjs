@@ -631,3 +631,22 @@ test('tapping her again goes back to everyone', async () => {
     assert.equal(await page.eval(`document.querySelectorAll('#fam .member.dim').length`), 0);
   });
 });
+
+test('the family stays on the screen at 320, 360 and 390px', async () => {
+  for (const width of [320, 360, 390]) {
+    await withPage('/', { width, height: 800, mobile: true }, async (page) => {
+      await page.eval(`document.querySelector('#fam').scrollIntoView()`);
+      assert.equal(await until(page, `document.querySelectorAll('#fam .member svg').length === 3`), true, `${width}px: letters never drew`);
+      const m = await page.eval(`(() => {
+        const floor = document.querySelector('#fam .floor').getBoundingClientRect();
+        const col = document.querySelector('#fam .wrap');
+        const pad = parseFloat(getComputedStyle(col).paddingRight);
+        return { inner: innerWidth, floorLeft: floor.left, floorRight: floor.right, pad,
+          members: [...document.querySelectorAll('#fam .member')].map((el) => { const r = el.getBoundingClientRect(); return [r.left, r.right]; }) };
+      })()`);
+      assert.equal(m.inner, width, `${width}px: the page scrolls sideways`);
+      assert.ok(m.floorRight <= m.inner - m.pad + 0.5, `${width}px: the floor pokes out (${m.floorRight})`);
+      for (const [l, r] of m.members) assert.ok(l >= m.floorLeft - 0.5 && r <= m.floorRight + 0.5, `${width}px: a member leaves the floor`);
+    });
+  }
+});
