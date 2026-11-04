@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mascot fixture</title>
+<!-- For tests/mascot.test.mjs: one í with a trolley, and two empty boxes for letters. -->
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
+<link rel="stylesheet" href="/assets/site-1.css">
+<script type="module">import * as M from '/assets/mascot-1.js'; window.M = M;</script>
+</head>
+<body>
+<div style="position: relative; width: 600px; height: 300px; margin: 20px">
+  <div class="fi" data-i-pose="push" data-prop="trolley" data-looker style="width:120px;height:131px"></div>
+</div>
+<div class="cl" id="cl-1"></div>
+<div class="cl" id="cl-2"></div>
+</body>
+</html>

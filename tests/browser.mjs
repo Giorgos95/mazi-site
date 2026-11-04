@@ -196,6 +196,11 @@ class Page {
     await this.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
   }
 
+  // Puts the pointer at a point on the page, which hover can't: the point need not be on an element.
+  async moveMouse(x, y) {
+    await this.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });
+  }
+
   async click(selector) {
     const [x, y] = await this.#centre(selector);
     await this.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x, y });

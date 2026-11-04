@@ -351,6 +351,42 @@ footer p { margin: 0; }
 footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
 
 
+/* ---------- The í and the letters (drawn by mascot-1.js) ---------- */
+
+/* An í (.fi) stands where the page puts it; its speech bubble and props are
+   positioned against it. Letters (.cl) and the í among them (.ci) are sized by
+   height, so a row of them lines up. */
+.fi { position: absolute; left: 30px; bottom: 16px; width: 170px; z-index: 3; cursor: pointer; }
+.fi svg, .cl svg, .ci svg { overflow: visible; display: block; }
+.cl svg { height: 140px; width: auto; }
+.ci svg { height: 140px; width: auto; margin: 0 0 7px -10px; }
+/* The outline is dark ink, which vanishes on the night background, so at
+   night they get a thin light halo. */
+[data-theme="night"] .fi svg, [data-theme="night"] .cl svg, [data-theme="night"] .ci svg { filter: drop-shadow(0 0 1.6px rgba(243,238,223,.75)); }
+
+.blink { transform-origin: 110px 107px; animation: blink 4.2s ease-in-out infinite; }
+.arm-wave { transform-origin: 133px 140px; animation: wave .9s ease-in-out infinite alternate; }
+.hop { animation: hop .55s ease-out; }
+@keyframes blink { 0%, 91%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.08); } }
+@keyframes wave { from { transform: rotate(-12deg); } to { transform: rotate(16deg); } }
+@keyframes hop { 0% { transform: none; } 35% { transform: translateY(-22px) scale(.95, 1.06); } 65% { transform: translateY(0) scale(1.07, .93); } 100% { transform: none; } }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-10px) rotate(calc(var(--r, 0deg) + 2deg)); } }
+@keyframes steam { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: .9; } 100% { opacity: 0; transform: translateY(-30px); } }
+@keyframes teeter { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+
+/* What the í says. It only shows for a moment, and screen readers skip it
+   (aria-hidden): it is decoration, never the only place something is said. */
+.say { position: absolute; z-index: 8; left: 50%; top: -14px; background: var(--card); color: var(--fg); border: 2.5px solid var(--line); border-radius: 16px; padding: 6px 14px; font: 500 1rem Fredoka, sans-serif; box-shadow: 3px 4px 0 var(--line); white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, 8px) scale(.7); transition: opacity .18s, transform .3s cubic-bezier(.34,1.56,.64,1); }
+.say.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+.say::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 12px; height: 12px; background: var(--card); border-right: 2.5px solid var(--line); border-bottom: 2.5px solid var(--line); transform: translateX(-50%) rotate(45deg); }
+
+/* Things the í carries or thinks about, placed by their own inline styles. */
+.prop { position: absolute; z-index: 2; overflow: visible; }
+.steam { animation: steam 2.4s ease-out infinite; }
+.tower { transform-origin: 50% 100%; animation: teeter 2.2s ease-in-out infinite; }
+.thought { position: absolute; z-index: 4; width: 46px; height: 46px; border-radius: 50%; background: var(--card); border: 2.5px solid var(--line); display: grid; place-items: center; font-size: 1.3rem; box-shadow: 2px 3px 0 var(--line); animation: bob 3.6s ease-in-out infinite; }
+
+
 /* ---------- Reduced motion ---------- */
 
 /* Nothing moves: no fades, no slides, no bobbing, and everything is shown in
