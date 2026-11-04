@@ -1,0 +1,359 @@
+/* The new look, shared by every page: ink outlines, hard offset shadows,
+   Fredoka headings, and day and night colours. A page that needs more (the
+   homepage) adds its own file after this one.
+
+   The name carries a number because _headers lets browsers keep /assets/*
+   for a day and then use the old copy for up to a week: a change that must
+   reach every visitor at once goes in a new file, site-2.css. */
+
+
+/* ---------- Fonts ---------- */
+
+/* Served from this site, not Google, so a visit makes no third-party
+   requests. A font file never changes under its name (_headers caches it for
+   a year): a new version gets a new file name. */
+@font-face {
+  font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url("/assets/fonts/atkinson-hyperlegible-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible"; font-style: italic; font-weight: 400;
+  font-display: swap; src: url("/assets/fonts/atkinson-hyperlegible-400-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 700;
+  font-display: swap; src: url("/assets/fonts/atkinson-hyperlegible-700.woff2") format("woff2");
+}
+/* One variable file covers both weights the site uses. */
+@font-face {
+  font-family: Fredoka; font-style: normal; font-weight: 500 600;
+  font-display: swap; src: url("/assets/fonts/fredoka.woff2") format("woff2");
+}
+
+
+/* ---------- Colours ---------- */
+
+/* Day. The inline script in each page's <head> sets data-theme on <html>
+   before the first paint: "night" from the switch or a dark system. */
+:root {
+  color-scheme: light;
+  --bg: #FFF7EC;
+  --fg: #1F2D3A;
+  --muted: #56636f;
+  --card: #fff;
+  --blob: #12B3A6;
+  --line: #1F2D3A;
+  --soft: #EEF8F6;
+  --hi: #FFE9A8;
+  --accent: #0D8478;
+  --tint1: #E3F5F1;
+  --tint2: #FFF1C9;
+  --tint3: #FDE2E4;
+  --tint4: #E9E4FB;
+  /* Small teal text. --accent is only 4.31:1 on --bg and 3.81:1 on the
+     yellow --hi; this darker teal is 5.77:1 and 5.10:1. */
+  --accent-text: #0B6E64;
+  /* Text on the --blob teal. White on the day teal is 2.62:1, ink is 5.37:1;
+     at night white is 5.13:1 on the deeper teal. */
+  --on-blob: #1F2D3A;
+  /* The sticker look: a hard shadow in the ink colour, never a blur. */
+  --shadow: 4px 5px 0 var(--line);
+}
+
+/* Night, from the switch. The block after it is the same colours for
+   visitors without JavaScript whose system is dark; tests/static.test.mjs
+   keeps the two identical, so change both together. */
+:root[data-theme="night"] {
+  color-scheme: dark;
+  --bg: #141E33;
+  --fg: #F3EEDF;
+  --muted: #AEB8C8;
+  --card: #1F2B45;
+  --blob: #0B7B72;
+  --line: #070C18;
+  --soft: #26375A;
+  --hi: #2E2A55;
+  --accent: #3FD3C3;
+  --tint1: #17364A;
+  --tint2: #3A3350;
+  --tint3: #3E2C45;
+  --tint4: #2B2F57;
+  --accent-text: #3FD3C3;
+  --on-blob: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: #141E33;
+    --fg: #F3EEDF;
+    --muted: #AEB8C8;
+    --card: #1F2B45;
+    --blob: #0B7B72;
+    --line: #070C18;
+    --soft: #26375A;
+    --hi: #2E2A55;
+    --accent: #3FD3C3;
+    --tint1: #17364A;
+    --tint2: #3A3350;
+    --tint3: #3E2C45;
+    --tint4: #2B2F57;
+    --accent-text: #3FD3C3;
+    --on-blob: #fff;
+  }
+}
+
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* An anchor (#get, a question) lands below the sticky header, not under it:
+   the header's 4.5rem plus 1rem of air. */
+html { scroll-padding-top: 5.5rem; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 1.0625rem/1.65 "Atkinson Hyperlegible", system-ui, sans-serif;
+  /* The switch fades the page between day and night. */
+  transition: background-color .7s, color .7s;
+}
+
+img { max-width: 100%; height: auto; }
+button { font: inherit; color: inherit; }
+
+h1, h2, h3, h4 {
+  font-family: Fredoka, system-ui, sans-serif; font-weight: 600;
+  line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 0.6em;
+}
+h1 { font-size: clamp(2.1rem, 5vw, 3rem); }
+h2 { font-size: clamp(1.6rem, 3.6vw, 2.4rem); }
+h3 { font-size: 1.25rem; line-height: 1.3; }
+
+a { color: var(--accent-text); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+/* Keyboard users always see where they are. */
+a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
+
+
+/* ---------- Header ---------- */
+
+/* It stays at the top, frosted, with an ink line under it. Its content lines
+   up with .wrap, and it is always 4.5rem tall (see scroll-padding-top). */
+.top {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; gap: 1.25rem;
+  min-height: 4.5rem;
+  padding: 0.5rem max(1.25rem, calc((100% - 1120px) / 2 + 1.25rem));
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 3px solid var(--line);
+  transition: background-color .7s, border-color .7s;
+}
+.brand {
+  display: flex; align-items: center; gap: 0.6rem; flex: none;
+  text-decoration: none; color: var(--accent);
+  font: 600 1.5rem/1 Fredoka, system-ui, sans-serif; letter-spacing: 0.01em;
+}
+.brand img { width: 40px; height: 40px; border-radius: 11px; border: 2.5px solid var(--line); }
+
+.nav { display: flex; gap: 1.25rem; margin-left: auto; font-weight: 700; font-size: 0.92rem; }
+.nav a { position: relative; color: inherit; text-decoration: none; }
+/* A teal bar grows under the link you point at. */
+.nav a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px;
+  border-radius: 3px; background: var(--blob); transform: scaleX(0); transition: transform .25s;
+}
+.nav a:hover::after { transform: scaleX(1); }
+
+/* A phone keeps the brand, the switch and "Get the app", and drops the nav.
+   The brand pushes the rest right, also without JavaScript, when the switch
+   is hidden too. */
+@media (max-width: 719.98px) {
+  .top { gap: 0.6rem; }
+  .nav { display: none; }
+  .brand { margin-right: auto; }
+}
+
+
+/* ---------- Day/night switch ---------- */
+
+/* Without JavaScript the page follows the system and the switch would do
+   nothing, so it only shows once the inline script has marked <html>. */
+.switch {
+  display: none; flex: none; position: relative;
+  width: 64px; height: 34px; padding: 0; cursor: pointer;
+  border: 2.5px solid var(--line); border-radius: 999px;
+  background: #8ED8F0; box-shadow: 2px 3px 0 var(--line);
+  transition: background-color .5s, border-color .7s;
+}
+html.js .switch { display: block; }
+/* The knob: a sun by day, a moon by night (written as escapes, U+2600 U+FE0F
+   and U+1F319, so the file stays plain ASCII). */
+.switch::before {
+  content: "\2600\FE0F";
+  position: absolute; top: 2px; left: 3px; width: 24px; height: 24px;
+  display: grid; place-items: center; font-size: 15px; line-height: 1;
+  background: #fff; border: 2px solid var(--line); border-radius: 50%;
+  transition: transform .45s cubic-bezier(.34, 1.56, .64, 1), background-color .5s;
+}
+[data-theme="night"] .switch { background: #3B3F8F; }
+[data-theme="night"] .switch::before { content: "\1F319"; transform: translateX(29px); background: #1F2B45; }
+
+
+/* ---------- Buttons and store badges ---------- */
+
+.get-btn {
+  flex: none; display: inline-block; white-space: nowrap; text-decoration: none;
+  font: 600 1rem/1.2 Fredoka, system-ui, sans-serif;
+  color: var(--on-blob); background: var(--blob);
+  border: 2.5px solid var(--line); border-radius: 999px; padding: 0.45rem 1.1rem;
+  box-shadow: 3px 4px 0 var(--line);
+  transition: transform .12s, box-shadow .12s, background-color .7s;
+}
+.get-btn:hover { transform: translate(-1px, -2px) rotate(-1.5deg); box-shadow: 4px 6px 0 var(--line); }
+.get-btn:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--line); }
+@media (max-width: 719.98px) {
+  .get-btn { padding: 0.4rem 0.85rem; font-size: 0.95rem; }
+}
+
+/* The official store badges, never home-made buttons (the stores' rules). */
+.badges { display: flex; flex-wrap: wrap; align-items: center; }
+.badge { display: inline-block; line-height: 0; transition: transform .15s; }
+.badge:hover { transform: translateY(-3px) rotate(-1.5deg); }
+.badge img { height: 64px; width: auto; }
+/* The Play PNG carries 10.5px of transparent padding around a 43px badge, so
+   the App Store SVG gets the same margin to match it in height and spacing. */
+.badge .apple { height: 43px; margin: 10.5px; }
+/* Side by side they need 315px, more than a phone leaves; below 420px they
+   shrink by an eighth. */
+@media (max-width: 420px) {
+  .badge img { height: 56px; }
+  .badge .apple { height: 37.6px; margin: 9.2px; }
+}
+
+
+/* ---------- Bands and sticker cards ---------- */
+
+/* A full-width stripe between two ink lines. */
+.band {
+  background: var(--soft); border-block: 3px solid var(--line);
+  padding-block: clamp(3rem, 8vw, 4.5rem);
+  transition: background-color .7s, border-color .7s;
+}
+.band-yellow { background: var(--hi); }
+
+.eyebrow { margin: 0 0 0.3rem; font-weight: 700; font-size: 0.92rem; color: var(--accent-text); }
+.sec-lead { max-width: 34rem; margin: 0 0 1.6rem; font-size: 1.05rem; color: var(--muted); }
+
+.sticker {
+  background: var(--card); border: 3px solid var(--line); border-radius: 22px;
+  box-shadow: var(--shadow);
+  transition: background-color .7s, border-color .7s;
+}
+
+/* The closing call to action, with the store badges. */
+.get {
+  margin-top: 3rem; padding: 1.8rem;
+  background: var(--card); border: 3px solid var(--line); border-radius: 26px;
+  box-shadow: 6px 8px 0 var(--line);
+  transition: background-color .7s, border-color .7s;
+}
+.get h2 { margin-top: 0; }
+.get p { color: var(--muted); }
+@media (max-width: 420px) {
+  .get { padding: 1.5rem 1rem; }
+}
+
+
+/* ---------- Rise-in ---------- */
+
+/* Sections marked .reveal rise in as they scroll into view. Only
+   assets/site-1.js adds .pending, and only to what starts below the fold,
+   so without JavaScript nothing is ever hidden. */
+.reveal { transition: opacity .8s, transform .9s cubic-bezier(.2, .8, .2, 1); }
+.reveal.pending { opacity: 0; transform: translateY(36px); }
+
+
+/* ---------- Article ---------- */
+
+/* The text pages: privacy, terms, account deletion, and the FAQ. Plain and
+   calm, one comfortable column. */
+.article { max-width: 46rem; margin: 0 auto; padding: 2.5rem 1.25rem 4.5rem; }
+.article h1 { font-size: clamp(2.1rem, 5vw, 2.9rem); margin-bottom: 1rem; }
+.article h2 { font-size: clamp(1.45rem, 3vw, 1.8rem); line-height: 1.2; margin: 2.8rem 0 0.8rem; }
+.article h3 { margin: 2rem 0 0.4rem; }
+.lead { font-size: 1.1rem; color: var(--muted); margin: 0 0 1rem; }
+.article p, .article li { margin: 0 0 0.9rem; }
+.article ul { padding-left: 1.3rem; margin: 0 0 1rem; }
+.article ol { padding-left: 1.5rem; margin: 0 0 1rem; }
+.article li::marker { color: var(--accent-text); font-weight: 700; }
+
+/* The privacy policy, terms and account deletion pages */
+.updated { color: var(--muted); font-size: 0.92rem; margin: -0.4rem 0 1.6rem; }
+
+/* A table is a sticker card, with a thin line between rows. */
+.article table {
+  width: 100%; margin: 1rem 0 1.5rem; border-collapse: separate; border-spacing: 0;
+  font-size: 0.95rem; line-height: 1.5;
+  background: var(--card); border: 2.5px solid var(--line); border-radius: 18px;
+  box-shadow: var(--shadow);
+  transition: background-color .7s, border-color .7s;
+}
+.article th, .article td { text-align: left; vertical-align: top; padding: 0.75rem 1rem; }
+.article th {
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); border-bottom: 2.5px solid var(--line);
+}
+.article tr:not(:last-child) > td { border-bottom: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
+@media (max-width: 480px) {
+  .article th, .article td { padding: 0.7rem 0.75rem; }
+}
+
+/* A note set apart from the text. */
+.box {
+  margin: 1.6rem 0; padding: 1rem 1.2rem;
+  background: var(--soft); border: 2.5px solid var(--line); border-radius: 18px;
+  box-shadow: var(--shadow);
+  transition: background-color .7s, border-color .7s;
+}
+
+/* One question and its answer, on the FAQ. */
+.qa { margin: 0 0 1.8rem; }
+.qa h3 { margin: 0 0 0.4rem; }
+
+
+/* ---------- Footer ---------- */
+
+footer {
+  border-top: 3px solid var(--line); background: var(--soft);
+  padding: 2.2rem 0 2.6rem; font-size: 0.92rem; color: var(--muted);
+  transition: background-color .7s, border-color .7s, color .7s;
+}
+footer .foot-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; margin-bottom: 0.9rem; }
+footer a { color: var(--fg); font-weight: 700; text-decoration: none; }
+footer .foot-links a:hover { text-decoration: underline; text-decoration-color: var(--blob); text-decoration-thickness: 3px; }
+/* The social links are small round stickers. */
+footer .foot-social { display: flex; gap: 0.7rem; margin: 1.4rem 0 1.2rem; }
+footer .foot-social a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 2.6rem; height: 2.6rem; border-radius: 50%;
+  background: var(--card); border: 2.5px solid var(--line); box-shadow: 2px 3px 0 var(--line);
+  transition: transform .12s, background-color .7s, border-color .7s;
+}
+footer .foot-social a:hover { transform: translate(-1px, -2px) rotate(-4deg); }
+footer p { margin: 0; }
+footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
+
+
+/* ---------- Reduced motion ---------- */
+
+/* Nothing moves: no fades, no slides, no bobbing, and everything is shown in
+   its final state. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal.pending { opacity: 1; transform: none; }
+}
