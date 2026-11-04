@@ -86,8 +86,12 @@
 .scr img { display: block; width: 100%; transition: opacity .7s; }
 .scr .scr-night { position: absolute; inset: 0; height: 100%; opacity: 0; }
 [data-theme="night"] .scr .scr-night { opacity: 1; }
+/* At night the frame takes the dark screen's own colour (sampled from
+   today-dark: #131217), so no navy ring shows between the frame and the screen. */
+[data-theme="night"] .phone { background: #131217; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) .scr .scr-night { opacity: 1; }
+  :root:not([data-theme]) .phone { background: #131217; }
 }
 
 /* Three notifications pop in over the phone in turn, 3 seconds each. */

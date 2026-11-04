@@ -57,7 +57,7 @@ const FAMILY_LINES = { Maria: 'parents’ evening, don’t let me forget', Georg
 test('sections in order', async () => {
   await withPage('/', {}, async (page) => {
     assert.deepEqual(await page.eval(`[...document.querySelectorAll('main > *')].map((el) => el.id)`),
-      ['hero', 'problem', 'f-shop', 'f-tasks', 'f-meals', 'f-cal', 'fam', 'why', 'get']);
+      ['hero', 'problem', 'f-shop', 'f-tasks', 'f-cal', 'f-meals', 'fam', 'why', 'get']);
     assert.deepEqual(page.errors, []);
   });
 });
@@ -182,7 +182,7 @@ test('under reduced motion the notifications sit still in a readable stack', asy
 test('each feature has its stage and alternates sides', async () => {
   await withPage('/', {}, async (page) => {
     await sleep(500);
-    const rows = await page.eval(`['f-shop', 'f-tasks', 'f-meals', 'f-cal'].map((id) => {
+    const rows = await page.eval(`['f-shop', 'f-tasks', 'f-cal', 'f-meals'].map((id) => {
       const s = document.getElementById(id);
       const stage = s.querySelector('.fstage');
       return {
@@ -196,8 +196,8 @@ test('each feature has its stage and alternates sides', async () => {
     assert.deepEqual(rows, [
       { eyebrow: '🛒 Shopping', pose: 'push', flip: false, stageFirst: false, reveal: true },
       { eyebrow: '✅ Tasks', pose: 'strain', flip: true, stageFirst: true, reveal: true },
-      { eyebrow: '🍽️ Kitchen', pose: 'stir', flip: false, stageFirst: false, reveal: true },
-      { eyebrow: '📅 Calendar', pose: 'awake', flip: true, stageFirst: true, reveal: true },
+      { eyebrow: '📅 Calendar', pose: 'awake', flip: false, stageFirst: false, reveal: true },
+      { eyebrow: '🍽️ Kitchen', pose: 'stir', flip: true, stageFirst: true, reveal: true },
     ]);
     assert.deepEqual(page.errors, []);
   });
@@ -263,6 +263,63 @@ test('the í is as tall as the M', async () => {
     assert.ok(Math.abs(row.i - row.m) <= 1, `í ${row.i}px, M ${row.m}px`);
     for (const h of row.heights) assert.ok(Math.abs(h - 140) <= 0.5, `${h}px, not 140`);
     assert.deepEqual(page.errors, []);
+  });
+});
+
+// The í's trainers stand on the same line as the letters' trainers, on a
+// desktop and on a phone.
+for (const width of [1280, 360]) {
+  test(`the í stands in line with the letters at ${width}px`, async () => {
+    await withPage('/', { width, mobile: width < 500 }, async (page) => {
+      assert.equal(await until(page, CTA_DRAWN), true, 'the letters are not drawn');
+      await page.eval(`document.getElementById('get').scrollIntoView({ block: 'center' })`);
+      await sleep(900); // let the hop finish
+      const r = await page.eval(`(() => {
+        const row = document.querySelector('#get .cta-row');
+        const middle = (el) => { const b = el.getBoundingClientRect(); return b.top + b.height / 2; };
+        return {
+          letters: [...row.querySelectorAll('.cl .legs ellipse[stroke]')].map(middle),
+          i: [...row.querySelectorAll('.ci ellipse[fill="#12B3A6"]')].map(middle),
+        };
+      })()`);
+      assert.equal(r.letters.length, 6, 'two trainers per letter');
+      assert.equal(r.i.length, 2, 'two trainers on the í');
+      for (const y of r.i) assert.ok(Math.abs(y - r.letters[0]) <= 1, `í trainer at ${y.toFixed(1)}, letters at ${r.letters[0].toFixed(1)}`);
+      assert.deepEqual(page.errors, []);
+    });
+  });
+}
+
+// An M touches the ground only with its two outer strokes, so its legs stand
+// under those, not under the gap in its middle. Rounder letters keep theirs
+// close together.
+test('the M stands on its two outer strokes', async () => {
+  await withPage('/', {}, async (page) => {
+    assert.equal(await until(page, CTA_DRAWN), true, 'the letters are not drawn');
+    assert.equal(await until(page, `document.querySelectorAll('#fam .member .ch svg').length === 3`), true, 'the family is not drawn');
+    const spread = await page.eval(`[...document.querySelectorAll('#get .cl, #fam .member .ch')].map((box) => {
+      const text = box.querySelector('text'), bb = text.getBBox();
+      const xs = (box.querySelector('.legs path').getAttribute('d').match(/M([\\d.]+)/g) || []).map((m) => +m.slice(1));
+      return { ch: text.textContent, spread: (Math.max(...xs) - Math.min(...xs)) / bb.width };
+    })`);
+    const ms = spread.filter((s) => s.ch === 'M');
+    assert.equal(ms.length, 2, 'an M in the closing row and one on the family floor');
+    for (const m of ms) assert.ok(m.spread > 0.65 && m.spread < 0.78, `M legs span ${m.spread.toFixed(2)} of its width`);
+    for (const o of spread.filter((s) => s.ch !== 'M')) assert.ok(o.spread < 0.5, `${o.ch} legs span ${o.spread.toFixed(2)}`);
+    assert.deepEqual(page.errors, []);
+  });
+});
+
+// At night the phone's frame is the dark screen's own colour, so no lighter
+// ring shows round the screen.
+test('at night the hero phone frame matches its screen', async () => {
+  for (const opts of [{ colorScheme: 'dark' }, { colorScheme: 'dark', javascript: false }]) {
+    await withPage('/', opts, async (page) => {
+      assert.equal(await page.eval(`getComputedStyle(document.querySelector('#hero .phone')).backgroundColor`), 'rgb(19, 18, 23)');
+    });
+  }
+  await withPage('/', { colorScheme: 'light' }, async (page) => {
+    assert.notEqual(await page.eval(`getComputedStyle(document.querySelector('#hero .phone')).backgroundColor`), 'rgb(19, 18, 23)');
   });
 });
 

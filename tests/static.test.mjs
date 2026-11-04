@@ -63,6 +63,15 @@ for (const { file } of PAGES) {
     assert.deepEqual(lost, []);
   });
 
+  // The header menu lists the parts of Mazí in the homepage's order (/join has no menu).
+  test(`${file}: the menu reads Shopping, Tasks, Calendar, Meals, FAQ`, () => {
+    const nav = html.match(/<nav class="nav"[^>]*>([\s\S]*?)<\/nav>/);
+    if (file === 'join.html') { assert.equal(nav, null); return; }
+    assert.ok(nav, 'no header menu');
+    assert.deepEqual([...nav[1].matchAll(/<a href="([^"]+)">([^<]+)<\/a>/g)].map((m) => `${m[2]} ${m[1]}`),
+      ['Shopping /shopping-list', 'Tasks /chores', 'Calendar /family-calendar', 'Meals /meal-planner', 'FAQ /faq']);
+  });
+
   test(`${file}: no free text`, () => {
     assert.doesNotMatch(html, /<input|<textarea|contenteditable/i);
   });

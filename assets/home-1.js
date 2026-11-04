@@ -7,7 +7,7 @@
 // Like the stylesheet, the name carries a number: a change that must reach
 // every visitor at once goes in a new file, home-2.js.
 
-import { Buddy, iSvg, letterSvg, dressLetter, startLooking } from './mascot-1.js';
+import { Buddy, iSvg, letterSvg, dressLetter, startLooking, TEAL } from './mascot-1.js';
 
 // What the hero í does when tapped, in turn.
 const HERO_REACTIONS = [['joy', 'hi! 👋'], ['cheeky', 'hehe'], ['phone', 'checking the list…'], ['surprised', 'oh! you again']];
@@ -341,6 +341,19 @@ function cropToGlyph(box) {
   box.dataset.ex = '0.5';
 }
 
+// The í and the letters are drawn on different scales, so its trainers would
+// not land on the letters' line by themselves. Measure both pairs as drawn and
+// move the í (by transform, so nothing else in the row moves) until they do.
+function standInLine(row, i) {
+  const letterShoe = row.querySelector('.cl .legs ellipse[stroke]');
+  const iShoe = i.querySelector(`ellipse[fill="${TEAL}"]`);
+  const svg = i.querySelector('svg');
+  if (!letterShoe || !iShoe || !svg) return;
+  const middle = (el) => { const r = el.getBoundingClientRect(); return r.top + r.height / 2; };
+  const dy = middle(letterShoe) - middle(iShoe);
+  if (Number.isFinite(dy)) svg.style.transform = `translateY(${dy.toFixed(1)}px)`;
+}
+
 export function setupCta() {
   const section = document.getElementById('get');
   const row = section?.querySelector('.cta-row');
@@ -360,6 +373,7 @@ export function setupCta() {
       // Just the í, accent and trainers included, so it stands as tall as the M.
       i.querySelector('svg').setAttribute('viewBox', '58 0 116 240');
       i.dataset.ex = '0.45';
+      standInLine(row, i);
     }
     startLooking();
   });

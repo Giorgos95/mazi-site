@@ -86,6 +86,10 @@ export function iSvg(pose) {
 // dressLetter fills in once it knows where the letter ended up.
 export const letterSvg = (ch) => `<svg viewBox="0 0 140 190" aria-hidden="true"><g class="legs"></g><text x="70" y="150" text-anchor="middle" font-family="Fredoka, system-ui, sans-serif" font-weight="600" font-size="150" fill="#fff" stroke="${INK}" stroke-width="9" stroke-linejoin="round" paint-order="stroke">${ch}</text><g class="lface"></g></svg>`;
 
+// How far either side of its centre a letter's legs stand, as a share of its
+// width, for letters that don't stand on their middle.
+const STANCE = { M: 0.356 };
+
 // Gives a letter legs and a face, measured from the letter as drawn, so it
 // works the same in Fredoka and in the fallback font. If the browser can't
 // measure the text (or there is nothing to measure) the letter stays as it is.
@@ -99,8 +103,11 @@ export function dressLetter(box, colour) {
   const cx = bb.x + bb.width / 2;
   const bottom = Math.min(bb.y + bb.height, 156);
   const ey = bb.y + bb.height * 0.4;
-  const lx = Math.min(bb.width * 0.24, 20);
-  svg.querySelector('.legs').innerHTML = `<ellipse cx="${cx}" cy="${bottom + 24}" rx="44" ry="5" fill="#000" opacity=".1"/><path d="M${cx - lx} ${bottom - 3} L${cx - lx - 1} ${bottom + 12} M${cx + lx} ${bottom - 3} L${cx + lx + 1} ${bottom + 12}" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><ellipse cx="${cx - lx - 5}" cy="${bottom + 16}" rx="11" ry="6" fill="${colour}" stroke="${INK}" stroke-width="3.5"/><ellipse cx="${cx + lx + 5}" cy="${bottom + 16}" rx="11" ry="6" fill="${colour}" stroke="${INK}" stroke-width="3.5"/>`;
+  // Most letters stand on their middle. An M touches the ground only with its
+  // two outer strokes (its V stops short of the line), so its legs go under
+  // those: in Fredoka their centres sit 0.356 of the letter's width either side.
+  const lx = STANCE[text.textContent] ? bb.width * STANCE[text.textContent] : Math.min(bb.width * 0.24, 20);
+  svg.querySelector('.legs').innerHTML = `<ellipse cx="${cx}" cy="${bottom + 24}" rx="${Math.max(44, lx + 20)}" ry="5" fill="#000" opacity=".1"/><path d="M${cx - lx} ${bottom - 3} L${cx - lx - 1} ${bottom + 12} M${cx + lx} ${bottom - 3} L${cx + lx + 1} ${bottom + 12}" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><ellipse cx="${cx - lx - 5}" cy="${bottom + 16}" rx="11" ry="6" fill="${colour}" stroke="${INK}" stroke-width="3.5"/><ellipse cx="${cx + lx + 5}" cy="${bottom + 16}" rx="11" ry="6" fill="${colour}" stroke="${INK}" stroke-width="3.5"/>`;
   svg.querySelector('.lface').innerHTML = `<g class="look"><g class="blink" style="transform-origin:${cx}px ${ey}px; animation-delay:${(-Math.random() * 4).toFixed(2)}s"><ellipse cx="${cx - 9}" cy="${ey}" rx="4.6" ry="6" fill="${INK}"/><ellipse cx="${cx + 9}" cy="${ey}" rx="4.6" ry="6" fill="${INK}"/><circle cx="${cx - 7.4}" cy="${ey - 2.4}" r="1.8" fill="#fff"/><circle cx="${cx + 10.6}" cy="${ey - 2.4}" r="1.8" fill="#fff"/></g></g><ellipse cx="${cx - 17}" cy="${ey + 11}" rx="5" ry="3.2" fill="${CHEEK}" opacity=".75"/><ellipse cx="${cx + 17}" cy="${ey + 11}" rx="5" ry="3.2" fill="${CHEEK}" opacity=".75"/><path d="M${cx - 5} ${ey + 11} Q${cx} ${ey + 16} ${cx + 5} ${ey + 11}" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>`;
   // Where the eyes are, for the pointer tracking below.
   box.dataset.ex = (cx / 140).toFixed(3);
