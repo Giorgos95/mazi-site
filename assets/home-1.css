@@ -1,7 +1,8 @@
 /* The homepage's own parts, loaded after site-1.css: the hero stage with the
-   Today screen, the four feature rows, "Built for a household" and the
-   closing, where the family spells Mazí. Colours, the header, bands, the í
-   and the feature stages are shared and live in site-1.css.
+   Today screen, "the problem" (the family chat and the Mazí panel), the four
+   feature rows, "Built for a household" and the closing, where the family
+   spells Mazí. Colours, the header, bands, the í and the feature stages are
+   shared and live in site-1.css.
 
    Like site-1.css, the name carries a number: a change that must reach every
    visitor at once goes in a new file, home-2.css. */
@@ -136,6 +137,235 @@ img.av { border-radius: 8px; }
   87% { transform: translateY(-14px) scale(.97, 1.04); }
   92% { transform: scale(1.05, .95); }
   96% { transform: none; }
+}
+
+
+/* ---------- The problem: the family chat and the Mazí panel ---------- */
+
+/* The chat, the í with its button, and the panel, side by side; below
+   1000px they stack in that order. Without JavaScript both sides are simply
+   shown full. home-1.js adds .live, which empties the panel and lets the
+   chat play in. Every part keeps its size whatever it shows, so nothing on
+   the page moves while the chat fills up, flies off and comes back. */
+.sorter {
+  display: grid; grid-template-columns: minmax(0, 300px) 12.5rem minmax(0, 1fr);
+  gap: 1.25rem; align-items: center;
+}
+/* "Press the button to see." There is no button without JavaScript. */
+html:not(.js) .js-only { display: none; }
+
+/* The names in the chat, in each person's colour. The app's own colours
+   are too light for small text on the bubbles (3.3:1), so by day the names
+   are a shade darker and at night a shade lighter, 4.9:1 or more either
+   way. The avatars keep the app's own colours. */
+:root { --name-george: #3B5BDB; --name-maria: #C2255C; --name-sofia: #B8460B; }
+:root[data-theme="night"] { --name-george: #91A7FF; --name-maria: #F783AC; --name-sofia: #FF922B; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) { --name-george: #91A7FF; --name-maria: #F783AC; --name-sofia: #FF922B; }
+}
+
+/* The chat: a header with the unread badge, then the messages. */
+.chat {
+  background: var(--card); border: 3px solid var(--line); border-radius: 28px;
+  box-shadow: 6px 8px 0 var(--line); overflow: hidden;
+  transition: background-color .7s, border-color .7s;
+}
+/* Once all nine are in and nobody has picked anything up, it buzzes. */
+.chat.shake { animation: shake .4s; }
+.chat-top {
+  display: flex; align-items: center; gap: 10px; padding: 11px 14px; line-height: 1.2;
+  background: var(--soft); border-bottom: 2.5px solid var(--line);
+  transition: background-color .7s, border-color .7s;
+}
+.chat-top .gi {
+  flex: none; width: 34px; height: 34px; display: grid; place-items: center;
+  background: #FFD43B; border: 2px solid var(--line); border-radius: 50%;
+}
+.chat-top b, .chat-top small { display: block; }
+.chat-top small { font-size: .8rem; color: var(--muted); }
+/* Ink on the pink is 5.1:1 in both themes. */
+.unread {
+  margin-left: auto; min-width: 2.2em; padding: 1px 8px; text-align: center;
+  font-weight: 700; font-size: .82rem; color: #1F2D3A;
+  background: #FF6B81; border: 2px solid var(--line); border-radius: 999px;
+}
+.chat-main { position: relative; }
+.chat-body {
+  display: flex; flex-direction: column; gap: 7px;
+  margin: 0; padding: 12px; list-style: none;
+}
+/* With JavaScript the chat has a fixed height (set before the first paint,
+   so it never jumps) and keeps the newest message in sight at the bottom.
+   Older ones scroll up out of view, as in any chat, and can be scrolled
+   back. The empty ::before pushes the messages down while they are few. */
+html.js .chat-body { height: 390px; overflow-y: auto; scrollbar-width: thin; }
+.chat-body::before { content: ""; flex: 1 0 0; margin-bottom: -7px; }
+
+/* A message, with the sender's name over it. The class is not scoped to the
+   chat because a copy of each message flies across the page to the panel. */
+.dmsg {
+  flex: none; align-self: flex-start; max-width: 90%; margin: 0;
+  padding: 5px 11px 6px; list-style: none;
+  font-size: .86rem; line-height: 1.3; color: var(--fg);
+  background: var(--soft); border: 2px solid var(--line); border-radius: 16px 16px 16px 4px;
+  transition: background-color .7s, border-color .7s;
+}
+.dmsg .who { display: block; font-size: .7rem; font-weight: 700; }
+.who.george { color: var(--name-george); }
+.who.maria { color: var(--name-maria); }
+.who.sofia { color: var(--name-sofia); }
+.live .dmsg:not(.on) { display: none; }
+.dmsg.new { animation: msgin .35s cubic-bezier(.34, 1.56, .64, 1); }
+/* The message stays in its place, unseen, while its copy is in the air. */
+.dmsg.gone { visibility: hidden; }
+.dmsg.flying {
+  position: fixed; z-index: 999; margin: 0; pointer-events: none;
+  box-shadow: 5px 7px 0 rgba(0, 0, 0, .18);
+}
+
+/* "Sofia is typing", on a line kept free at the bottom of the chat, so the
+   messages above it do not move each time someone starts typing. */
+.typing { display: none; flex: none; align-self: flex-start; font-size: .76rem; line-height: 1.3; color: var(--muted); }
+.live .typing { display: block; visibility: hidden; }
+.live .typing.on { visibility: visible; }
+.typing i {
+  display: inline-block; width: 5px; height: 5px; margin-left: 2px;
+  border-radius: 50%; background: var(--muted);
+}
+.typing.on i { animation: dot 1s infinite; }
+.typing.on i:nth-child(3) { animation-delay: .15s; }
+.typing.on i:nth-child(4) { animation-delay: .3s; }
+
+/* After the sort the chat is empty and says so. */
+.quiet {
+  position: absolute; inset: 0; display: grid; place-content: center; margin: 0; padding: 1rem;
+  text-align: center; color: var(--muted); font: 500 1.05rem/1.4 Fredoka, system-ui, sans-serif;
+  animation: msgin .5s;
+}
+.quiet span { display: block; }
+
+/* The í and the button. Both are there from the first paint with
+   JavaScript, in boxes of their own size, and absent without it. The
+   column is wide enough for either label of the button. */
+.mid { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.sort-i { display: none; position: relative; width: 120px; aspect-ratio: 220 / 240; cursor: pointer; }
+html.js .sort-i { display: block; }
+.sort-i svg { display: block; overflow: visible; }
+.sort-i .say { top: -34px; }
+[data-theme="night"] .sort-i svg { filter: drop-shadow(0 0 1.6px rgba(243,238,223,.75)); }
+.big-btn {
+  display: none; white-space: nowrap; cursor: pointer;
+  padding: 11px 16px; font: 600 1.02rem/1.2 Fredoka, system-ui, sans-serif;
+  color: var(--on-blob); background: var(--blob);
+  border: 3px solid var(--line); border-radius: 999px; box-shadow: 4px 5px 0 var(--line);
+  transition: transform .1s, box-shadow .1s, background-color .7s, border-color .7s;
+}
+html.js .big-btn { display: inline-block; }
+.big-btn:hover { transform: translate(-1px, -2px); box-shadow: 5px 7px 0 var(--line); }
+.big-btn:active { transform: translate(3px, 4px); box-shadow: 1px 1px 0 var(--line); }
+/* While the messages are in the air. It keeps the focus, unlike disabled. */
+.big-btn[aria-disabled="true"] { opacity: .6; cursor: default; transform: none; box-shadow: 4px 5px 0 var(--line); }
+/* Until it is pressed, it pulses. */
+.big-btn.pulse { animation: pulse 1.6s ease-in-out infinite; }
+
+/* The Mazí panel: the same nine things, each in its section. */
+.mz {
+  background: var(--card); border: 3px solid var(--line); border-radius: 26px;
+  box-shadow: 6px 8px 0 var(--line); overflow: hidden;
+  transition: background-color .7s, border-color .7s;
+}
+.mz-top {
+  display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+  font: 600 1.15rem/1.2 Fredoka, system-ui, sans-serif;
+  color: var(--on-blob); background: var(--blob); border-bottom: 3px solid var(--line);
+  transition: background-color .7s, border-color .7s;
+}
+.mz-top img { width: 28px; height: 28px; border: 2px solid var(--line); border-radius: 8px; }
+.mz-top small { margin-left: auto; font: 700 .78rem/1.2 "Atkinson Hyperlegible", system-ui, sans-serif; }
+.mz-sec { padding: 10px 16px 12px; }
+.mz-sec + .mz-sec { border-top: 2px dashed color-mix(in srgb, var(--fg) 18%, transparent); }
+.mz-sec h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 2px; font-size: 1rem; line-height: 1.3; }
+.mz-sec .n {
+  padding: 0 8px; font: 700 .72rem/1.4 "Atkinson Hyperlegible", system-ui, sans-serif;
+  background: var(--soft); border: 2px solid var(--line); border-radius: 999px;
+}
+.col-list {
+  position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 8px;
+  margin: 0; padding: 0; list-style: none;
+}
+/* Before the sort each row keeps its place, unseen, so the panel is as tall
+   empty as full, and an empty section says so over its rows. */
+.live .row:not(.in) { visibility: hidden; }
+.mz-sec.empty .col-list::before {
+  content: "nothing here yet"; position: absolute; inset: 6px 0 0;
+  display: grid; place-items: center; font-size: .82rem; color: var(--muted);
+  border: 2px dashed color-mix(in srgb, var(--fg) 25%, transparent); border-radius: 12px;
+}
+.row {
+  position: relative; display: flex; align-items: center; gap: 8px;
+  margin-top: 6px; padding: 6px 8px; font-size: .84rem; line-height: 1.25; user-select: none;
+  background: var(--soft); border: 2px solid var(--line); border-radius: 12px;
+  transition: background-color .7s, border-color .7s;
+}
+.row .txt { min-width: 0; }
+.row.done .txt { color: var(--muted); text-decoration: line-through; }
+.row.pop { animation: pop .45s cubic-bezier(.34, 1.56, .64, 1); }
+/* Who it came from. The initial is decoration (white on these colours is
+   below 4.5:1); the name is there for screen readers in .vh. */
+.row .av { margin-left: auto; width: 22px; height: 22px; font-size: .68rem; }
+.av.george { background: #3B5BDB; }
+.av.maria { background: #E64980; }
+.av.sofia { background: #E8590C; }
+.vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+/* The tick, a real button, only with JavaScript. Its ::before covers the
+   whole row, so a tap anywhere on the row ticks it, and the focus ring goes
+   round the row. The teal is the darker text teal, 5.7:1 by day. */
+.tk {
+  display: none; flex: none; place-items: center; width: 18px; height: 18px; padding: 0;
+  cursor: pointer; background: transparent; border: 2.5px solid var(--accent-text); border-radius: 6px;
+}
+html.js .tk { display: grid; }
+.tk::before { content: ""; position: absolute; inset: -2px; border-radius: 12px; }
+.tk:focus-visible { outline: none; }
+.tk:focus-visible::before { outline: 3px solid var(--accent); outline-offset: 2px; }
+.row.done .tk { background: var(--accent-text); }
+.row.done .tk::after {
+  content: ""; width: 5px; height: 9px; margin-top: -2px;
+  border: solid var(--card); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+}
+
+/* Paper bits from home-1.js, removed as soon as they land. */
+.confetti { position: fixed; z-index: 999; width: 8px; height: 11px; border-radius: 2px; pointer-events: none; }
+
+@keyframes shake {
+  20% { transform: translateX(-5px) rotate(-1deg); }
+  40% { transform: translateX(5px) rotate(1deg); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes msgin { from { opacity: 0; transform: translateY(14px) scale(.9); } }
+@keyframes dot { 0%, 100% { transform: translateY(0); opacity: .4; } 50% { transform: translateY(-3px); opacity: 1; } }
+@keyframes pulse {
+  0%, 100% { box-shadow: 4px 5px 0 var(--line), 0 0 0 0 rgba(18, 179, 166, .5); }
+  50% { box-shadow: 4px 5px 0 var(--line), 0 0 0 12px rgba(18, 179, 166, 0); }
+}
+@keyframes pop { 0% { transform: scale(.5); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+/* Stacked: the chat, then the í beside its button, then the panel, each no
+   wider than a phone held sideways. */
+@media (max-width: 999.98px) {
+  .sorter { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .chat, .mz { width: 100%; max-width: 520px; margin: 0 auto; }
+  .mid { flex-direction: row; justify-content: center; }
+}
+/* A phone: one row per line in the panel, and a smaller í. */
+@media (max-width: 559.98px) {
+  .col-list { grid-template-columns: minmax(0, 1fr); }
+  html.js .chat-body { height: 320px; }
+  .sort-i { width: 96px; }
 }
 
 

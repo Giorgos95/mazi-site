@@ -147,7 +147,79 @@
     </div>
   </section>
 
-  <section class="band band-yellow" id="problem"></section>
+  <!-- A family chat and the same nine things in Mazí. The HTML holds both
+       sides, so without JavaScript all of it is there to read; home-1.js
+       empties the panel, plays the chat in, and sends each message flying to
+       its row when the button is pressed. Mazí does not read a chat: the
+       button shows where each thing lives in the app. -->
+  <section class="band band-yellow" id="problem">
+    <div class="wrap">
+      <div class="reveal">
+        <p class="eyebrow">💬 The problem</p>
+        <h2>Your family group chat was never a to-do list.</h2>
+        <p class="sec-lead">Nine messages, three jobs nobody claimed, one football match at the wrong
+        time. In Mazí, each one has its place. <span class="js-only">Press the button to see.</span></p>
+      </div>
+
+      <div class="sorter reveal">
+        <div class="chat">
+          <div class="chat-top">
+            <span class="gi" aria-hidden="true">🏠</span>
+            <span><b>Family</b> <small>Maria, George, Sofia</small></span>
+            <span class="unread" id="unread" aria-hidden="true">9</span>
+          </div>
+          <div class="chat-main">
+            <ol class="chat-body" id="chat-body">
+              <li class="dmsg" data-i="0"><b class="who maria">Maria</b> we’re out of milk AGAIN 🙃</li>
+              <li class="dmsg" data-i="1"><b class="who george">George</b> who’s taking the bins out??</li>
+              <li class="dmsg" data-i="2"><b class="who sofia">Sofia</b> football is at 5 not 6!!</li>
+              <li class="dmsg" data-i="3"><b class="who maria">Maria</b> can someone grab feta</li>
+              <li class="dmsg" data-i="4"><b class="who sofia">Sofia</b> did anyone feed the dog</li>
+              <li class="dmsg" data-i="5"><b class="who sofia">Sofia</b> dentist friday at 4, someone remind me 🙏</li>
+              <li class="dmsg" data-i="6"><b class="who sofia">Sofia</b> and kitchen roll pls</li>
+              <li class="dmsg" data-i="7"><b class="who george">George</b> someone hoover before grandma comes</li>
+              <li class="dmsg" data-i="8"><b class="who maria">Maria</b> parents’ evening tue 18:30, don’t forget</li>
+              <li class="typing" id="typing" aria-hidden="true"><b>Sofia</b> is typing <i></i><i></i><i></i></li>
+            </ol>
+            <p class="quiet" id="quiet" hidden><span>All quiet.</span> <span>Everything has a place. 😌</span></p>
+          </div>
+        </div>
+
+        <div class="mid">
+          <div class="sort-i" id="sort-i" data-looker><span class="say" aria-hidden="true"></span></div>
+          <button class="big-btn pulse" id="sort-btn" type="button">Show me in Mazí <span aria-hidden="true">→</span></button>
+        </div>
+
+        <div class="mz">
+          <div class="mz-top"><img src="/assets/icon.png" alt="" width="28" height="28"><b>Mazí</b> <small>Our Home · 3 people</small></div>
+          <div class="mz-sec">
+            <h3>🛒 Shopping <span class="n">3</span></h3>
+            <ul class="col-list">
+              <li class="row" data-from="0"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Milk"></button><span class="txt">Milk</span> <span class="av maria" aria-hidden="true">M</span><span class="vh">(Maria)</span></li>
+              <li class="row" data-from="3"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Feta"></button><span class="txt">Feta</span> <span class="av maria" aria-hidden="true">M</span><span class="vh">(Maria)</span></li>
+              <li class="row" data-from="6"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Kitchen roll"></button><span class="txt">Kitchen roll</span> <span class="av sofia" aria-hidden="true">S</span><span class="vh">(Sofia)</span></li>
+            </ul>
+          </div>
+          <div class="mz-sec">
+            <h3>✅ Tasks <span class="n">3</span></h3>
+            <ul class="col-list">
+              <li class="row" data-from="1"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Take out the bins"></button><span class="txt">Take out the bins</span> <span class="av george" aria-hidden="true">G</span><span class="vh">(George)</span></li>
+              <li class="row" data-from="4"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Feed the dog"></button><span class="txt">Feed the dog</span> <span class="av sofia" aria-hidden="true">S</span><span class="vh">(Sofia)</span></li>
+              <li class="row" data-from="7"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Hoover the living room"></button><span class="txt">Hoover the living room</span> <span class="av george" aria-hidden="true">G</span><span class="vh">(George)</span></li>
+            </ul>
+          </div>
+          <div class="mz-sec">
+            <h3>📅 Calendar <span class="n">3</span></h3>
+            <ul class="col-list">
+              <li class="row" data-from="2"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Football · Sat 17:00"></button><span class="txt">Football · Sat 17:00</span> <span class="av sofia" aria-hidden="true">S</span><span class="vh">(Sofia)</span></li>
+              <li class="row" data-from="5"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Dentist · Fri 16:00"></button><span class="txt">Dentist · Fri 16:00</span> <span class="av sofia" aria-hidden="true">S</span><span class="vh">(Sofia)</span></li>
+              <li class="row" data-from="8"><button class="tk" type="button" aria-pressed="false" aria-label="Tick Parents’ evening · Tue 18:30"></button><span class="txt">Parents’ evening · Tue 18:30</span> <span class="av maria" aria-hidden="true">M</span><span class="vh">(Maria)</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="wrap feature" id="f-shop">
     <div class="reveal">
