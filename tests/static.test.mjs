@@ -5,11 +5,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { baseline, headParts, mainBlocks, hrefs } from './baseline.mjs';
+import { baseline, headParts, mainBlocks, hrefs, readFile as read } from './baseline.mjs';
 import { PAGES, BOOT } from './pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const STYLESHEET = '<link rel="stylesheet" href="/assets/site-1.css">';
 
 // Text the redesign dropped on purpose (see the spec): the homepage's

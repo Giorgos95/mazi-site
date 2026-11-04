@@ -1,9 +1,12 @@
 // Checks the test tools themselves, against today's site.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { startServer } from './serve.mjs';
 import { launch } from './browser.mjs';
-import { baseline, headParts } from './baseline.mjs';
+import { baseline, headParts, readFile } from './baseline.mjs';
 
 let server;
 before(async () => { server = await startServer(); });
@@ -55,4 +58,20 @@ test('the browser loads the homepage cleanly', async () => {
 
 test('baseline reads the old homepage', () => {
   assert.equal(headParts(baseline('index.html')).canonical, 'https://meetmazi.com/');
+});
+
+// Git on Windows (core.autocrlf) checks files out with CRLF line endings,
+// while git show gives LF. The comparisons are about content, not that.
+test('a CRLF checkout of a page reads the same as its LF baseline', () => {
+  const was = baseline('join.html');
+  assert.ok(!was.includes('\r'), 'the baseline has CRLF line endings');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'mazi-crlf-'));
+  try {
+    const file = path.join(dir, 'join.html');
+    fs.writeFileSync(file, was.replace(/\n/g, '\r\n'));
+    assert.notEqual(fs.readFileSync(file, 'utf8'), was, 'the copy is not CRLF');
+    assert.equal(readFile(file), was);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 });

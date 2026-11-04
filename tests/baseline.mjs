@@ -1,14 +1,25 @@
 // Reads pages as plain text, to compare the new site with the old one.
 import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const git = (...args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 1 << 26 });
 
+// Git on Windows (core.autocrlf) checks files out with CRLF line endings,
+// while git show gives LF. Both sides are read with LF, so a comparison is
+// about the content, not the line endings.
+const lf = (text) => text.replace(/\r\n/g, '\n');
+
 // The file as it was where this branch left main, so the redesign can't drift from it unnoticed.
 export function baseline(file) {
-  return git('show', `${git('merge-base', 'HEAD', 'main').trim()}:${file}`);
+  return lf(git('show', `${git('merge-base', 'HEAD', 'main').trim()}:${file}`));
+}
+
+// The file as it is now in the working tree (a path relative to the repo, or absolute).
+export function readFile(file) {
+  return lf(fs.readFileSync(path.resolve(ROOT, file), 'utf8'));
 }
 
 const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };

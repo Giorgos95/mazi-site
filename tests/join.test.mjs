@@ -2,16 +2,12 @@
 // change, and the page must keep behaving the way it always has.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { startServer } from './serve.mjs';
 import { launch } from './browser.mjs';
-import { baseline } from './baseline.mjs';
+import { baseline, readFile } from './baseline.mjs';
 import { BOOT } from './pages.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const html = fs.readFileSync(path.join(ROOT, 'join.html'), 'utf8');
+const html = readFile('join.html');
 // Inline scripts other than the theme boot script, which every page carries.
 const inlineScript = (s) => [...s.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[0]).filter((x) => x !== BOOT);
 
