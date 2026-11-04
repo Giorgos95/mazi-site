@@ -361,6 +361,23 @@ html.js .switch { display: block; }
 @media (max-width: 899.98px) {
   .fhero { grid-template-columns: minmax(0, 1fr); }
 }
+/* A phone has less than the 460px the stage is drawn for, and the í, its
+   prop and the screenshot would pile up. There the whole stage is drawn
+   smaller instead: zoom shrinks the positions inside it too, so it keeps its
+   layout. What the í says stays at its usual size. A browser without zoom
+   keeps the full-width stage, crowded but still on the screen. */
+@media (max-width: 499.98px) {
+  @supports (zoom: .5) {
+    .fstage:not(.tiktok-phone) { width: 460px; zoom: .69; }
+    .fstage:not(.tiktok-phone) .say { zoom: 1.45; }
+  }
+}
+@media (max-width: 356.98px) {
+  @supports (zoom: .5) {
+    .fstage:not(.tiktok-phone) { zoom: .6; }
+    .fstage:not(.tiktok-phone) .say { zoom: 1.67; }
+  }
+}
 
 /* "The rest of Mazi": a card for each of the other features. */
 .article ul.more {

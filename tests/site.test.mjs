@@ -89,6 +89,26 @@ for (const { path, kind, pose, prop } of PAGES) {
     });
   }
 
+  // A stage is drawn for 460px; on a phone it is narrower, and the í must
+  // not end up standing on the screenshot.
+  if (kind === 'feature' || kind === 'home') {
+    test(`${path}: at 360px each í stays clear of its phone`, async () => {
+      await withPage(path, { width: 360, height: 780, mobile: true }, async (page) => {
+        await sleep(500);
+        const stages = await page.eval(`[...document.querySelectorAll('.fstage')].map((stage) => {
+          const box = (el) => el.getBoundingClientRect();
+          const s = box(stage), i = box(stage.querySelector('.fi')), phone = box(stage.querySelector('.fphone'));
+          return { left: s.left, right: s.right, gap: phone.left - i.right };
+        })`);
+        assert.ok(stages.length > 0, 'no stage');
+        for (const [n, s] of stages.entries()) {
+          assert.ok(s.left >= 0 && s.right <= 360, `stage ${n} is wider than the screen`);
+          assert.ok(s.gap >= 0, `stage ${n}: the í overlaps the phone by ${Math.round(-s.gap)}px`);
+        }
+      });
+    });
+  }
+
   test(`${path}: reduced motion stops everything`, async () => {
     try {
       await withPage(path, { reducedMotion: true }, async (page) => {

@@ -12,6 +12,13 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const STYLESHEET = '<link rel="stylesheet" href="/assets/site-1.css">';
 
+// Text the redesign dropped on purpose (see the spec): the homepage's
+// self-ticking list card and its "At home in light and dark" section.
+const REMOVED = {
+  'index.html': ['At home in light and dark.', 'This week', 'Bread, feta, kitchen roll', 'Take out the recycling',
+    'Wednesday: chicken thighs', 'Dentist, Friday 16:00'],
+};
+
 // Every attribute value that names a URL; srcset holds several.
 function urls(html) {
   const found = [];
@@ -44,7 +51,8 @@ for (const { file } of PAGES) {
 
   test(`${file}: text is preserved`, () => {
     const now = new Set(mainBlocks(html));
-    const lost = mainBlocks(baseline(file)).filter((block) => !now.has(block));
+    const removed = new Set(REMOVED[file] ?? []);
+    const lost = mainBlocks(baseline(file)).filter((block) => !now.has(block) && !removed.has(block));
     assert.deepEqual(lost, []);
   });
 

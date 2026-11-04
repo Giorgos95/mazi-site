@@ -6,14 +6,22 @@
 <title>Mazí: shared shopping list, tasks, meals and family calendar</title>
 <meta name="description" content="Mazí keeps a household running without the group chat: a shared shopping list, tasks, meal plans and family calendar. 30-day free trial, then one subscription covers the whole household.">
 <link rel="canonical" href="https://meetmazi.com/">
-<link rel="icon" type="image/png" href="./assets/icon.png">
+<link rel="icon" type="image/png" href="/assets/icon.png">
 <meta property="og:title" content="Mazí">
 <meta property="og:description" content="Shopping, tasks, meals and the family calendar, shared in one place.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:url" content="https://meetmazi.com/">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFF7EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141E33" media="(prefers-color-scheme: dark)">
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
+<link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/site-1.css">
+<link rel="stylesheet" href="/assets/home-1.css">
+<script type="module" src="/assets/site-1.js"></script>
+<script type="module" src="/assets/home-1.js"></script>
+<link rel="modulepreload" href="/assets/mascot-1.js">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -85,366 +93,161 @@
   ]
 }
 </script>
-<link rel="preload" href="./assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="./assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
-<style>
-  /* Served from this site, the same faces as article.css. */
-  @font-face {
-    font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 400;
-    font-display: swap; src: url("./assets/fonts/atkinson-hyperlegible-400.woff2") format("woff2");
-  }
-  @font-face {
-    font-family: "Atkinson Hyperlegible"; font-style: italic; font-weight: 400;
-    font-display: swap; src: url("./assets/fonts/atkinson-hyperlegible-400-italic.woff2") format("woff2");
-  }
-  @font-face {
-    font-family: "Atkinson Hyperlegible"; font-style: normal; font-weight: 700;
-    font-display: swap; src: url("./assets/fonts/atkinson-hyperlegible-700.woff2") format("woff2");
-  }
-  @font-face {
-    font-family: Fredoka; font-style: normal; font-weight: 500 600;
-    font-display: swap; src: url("./assets/fonts/fredoka.woff2") format("woff2");
-  }
-
-  :root {
-    color-scheme: light dark;
-    --bg: #FAF4E8;
-    --card: #FFFFFF;
-    --ink: #1F2B1E;
-    --muted: #6E685A;
-    --green: #2F9E44;
-    --green-deep: #14522A;
-    --teal: #0D8478;
-    --line: rgba(31, 43, 30, 0.12);
-    --band: #14522A;
-    --band-ink: #F3EEDF;
-    --shadow: 0 14px 40px rgba(31, 43, 30, 0.14);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #171512;
-      --card: #221F1A;
-      --ink: #ECE7DC;
-      --muted: #A39C8C;
-      --green: #4CC366;
-      --green-deep: #7FDB93;
-      --teal: #3FD3C3;
-      --line: rgba(236, 231, 220, 0.14);
-      --band: #10331D;
-      --band-ink: #E9F3E9;
-      --shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
-    }
-  }
-
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font: 17px/1.65 "Atkinson Hyperlegible", system-ui, sans-serif;
-  }
-  img { max-width: 100%; }
-  a { color: var(--green); }
-  a:focus-visible, button:focus-visible {
-    outline: 3px solid var(--green);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
-
-  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 1.4rem; }
-
-  /* Header */
-  .top {
-    display: flex; align-items: center; justify-content: space-between;
-    padding-block: 1.4rem 0.5rem;
-  }
-  .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
-  .brand img { width: 44px; height: 44px; border-radius: 11px; }
-  .brand span {
-    font-family: Fredoka, sans-serif; font-weight: 600; font-size: 1.7rem;
-    color: var(--teal); letter-spacing: 0.01em;
-  }
-  .top-cta {
-    font-weight: 700; text-decoration: none; color: var(--green-deep);
-    border: 2px solid var(--line); border-radius: 999px; padding: 0.5rem 1.1rem;
-  }
-  .top-cta:hover { border-color: var(--green); }
-
-  /* Hero */
-  .hero {
-    display: grid; grid-template-columns: 1.05fr 0.95fr;
-    gap: 3.5rem; align-items: center; padding-block: 4rem 5rem;
-  }
-  h1 {
-    font-family: Fredoka, sans-serif; font-weight: 500;
-    font-size: clamp(2.1rem, 4.6vw, 3.15rem); line-height: 1.13;
-    letter-spacing: -0.015em; margin: 0 0 1rem; color: var(--green-deep);
-  }
-  .hero p.lead { margin: 0 0 1.6rem; font-size: 1.1rem; color: var(--muted); max-width: 34rem; }
-
-  /* The self-ticking list */
-  .list-card {
-    background: var(--card); border-radius: 22px; box-shadow: var(--shadow);
-    padding: 1.6rem 1.7rem; max-width: 27rem; margin: 0; justify-self: end;
-    width: 100%; font-size: 1.08rem; rotate: 1.2deg;
-  }
-  .list-card .list-label {
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--muted); margin: 0 0 0.5rem;
-  }
-  .list-card ul { list-style: none; margin: 0; padding: 0; }
-  .list-card li {
-    display: flex; align-items: center; gap: 0.85rem;
-    padding: 0.8rem 0; border-top: 1px solid var(--line);
-  }
-  .list-card li:first-of-type { border-top: 0; }
-  .tickbox {
-    flex: none; width: 26px; height: 26px; border-radius: 9px;
-    border: 2.5px solid var(--green); position: relative;
-  }
-  .tickbox::after {
-    content: ""; position: absolute; inset: -2.5px; border-radius: 9px;
-    background: var(--green) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4.5 4.5L19 7"/></svg>') center/70% no-repeat;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .tickbox::after {
-      transform: scale(0);
-      animation: tick-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-      animation-delay: var(--d);
-    }
-  }
-  @keyframes tick-pop { to { transform: scale(1); } }
-
-  /* Play badge */
-  .badges { display: flex; flex-wrap: wrap; align-items: center; }
-  .badge { display: inline-block; line-height: 0; }
-  .badge img { height: 74px; width: auto; }
-  /* The Play PNG carries 12px of transparent padding around a 50px badge, so the
-     App Store SVG gets the same margin to match it in height and spacing. */
-  .badge .apple { height: 50px; margin: 12px; }
-  /* Side by side at full size they need 365px, more than a 390px phone leaves. */
-  @media (max-width: 420px) {
-    .badge img { height: 64px; }
-    .badge .apple { height: 43px; margin: 10.5px; }
-  }
-
-  .hero-note { margin: 0.55rem 0 0; font-size: 0.92rem; color: var(--muted); }
-
-  /* Phones */
-  .phone {
-    margin: 0; background: var(--card); border: 1px solid var(--line);
-    border-radius: 30px; padding: 10px; box-shadow: var(--shadow);
-    width: min(300px, 100%);
-  }
-  .phone img { display: block; width: 100%; height: auto; border-radius: 21px; }
-
-  /* Feature sections */
-  .features { display: grid; gap: 4.5rem; padding-block: 1.5rem 4.5rem; }
-  .feature {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 3rem; align-items: center;
-  }
-  .feature .phone { justify-self: center; }
-  .feature:nth-of-type(even) .phone { order: -1; }
-  .eyebrow {
-    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--muted); margin: 0 0 0.6rem;
-  }
-  h2 {
-    font-family: Fredoka, sans-serif; font-weight: 500;
-    font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2;
-    letter-spacing: -0.01em; margin: 0 0 0.8rem; color: var(--green-deep);
-  }
-  .feature p { margin: 0; color: var(--muted); max-width: 30rem; }
-  .feature p.more-link { margin-top: 0.9rem; }
-  .more-link a { font-weight: 700; color: var(--green-deep); }
-
-  /* Light and dark pair */
-  .themes { text-align: center; padding-block: 0 4.5rem; }
-  .themes h2 { margin-bottom: 2rem; }
-  .theme-pair { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; }
-  .theme-pair .phone { width: min(260px, 100%); }
-
-  /* Privacy band */
-  .band { background: var(--band); color: var(--band-ink); padding: 4.5rem 0; }
-  .band h2 { color: var(--band-ink); }
-  .band-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-  .band ul { list-style: none; margin: 0; padding: 0; }
-  .band li { display: flex; align-items: baseline; gap: 0.7rem; padding: 0.4rem 0; font-size: 1.08rem; }
-  .band li::before { content: "✓"; font-weight: 700; color: var(--green); }
-  @media (prefers-color-scheme: dark) { .band li::before { color: var(--green); } }
-  .band p { margin: 0 0 1rem; opacity: 0.88; max-width: 30rem; }
-  .band .together {
-    font-family: Fredoka, sans-serif; font-weight: 500; font-size: 1.35rem;
-    margin: 1.6rem 0 0; opacity: 1;
-  }
-
-  /* Final CTA */
-  .get { text-align: center; padding-block: 5rem; }
-  .get .badges { justify-content: center; }
-  .get p { color: var(--muted); margin: 0 auto 1.8rem; max-width: 30rem; }
-
-  /* Footer */
-  footer { border-top: 1px solid var(--line); padding: 2rem 0 3rem; font-size: 0.92rem; color: var(--muted); }
-  footer .foot-links { display: flex; gap: 1.6rem; flex-wrap: wrap; margin-bottom: 1rem; }
-  footer a { color: var(--green-deep); }
-  footer .fine { font-size: 0.8rem; margin: 0.3rem 0 0; }
-  footer .foot-social { display: flex; gap: 0.6rem; margin-bottom: 1rem; }
-  footer .foot-social a {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 2.5rem; height: 2.5rem; border: 2px solid var(--line); border-radius: 999px;
-  }
-  footer .foot-social a:hover { border-color: var(--green); }
-
-  @media (max-width: 820px) {
-    .hero { grid-template-columns: 1fr; gap: 2.5rem; padding-block: 2.5rem 3.5rem; }
-    .list-card { justify-self: start; rotate: 0deg; max-width: 24rem; }
-    .feature { grid-template-columns: 1fr; gap: 2rem; }
-    .feature:nth-of-type(even) .phone { order: 0; }
-    .features { gap: 3.5rem; }
-    .band-cols { grid-template-columns: 1fr; gap: 1.5rem; }
-  }
-</style>
 </head>
 <body>
 
-<header class="wrap top">
-  <a class="brand" href="/">
-    <img src="./assets/icon.png" alt="" width="44" height="44">
-    <span>Mazí</span>
-  </a>
-  <a class="top-cta" href="#get">Get the app</a>
+<header class="top">
+  <a class="brand" href="/"><img src="/assets/icon.png" alt="" width="40" height="40"><span>Mazí</span></a>
+  <nav class="nav" aria-label="Mazí"><a href="/shopping-list">Shopping</a><a href="/chores">Tasks</a><a href="/meal-planner">Meals</a><a href="/family-calendar">Calendar</a><a href="/faq">FAQ</a></nav>
+  <button class="switch" id="theme-switch" type="button" aria-label="Night colours" aria-pressed="false"></button>
+  <a class="get-btn" href="#get">Get the app</a>
 </header>
 
 <main>
-  <section class="wrap hero">
+  <section class="wrap hero" id="hero">
     <div>
-      <h1>Keeps the household running without the group chat.</h1>
+      <p class="chip">🏠 for the whole household</p>
+      <h1>Keeps the household running without the <span class="strike">group chat</span>.</h1>
       <p class="lead">One shared space for what to buy, who is doing what, what is for
       dinner, and what is happening this week. Everyone in the household sees the same
       lists, updated the moment something changes.</p>
 
       <div class="badges">
         <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-          <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="191" height="74">
+          <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
         </a>
         <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
-          <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="150" height="50">
+          <img class="apple" src="/assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
         </a>
       </div>
       <p class="hero-note">Free for 30 days. One subscription covers the whole household.</p>
     </div>
 
-    <div class="list-card" aria-hidden="true">
-      <p class="list-label">This week</p>
+    <!-- The Today screen on a teal blob. Only the screenshot says anything:
+         the stars, stickers, notifications and the waving í are decoration. -->
+    <div class="stage">
+      <div class="stars" aria-hidden="true"></div>
+      <div class="blob"></div>
+      <span class="floaty floaty-shop" aria-hidden="true">🛒</span>
+      <span class="floaty floaty-tasks" aria-hidden="true">✅</span>
+      <span class="floaty floaty-cal" aria-hidden="true">📅</span>
+      <figure class="phone">
+        <div class="scr">
+          <img class="scr-day" src="/assets/screens/today-600.webp" srcset="/assets/screens/today-600.webp 600w, /assets/screens/today-1080.webp 1080w" sizes="210px" alt="The Today screen, showing the day's events, what is due and the meals" width="1080" height="2068" fetchpriority="high">
+          <img class="scr-night" src="/assets/screens/today-dark-600.webp" srcset="/assets/screens/today-dark-600.webp 600w, /assets/screens/today-dark-1080.webp 1080w" sizes="210px" alt="" width="1080" height="2068">
+        </div>
+      </figure>
+      <!-- Notifications Mazí really sends (see the FAQ). -->
+      <div class="notifs" aria-hidden="true">
+        <div class="notif"><span class="av" style="background: #3B5BDB">G</span><span><b>TASKS</b><span class="msg">George gave you a task: take out the recycling</span></span></div>
+        <div class="notif"><span class="av" style="background: #E8590C">S</span><span><b>CALENDAR</b><span class="msg">Sofia added an event: dentist, Fri 16:00</span></span></div>
+        <div class="notif"><img class="av" src="/assets/icon.png" alt="" width="28" height="28"><span><b>TODAY</b><span class="msg">3 tasks due today</span></span></div>
+      </div>
+      <div class="hero-i" data-looker><span class="say" aria-hidden="true"></span></div>
+    </div>
+  </section>
+
+  <section class="band band-yellow" id="problem"></section>
+
+  <section class="wrap feature" id="f-shop">
+    <div class="reveal">
+      <p class="eyebrow">🛒 Shopping</p>
+      <h2>One list, sorted the way you shop.</h2>
+      <p>A shared shopping list, organised by category and by shop. Tick items off as
+      you go and watch the cart fill up. When a name is not enough, add a photo of the
+      exact brand your partner actually meant.</p>
+      <p class="more-link"><a href="/shopping-list">More about the shopping list</a></p>
+    </div>
+    <div class="fstage reveal" style="--tint: var(--tint1)">
+      <figure class="fphone"><img src="/assets/screens/shopping-600.webp" srcset="/assets/screens/shopping-600.webp 600w, /assets/screens/shopping-1080.webp 1080w" sizes="190px" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy"></figure>
+      <div class="fi" data-i-pose="push" data-prop="trolley" data-looker></div>
+    </div>
+  </section>
+
+  <section class="wrap feature flip" id="f-tasks">
+    <div class="reveal">
+      <p class="eyebrow">✅ Tasks</p>
+      <h2>Claimed, assigned, or up for grabs.</h2>
+      <p>Assign a task to someone, or leave it unclaimed for whoever gets there
+      first. Give it a date, add a time to get a reminder right then, or make a
+      chore repeat every day, week or month. Each morning brings one quiet digest
+      of what is due today.</p>
+      <p class="more-link"><a href="/chores">More about chores and tasks</a></p>
+    </div>
+    <div class="fstage reveal" style="--tint: var(--tint2)">
+      <figure class="fphone"><img src="/assets/screens/tasks-600.webp" srcset="/assets/screens/tasks-600.webp 600w, /assets/screens/tasks-1080.webp 1080w" sizes="190px" alt="The tasks screen, grouped into today, later and done, each task showing who it belongs to" width="1080" height="2068" loading="lazy"></figure>
+      <div class="fi" data-i-pose="strain" data-prop="tower" data-looker></div>
+    </div>
+  </section>
+
+  <section class="wrap feature" id="f-meals">
+    <div class="reveal">
+      <p class="eyebrow">🍽️ Kitchen</p>
+      <h2>From recipe to shopping list in one tap.</h2>
+      <p>Keep the recipes your household actually cooks, plan the week's meals, and
+      send a recipe's ingredients straight to the shopping list.</p>
+      <p class="more-link"><a href="/meal-planner">More about the meal planner</a></p>
+    </div>
+    <div class="fstage reveal" style="--tint: var(--tint3)">
+      <figure class="fphone"><img src="/assets/screens/kitchen-600.webp" srcset="/assets/screens/kitchen-600.webp 600w, /assets/screens/kitchen-1080.webp 1080w" sizes="190px" alt="The kitchen screen with the week's meal plan and a button that adds the whole week to the shopping list" width="1080" height="2068" loading="lazy"></figure>
+      <div class="fi" data-i-pose="stir" data-prop="pot" data-looker></div>
+    </div>
+  </section>
+
+  <section class="wrap feature flip" id="f-cal">
+    <div class="reveal">
+      <p class="eyebrow">📅 Calendar</p>
+      <h2>Who is where this week.</h2>
+      <p>Appointments, school events, name days and everything else on one shared
+      family calendar. Each event is for one person or for everyone, shows in
+      their colour and reminds the people it is for. Enter the weekly ones once
+      and they fill the calendar.</p>
+      <p class="more-link"><a href="/family-calendar">More about the family calendar</a></p>
+    </div>
+    <div class="fstage reveal" style="--tint: var(--tint4)">
+      <figure class="fphone"><img src="/assets/screens/calendar-600.webp" srcset="/assets/screens/calendar-600.webp 600w, /assets/screens/calendar-1080.webp 1080w" sizes="190px" alt="The shared family calendar with colour-coded events" width="1080" height="2068" loading="lazy"></figure>
+      <div class="fi" data-i-pose="awake" data-prop="thoughts" data-looker></div>
+    </div>
+  </section>
+
+  <section class="band band-yellow" id="fam"></section>
+
+  <section class="wrap why" id="why">
+    <div class="reveal">
+      <h2>Built for a household, not a social network.</h2>
+      <p class="sec-lead">Mazí is Greek for together. That is the whole idea.</p>
+    </div>
+    <div class="reveal">
       <ul>
-        <li><span class="tickbox" style="--d: 0.5s"></span> Bread, feta, kitchen roll</li>
-        <li><span class="tickbox" style="--d: 1.2s"></span> Take out the recycling</li>
-        <li><span class="tickbox" style="--d: 1.9s"></span> Wednesday: chicken thighs</li>
-        <li><span class="tickbox" style="--d: 2.6s"></span> Dentist, Friday 16:00</li>
+        <li>No ads.</li>
+        <li>No feeds.</li>
+        <li>No tracking.</li>
       </ul>
+      <p class="sec-lead">Your household's data is visible to your household
+      and nobody else. Join by invite code: start a household, share the code, done.</p>
     </div>
   </section>
 
-  <div class="wrap features">
-    <section class="feature">
-      <div>
-        <p class="eyebrow">🛒 Shopping</p>
-        <h2>One list, sorted the way you shop.</h2>
-        <p>A shared shopping list, organised by category and by shop. Tick items off as
-        you go and watch the cart fill up. When a name is not enough, add a photo of the
-        exact brand your partner actually meant.</p>
-        <p class="more-link"><a href="/shopping-list">More about the shopping list</a></p>
+  <section class="band band-yellow cta" id="get">
+    <div class="wrap">
+      <!-- M, a and z in George's, Maria's and Sofia's colours, then the í:
+           Mazí, drawn by home-1.js. -->
+      <div class="cta-row" aria-hidden="true">
+        <div class="cl" data-letter="M" data-colour="#3B5BDB" data-looker></div>
+        <div class="cl" data-letter="a" data-colour="#E64980" data-looker></div>
+        <div class="cl" data-letter="z" data-colour="#E8590C" data-looker></div>
+        <div class="ci" data-looker></div>
       </div>
-      <figure class="phone">
-        <img src="./assets/screens/shopping-600.webp" srcset="./assets/screens/shopping-600.webp 600w, ./assets/screens/shopping-1080.webp 1080w" sizes="280px" alt="The shopping list grouped into produce, bakery, meat and fish and dairy, with Pharmacy and Default shop filters and the add bar at the bottom" width="1080" height="2068" loading="lazy">
-      </figure>
-    </section>
-
-    <section class="feature">
-      <div>
-        <p class="eyebrow">✅ Tasks</p>
-        <h2>Claimed, assigned, or up for grabs.</h2>
-        <p>Assign a task to someone, or leave it unclaimed for whoever gets there
-        first. Give it a date, add a time to get a reminder right then, or make a
-        chore repeat every day, week or month. Each morning brings one quiet digest
-        of what is due today.</p>
-        <p class="more-link"><a href="/chores">More about chores and tasks</a></p>
+      <h2>Bring the household together.</h2>
+      <p class="sec-lead">Free for 30 days. After that, one subscription covers everyone you invite.</p>
+      <div class="badges">
+        <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
+          <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64" loading="lazy">
+        </a>
+        <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
+          <img class="apple" src="/assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43" loading="lazy">
+        </a>
       </div>
-      <figure class="phone">
-        <img src="./assets/screens/tasks-600.webp" srcset="./assets/screens/tasks-600.webp 600w, ./assets/screens/tasks-1080.webp 1080w" sizes="280px" alt="The tasks screen, grouped into today, later and done, each task showing who it belongs to" width="1080" height="2068" loading="lazy">
-      </figure>
-    </section>
-
-    <section class="feature">
-      <div>
-        <p class="eyebrow">🍽️ Kitchen</p>
-        <h2>From recipe to shopping list in one tap.</h2>
-        <p>Keep the recipes your household actually cooks, plan the week's meals, and
-        send a recipe's ingredients straight to the shopping list.</p>
-        <p class="more-link"><a href="/meal-planner">More about the meal planner</a></p>
-      </div>
-      <figure class="phone">
-        <img src="./assets/screens/kitchen-600.webp" srcset="./assets/screens/kitchen-600.webp 600w, ./assets/screens/kitchen-1080.webp 1080w" sizes="280px" alt="The kitchen screen with the week's meal plan and a button that adds the whole week to the shopping list" width="1080" height="2068" loading="lazy">
-      </figure>
-    </section>
-
-    <section class="feature">
-      <div>
-        <p class="eyebrow">📅 Calendar</p>
-        <h2>Who is where this week.</h2>
-        <p>Appointments, school events, name days and everything else on one shared
-        family calendar. Each event is for one person or for everyone, shows in
-        their colour and reminds the people it is for. Enter the weekly ones once
-        and they fill the calendar.</p>
-        <p class="more-link"><a href="/family-calendar">More about the family calendar</a></p>
-      </div>
-      <figure class="phone">
-        <img src="./assets/screens/calendar-600.webp" srcset="./assets/screens/calendar-600.webp 600w, ./assets/screens/calendar-1080.webp 1080w" sizes="280px" alt="The shared family calendar with colour-coded events" width="1080" height="2068" loading="lazy">
-      </figure>
-    </section>
-  </div>
-
-  <section class="wrap themes">
-    <h2>At home in light and dark.</h2>
-    <div class="theme-pair">
-      <figure class="phone">
-        <img src="./assets/screens/today-600.webp" srcset="./assets/screens/today-600.webp 600w, ./assets/screens/today-1080.webp 1080w" sizes="240px" alt="The Today screen in the light theme, showing the day's events, what is due and the meals" width="1080" height="2068" loading="lazy">
-      </figure>
-      <figure class="phone">
-        <img src="./assets/screens/today-dark-600.webp" srcset="./assets/screens/today-dark-600.webp 600w, ./assets/screens/today-dark-1080.webp 1080w" sizes="240px" alt="The same Today screen in the dark theme" width="1080" height="2068" loading="lazy">
-      </figure>
-    </div>
-  </section>
-
-  <section class="band">
-    <div class="wrap band-cols">
-      <div>
-        <h2>Built for a household, not a social network.</h2>
-        <p class="together">Mazí is Greek for together. That is the whole idea.</p>
-      </div>
-      <div>
-        <ul>
-          <li>No ads.</li>
-          <li>No feeds.</li>
-          <li>No tracking.</li>
-        </ul>
-        <p style="margin-top: 1rem;">Your household's data is visible to your household
-        and nobody else. Join by invite code: start a household, share the code, done.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="wrap get" id="get">
-    <h2>Bring the household together.</h2>
-    <p>Free for 30 days. After that, one subscription covers everyone you invite.</p>
-    <div class="badges">
-      <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="191" height="74">
-      </a>
-      <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
-        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="150" height="50">
-      </a>
     </div>
   </section>
 </main>

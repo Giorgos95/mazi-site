@@ -1,0 +1,232 @@
+/* The homepage's own parts, loaded after site-1.css: the hero stage with the
+   Today screen, the four feature rows, "Built for a household" and the
+   closing, where the family spells Mazí. Colours, the header, bands, the í
+   and the feature stages are shared and live in site-1.css.
+
+   Like site-1.css, the name carries a number: a change that must reach every
+   visitor at once goes in a new file, home-2.css. */
+
+
+/* ---------- Hero ---------- */
+
+.hero {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: 1.25rem; align-items: center;
+  padding-top: 1.9rem; padding-bottom: 2.75rem;
+}
+
+/* "for the whole household", a small sticker above the heading. */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; margin: 0;
+  padding: 4px 12px; font-weight: 700; font-size: .85rem; line-height: 1.4;
+  background: var(--card); border: 2.5px solid var(--line); border-radius: 999px;
+  box-shadow: 2px 3px 0 var(--line);
+  transition: background-color .7s, border-color .7s;
+}
+.hero h1 { line-height: 1.07; margin: 1rem 0 .9rem; }
+
+/* "group chat", crossed out in pink. The grey is 3.2:1 on the day
+   background and 4.9:1 at night, enough for text this large. */
+.strike { position: relative; color: #808c99; white-space: nowrap; }
+.strike::after {
+  content: ""; position: absolute; left: -4px; right: -4px; top: 52%; height: 5px;
+  background: #FF6B81; border-radius: 4px; transform: rotate(-3deg);
+}
+.hero .lead { max-width: 30rem; margin: 0 0 1.25rem; font-size: 1.08rem; }
+/* Only as wide as the badges, so the í cheers when the pointer is on them,
+   not on the empty space beside them. */
+.hero .badges { width: fit-content; margin: 0 -0.3rem; }
+.hero-note { margin: .6rem 0 0; font-size: .92rem; color: var(--muted); }
+
+
+/* ---------- The stage beside the hero ---------- */
+
+/* Everything on it is placed absolutely inside a fixed height, so nothing
+   moves when the í is drawn or a notification pops in. */
+.stage { position: relative; height: 480px; }
+.blob {
+  position: absolute; inset: 40px 30px 30px 50px;
+  background: var(--blob); border: 3px solid var(--line);
+  border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%;
+  transition: background-color .7s, border-color .7s;
+}
+
+/* The stars are added by home-1.js, behind the blob, and only show at night. */
+.stars { position: absolute; inset: 0; pointer-events: none; }
+.star {
+  position: absolute; width: 4px; height: 4px; border-radius: 50%;
+  background: #fff; opacity: 0; transition: opacity .8s;
+}
+[data-theme="night"] .star { opacity: 1; animation: twinkle 2.8s ease-in-out infinite; }
+@keyframes twinkle { 0%, 100% { opacity: .2; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.2); } }
+
+/* Emoji stickers, bobbing slowly. Each keeps its tilt when nothing moves. */
+.floaty {
+  position: absolute; z-index: 2; width: 50px; height: 50px;
+  display: grid; place-items: center; font-size: 1.45rem; line-height: 1;
+  background: var(--card); border: 2.5px solid var(--line); border-radius: 14px;
+  box-shadow: 3px 4px 0 var(--line);
+  transform: rotate(var(--r, 0deg)); animation: bob 4.5s ease-in-out infinite;
+  transition: background-color .7s, border-color .7s;
+}
+.floaty-shop { left: 18px; top: 40px; --r: -8deg; }
+.floaty-tasks { right: 6px; top: 120px; --r: 6deg; animation-delay: -1.5s; }
+.floaty-cal { right: 30px; bottom: 30px; --r: -4deg; animation-delay: -3s; }
+
+/* The phone holds both Today screens. The dark one lies on top and fades in
+   at night; without JavaScript it follows a dark system. */
+.phone {
+  position: absolute; left: 50%; top: 24px; width: 222px; margin: 0 0 0 -60px; padding: 7px;
+  background: var(--card); border: 3px solid var(--line); border-radius: 34px;
+  box-shadow: 8px 10px 0 var(--line); rotate: 4deg;
+  transition: background-color .7s, border-color .7s;
+}
+.scr { position: relative; border-radius: 26px; overflow: hidden; }
+.scr img { display: block; width: 100%; transition: opacity .7s; }
+.scr .scr-night { position: absolute; inset: 0; height: 100%; opacity: 0; }
+[data-theme="night"] .scr .scr-night { opacity: 1; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .scr .scr-night { opacity: 1; }
+}
+
+/* Three notifications pop in over the phone in turn, 3 seconds each. */
+.notifs { position: absolute; z-index: 4; left: 30%; top: 4px; width: 280px; }
+.notif {
+  position: absolute; top: 0; left: 0; right: 0;
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+  font-size: .85rem; line-height: 1.3;
+  background: var(--card); border: 2.5px solid var(--line); border-radius: 16px;
+  box-shadow: 4px 5px 0 var(--line);
+  opacity: 0; animation: notif 9s ease-in-out infinite;
+  transition: background-color .7s, border-color .7s;
+}
+.notif:nth-child(2) { animation-delay: 3s; }
+.notif:nth-child(3) { animation-delay: 6s; }
+.notif b { display: block; font-size: .72rem; letter-spacing: .04em; color: var(--muted); }
+.av {
+  flex: none; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line);
+  display: grid; place-items: center; color: #fff;
+  font: 600 .8rem/1 Fredoka, system-ui, sans-serif;
+}
+/* The app's own notification shows the app icon, which is a rounded square. */
+img.av { border-radius: 8px; }
+@keyframes notif {
+  0% { opacity: 0; transform: translateY(-14px) scale(.94); }
+  4%, 29% { opacity: 1; transform: none; }
+  33%, 100% { opacity: 0; transform: translateY(-14px) scale(.94); }
+}
+/* With motion off they cannot take turns, so all three sit in a stack. */
+@media (prefers-reduced-motion: reduce) {
+  .notifs { display: flex; flex-direction: column; gap: .5rem; }
+  .notif { position: relative; opacity: 1; }
+}
+
+/* The waving í, drawn by home-1.js. Its box is reserved here. Now and then
+   it gives a small hop of its own. */
+.hero-i {
+  position: absolute; z-index: 3; left: -6px; bottom: 0; width: 215px; aspect-ratio: 220 / 240;
+  cursor: pointer; transform-origin: 50% 95%; animation: idlehop 5s ease-out infinite;
+}
+.hero-i.hop { animation: hop .55s ease-out; }
+.hero-i svg { display: block; overflow: visible; }
+.hero-i .say { top: -12px; }
+[data-theme="night"] .hero-i svg { filter: drop-shadow(0 0 1.6px rgba(243,238,223,.75)); }
+@keyframes idlehop {
+  0%, 82%, 100% { transform: none; }
+  87% { transform: translateY(-14px) scale(.97, 1.04); }
+  92% { transform: scale(1.05, .95); }
+  96% { transform: none; }
+}
+
+
+/* ---------- Feature rows ---------- */
+
+/* Words on one side and the stage from the feature pages on the other,
+   swapping sides every other row (.flip). */
+.feature {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem; align-items: center; padding-block: clamp(2.5rem, 7vw, 3.75rem);
+}
+.feature.flip .fstage { order: -1; }
+.feature.flip .fphone { rotate: -3deg; }
+.feature h2 { margin: .35rem 0 .6rem; }
+.feature p { max-width: 32rem; margin: 0 0 .75rem; font-size: 1.05rem; color: var(--muted); }
+.feature .eyebrow { margin: 0; font-size: .92rem; color: var(--accent-text); }
+.feature .more-link { margin: 0; }
+.more-link a {
+  font-weight: 700; color: var(--accent-text); text-decoration: none;
+  border-bottom: 2.5px solid currentColor;
+}
+.more-link a:hover { border-bottom-width: 4px; }
+/* The stage rises in a moment after the words. */
+.feature .fstage.reveal { transition-delay: .12s; }
+
+
+/* ---------- Built for a household ---------- */
+
+.why {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2.5rem; align-items: center; padding-block: clamp(3rem, 8vw, 4.5rem);
+}
+.why h2 { margin-bottom: .5rem; }
+.why .sec-lead { margin: 0; }
+/* "No ads. No feeds. No tracking." as three sticker cards. */
+.why ul { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 1rem; padding: 0; list-style: none; }
+.why li {
+  padding: 10px 18px; font: 600 1.25rem/1.2 Fredoka, system-ui, sans-serif;
+  background: var(--card); border: 3px solid var(--line); border-radius: 18px; box-shadow: var(--shadow);
+  transition: background-color .7s, border-color .7s;
+}
+.why li:nth-child(1) { rotate: -2deg; }
+.why li:nth-child(3) { rotate: 2deg; }
+
+
+/* ---------- Closing: Mazí, spelled by the family ---------- */
+
+/* The footer below draws its own ink line, so the band leaves off its own. */
+.cta { text-align: center; padding-block: clamp(3.5rem, 9vw, 5rem) clamp(4rem, 10vw, 5.6rem); border-bottom: 0; }
+.cta h2 { margin: 0 0 .6rem; }
+.cta .sec-lead { margin: 0 auto; }
+.cta .badges { width: fit-content; justify-content: center; margin: 1.1rem auto 0; }
+
+/* M, a, z and the í, all 140px tall (site-1.css sizes their drawings). The
+   row's height is kept for them before they are drawn, so the heading below
+   stays put. Without JavaScript nothing would draw them, so the row is not
+   shown at all. */
+.cta-row {
+  display: none; justify-content: center; align-items: flex-end;
+  min-height: 147px; margin-bottom: .75rem;
+}
+html.js .cta-row { display: flex; }
+
+
+/* ---------- Narrower screens ---------- */
+
+/* One column: the words first, then the picture. */
+@media (max-width: 999.98px) {
+  .hero, .feature, .why { grid-template-columns: minmax(0, 1fr); }
+  .hero { gap: 1.5rem; }
+  .feature { gap: 1.5rem; }
+  .feature.flip .fstage { order: 0; }
+  .stage { width: 100%; max-width: 520px; margin: 0 auto; }
+}
+
+/* A phone: the stage is rearranged so the phone, the í and the stickers each
+   keep their own place, and the notifications span the width. */
+@media (max-width: 559.98px) {
+  .stage { height: 430px; }
+  .blob { inset: 34px 4px 22px 16px; }
+  .phone {
+    left: auto; right: 12px; top: 40px; width: 184px; margin: 0; padding: 6px;
+    border-radius: 30px; box-shadow: 6px 8px 0 var(--line);
+  }
+  .scr { border-radius: 23px; }
+  .notifs { left: 6px; right: 6px; width: auto; top: 0; }
+  .floaty { width: 42px; height: 42px; font-size: 1.2rem; border-radius: 12px; }
+  .floaty-shop { left: 10px; top: 86px; }
+  .floaty-tasks { right: auto; left: 62px; top: 168px; }
+  .floaty-cal { right: 0; bottom: 6px; }
+  .hero-i { left: -8px; width: 150px; }
+  /* Off-centre, so a long line stays on the screen. */
+  .hero-i .say { left: 72%; }
+}

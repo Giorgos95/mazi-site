@@ -12,6 +12,7 @@ export const PAGES = [
   { path: '/join', file: 'join.html', kind: 'join', pose: 'wave' },
   { path: '/tiktok', file: 'tiktok.html', kind: 'tiktok', pose: 'wave' },
   { path: '/nope/deeper', file: '404.html', kind: '404', pose: 'dizzy' },
+  { path: '/', file: 'index.html', kind: 'home' },
 ];
 
 // The inline script at the top of every page's <head>. It picks day or night
