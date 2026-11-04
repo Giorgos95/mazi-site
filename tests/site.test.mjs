@@ -29,7 +29,7 @@ async function withPage(path, opts, fn) {
 // Tabs share localStorage, so a test that picks a theme forgets it after.
 const forget = () => withPage('/privacy', {}, (page) => page.eval('localStorage.clear()'));
 
-for (const { path, kind } of PAGES) {
+for (const { path, kind, pose, prop } of PAGES) {
   test(`${path}: no errors, day and night, desktop and 360px phone`, async () => {
     for (const colorScheme of ['light', 'dark']) {
       for (const width of [1280, 360]) {
@@ -63,6 +63,31 @@ for (const { path, kind } of PAGES) {
       });
     }
   });
+
+  // Fonts and the í arrive after the first paint; nothing may move when they do.
+  test(`${path}: nothing shifts`, async () => {
+    await withPage(path, {}, async (page) => {
+      await page.eval(`window.shift = 0; new PerformanceObserver((list) => { for (const e of list.getEntries()) window.shift += e.value; }).observe({ type: 'layout-shift', buffered: true })`);
+      await sleep(2500);
+      const shift = await page.eval('window.shift');
+      assert.ok(shift < 0.01, `layout shift ${shift}`);
+    });
+  });
+
+  if (pose) {
+    test(`${path}: the í appears in its pose with its prop`, async () => {
+      await withPage(path, {}, async (page) => {
+        await sleep(800);
+        assert.equal(await page.eval(`document.querySelectorAll('[data-i-pose] svg').length`), 1, 'the í is not drawn');
+        assert.equal(await page.eval(`document.querySelector('[data-i-pose]').dataset.pose`), pose);
+        if (prop) {
+          const sel = prop === 'thoughts' ? '.fstage .thought' : '.fstage .prop';
+          assert.ok(await page.eval(`document.querySelectorAll('${sel}').length`) > 0, 'the prop is missing');
+        }
+        assert.deepEqual(page.errors, []);
+      });
+    });
+  }
 
   test(`${path}: reduced motion stops everything`, async () => {
     try {

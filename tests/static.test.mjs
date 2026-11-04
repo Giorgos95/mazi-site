@@ -67,8 +67,10 @@ for (const { file } of PAGES) {
   });
 
   test(`${file}: store links use the official badges`, () => {
-    for (const [, href, inner] of html.matchAll(/<a\b[^>]*?\bhref="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)) {
+    for (const [tag, href, inner] of html.matchAll(/<a\b[^>]*?\bhref="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)) {
       if (!/play\.google\.com|apps\.apple\.com/.test(href)) continue;
+      // A plain text link inside an answer ("on the App Store") is fine; a button-like one is not.
+      if (!/\bclass=/.test(tag) && !/<img/i.test(inner)) continue;
       assert.match(inner, /google-play-badge\.png|app-store-badge\.svg/, href);
     }
   });

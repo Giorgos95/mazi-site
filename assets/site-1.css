@@ -328,6 +328,66 @@ html.js .switch { display: block; }
 .qa h3 { margin: 0 0 0.4rem; }
 
 
+/* ---------- Feature pages ---------- */
+
+/* The top of a feature page: words on one side, a phone with the i on the
+   other. The homepage reuses .fstage for its own feature rows. */
+.fhero {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: 2rem; align-items: center; padding-top: 2.5rem; padding-bottom: 2rem;
+}
+.fhero .eyebrow { margin-bottom: 0.4rem; }
+.fhero h1 { margin-bottom: 1rem; }
+.fhero .lead { max-width: 34rem; margin-bottom: 1.2rem; }
+.fhero .badges { margin: 0 -0.3rem; }
+.note { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.95rem; }
+
+/* The stage has a fixed height and the i a fixed shape, so nothing moves
+   when the i is drawn. --tint is set on the stage: tint1 shopping, tint2
+   tasks, tint3 kitchen, tint4 calendar. */
+.fstage { position: relative; height: 430px; width: 100%; max-width: 460px; margin: 0 auto; }
+.fstage::before {
+  content: ""; position: absolute; inset: 30px 10px 14px 20px;
+  background: var(--tint, var(--tint1)); border: 3px solid var(--line); border-radius: 40px;
+  transition: background-color .7s, border-color .7s;
+}
+.fphone {
+  position: absolute; right: 40px; top: 6px; width: 200px; margin: 0; padding: 6px;
+  background: var(--card); border: 3px solid var(--line); border-radius: 32px;
+  box-shadow: 7px 9px 0 var(--line); rotate: 3deg;
+  transition: background-color .7s, border-color .7s;
+}
+.fphone img { display: block; width: 100%; border-radius: 25px; }
+@media (max-width: 899.98px) {
+  .fhero { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* "The rest of Mazi": a card for each of the other features. */
+.article ul.more {
+  list-style: none; padding: 0; margin: 0 0 1rem;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem;
+}
+.more li { margin: 0; }
+.more a {
+  display: block; height: 100%; padding: 1rem 1.1rem; text-decoration: none; color: var(--muted);
+  background: var(--card); border: 3px solid var(--line); border-radius: 22px; box-shadow: var(--shadow);
+  line-height: 1.45;
+  transition: transform .12s, box-shadow .12s, background-color .7s, border-color .7s;
+}
+.more a:hover { transform: translate(-1px, -2px) rotate(-1deg); box-shadow: 5px 7px 0 var(--line); }
+.more b { display: block; margin-bottom: 0.2rem; font: 600 1.15rem/1.2 Fredoka, system-ui, sans-serif; color: var(--fg); }
+
+/* The questions page: the i stands beside the title. */
+.faq-head { display: flex; align-items: center; gap: 1.2rem; }
+.faq-head > div:first-child { flex: 1 1 auto; min-width: 0; }
+.faq-head .fi { position: relative; left: auto; bottom: auto; flex: none; width: 120px; }
+.faq-head .say { top: -22px; }
+@media (max-width: 480px) {
+  .faq-head .fi { width: 84px; }
+}
+.article .get { margin-top: 3rem; }
+
+
 /* ---------- Footer ---------- */
 
 footer {
@@ -356,7 +416,7 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
 /* An í (.fi) stands where the page puts it; its speech bubble and props are
    positioned against it. Letters (.cl) and the í among them (.ci) are sized by
    height, so a row of them lines up. */
-.fi { position: absolute; left: 30px; bottom: 16px; width: 170px; z-index: 3; cursor: pointer; }
+.fi { position: absolute; left: 30px; bottom: 16px; width: 170px; aspect-ratio: 220 / 240; z-index: 3; cursor: pointer; }
 .fi svg, .cl svg, .ci svg { overflow: visible; display: block; }
 .cl svg { height: 140px; width: auto; }
 .ci svg { height: 140px; width: auto; margin: 0 0 7px -10px; }

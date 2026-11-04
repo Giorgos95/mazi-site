@@ -6,18 +6,20 @@
 <title>Shared family calendar app, colour-coded by person | Mazí</title>
 <meta name="description" content="One calendar the whole household shares. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.">
 <link rel="canonical" href="https://meetmazi.com/family-calendar">
-<link rel="icon" type="image/png" href="./assets/icon.png">
+<link rel="icon" type="image/png" href="/assets/icon.png">
 <meta property="og:title" content="A shared family calendar, colour-coded by person">
 <meta property="og:description" content="One calendar the whole household shares. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:url" content="https://meetmazi.com/family-calendar">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#FAF4E8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#FFF7EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141E33" media="(prefers-color-scheme: dark)">
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/atkinson-hyperlegible-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./assets/article.css">
-<link rel="stylesheet" href="./assets/feature.css">
+<link rel="stylesheet" href="/assets/site-1.css">
+<script type="module" src="/assets/site-1.js"></script>
+<link rel="modulepreload" href="/assets/mascot-1.js">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -97,12 +99,11 @@
 </head>
 <body>
 
-<header class="wrap top">
-  <a class="brand" href="/">
-    <img src="./assets/icon.png" alt="" width="44" height="44">
-    <span>Mazí</span>
-  </a>
-  <a class="top-cta" href="#get">Get the app</a>
+<header class="top">
+  <a class="brand" href="/"><img src="/assets/icon.png" alt="" width="40" height="40"><span>Mazí</span></a>
+  <nav class="nav" aria-label="Mazí"><a href="/shopping-list">Shopping</a><a href="/chores">Tasks</a><a href="/meal-planner">Meals</a><a href="/family-calendar">Calendar</a><a href="/faq">FAQ</a></nav>
+  <button class="switch" id="theme-switch" type="button" aria-label="Night colours" aria-pressed="false"></button>
+  <a class="get-btn" href="#get">Get the app</a>
 </header>
 
 <main>
@@ -113,17 +114,18 @@
     <p class="lead">Appointments, school events, trips and birthdays on one calendar the whole household shares. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.</p>
     <div class="badges">
       <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
+        <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
       </a>
       <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
-        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
+        <img class="apple" src="/assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
       </a>
     </div>
     <p class="note">Free for 30 days. One subscription covers the whole household.</p>
   </div>
-  <figure class="phone">
-    <img src="./assets/screens/calendar-600.webp" srcset="./assets/screens/calendar-600.webp 600w, ./assets/screens/calendar-1080.webp 1080w" sizes="280px" alt="The shared family calendar with colour-coded events" width="1080" height="2068">
-  </figure>
+  <div class="fstage" style="--tint: var(--tint4)">
+    <figure class="fphone"><img src="/assets/screens/calendar-600.webp" srcset="/assets/screens/calendar-600.webp 600w, /assets/screens/calendar-1080.webp 1080w" sizes="280px" alt="The shared family calendar with colour-coded events" width="1080" height="2068"></figure>
+    <div class="fi" data-i-pose="awake" data-prop="thoughts" data-looker></div>
+  </div>
 </section>
 
 <div class="article">
@@ -177,10 +179,10 @@
     subscription covers everyone you invite.</p>
     <div class="badges">
       <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
-        <img src="./assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
+        <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
       </a>
       <a class="badge" href="https://apps.apple.com/app/mazi-family-organizer/id6807159485">
-        <img class="apple" src="./assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
+        <img class="apple" src="/assets/app-store-badge.svg" alt="Download on the App Store" width="129" height="43">
       </a>
     </div>
   </section>

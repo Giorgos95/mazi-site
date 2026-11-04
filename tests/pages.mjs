@@ -4,6 +4,11 @@ export const PAGES = [
   { path: '/privacy', file: 'privacy.html', kind: 'legal' },
   { path: '/terms', file: 'terms.html', kind: 'legal' },
   { path: '/delete-account', file: 'delete-account.html', kind: 'legal' },
+  { path: '/shopping-list', file: 'shopping-list.html', kind: 'feature', pose: 'push', prop: 'trolley' },
+  { path: '/chores', file: 'chores.html', kind: 'feature', pose: 'strain', prop: 'tower' },
+  { path: '/meal-planner', file: 'meal-planner.html', kind: 'feature', pose: 'stir', prop: 'pot' },
+  { path: '/family-calendar', file: 'family-calendar.html', kind: 'feature', pose: 'awake', prop: 'thoughts' },
+  { path: '/faq', file: 'faq.html', kind: 'faq', pose: 'surprised' },
 ];
 
 // The inline script at the top of every page's <head>. It picks day or night
