@@ -32,7 +32,12 @@ const REMOVED = {
     'An event reminds the person it is for, or everyone when it is for everyone: an hour before it starts, or at 9:00 on the day for an all-day event. When someone adds an event, the rest of the household hears about it.'],
   'faq.html': [
     'A morning digest at 9:00 of the tasks due today that are yours or anyone\'s, a reminder at the time you give a task, a reminder an hour before an event that is for you or for everyone (at 9:00 on the day for an all-day event), and a notification when someone assigns you a task or adds an event. One switch in Settings turns them all on or off.',
-    'Mazí (μαζί) is Greek for together. The app is in English and Greek: it follows your phone\'s language, and you can switch it in Settings.'],
+    'Mazí (μαζί) is Greek for together. The app is in English and Greek: it follows your phone\'s language, and you can switch it in Settings.',
+    // The prices went on the site on 2026-11-05.
+    'A monthly plan and a yearly plan, after the 30-day free trial. The app shows the price for your country before you subscribe.'],
+  'cozi-alternative.html': [
+    'What this page says about Cozi comes from cozi.com, read on 5 November 2026. Prices are the US prices shown there.',
+    'No. Mazí has a 30-day free trial with everything unlocked and no card needed, then a monthly or yearly subscription that covers the whole household. There is no free version, and there are no ads.'],
 };
 
 // Every attribute value that names a URL; srcset holds several.

@@ -70,7 +70,7 @@
           "name": "Is Mazí free, like Cozi?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Mazí has a 30-day free trial with everything unlocked and no card needed, then a monthly or yearly subscription that covers the whole household. There is no free version, and there are no ads."
+            "text": "No. Mazí has a 30-day free trial with everything unlocked and no card needed. After that, one subscription covers the whole household: $3.49 a month or $28.99 a year in the US. There is no free version, and there are no ads."
           }
         },
         {
@@ -125,57 +125,30 @@
   <div class="fi" data-i-pose="cheeky" data-looker></div>
   </div>
 
-  <p class="updated">What this page says about Cozi comes from cozi.com, read on
-  5 November 2026. Prices are the US prices shown there.</p>
+  <p class="updated">Prices are US prices. Cozi's come from cozi.com, read on 5 November 2026.
+  Mazí's are the same on the App Store and Google Play.</p>
 
   <h2>Side by side</h2>
-  <table>
-    <thead>
-      <tr><th scope="col">Mazí</th><th scope="col">Cozi</th></tr>
+  <!-- The roles keep it a table for screen readers on a phone, where the
+       stylesheet stacks each row (Safari drops table semantics otherwise). -->
+  <table class="compare" role="table">
+    <colgroup><col class="c-topic"><col class="c-us"><col class="c-them"></colgroup>
+    <thead role="rowgroup">
+      <tr role="row"><td role="cell"></td><th scope="col" role="columnheader" class="us">Mazí</th><th scope="col" role="columnheader">Cozi</th></tr>
     </thead>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Price</th></tr>
-      <tr><td>30 days free with everything, no card. Then a monthly or yearly subscription, priced in the app for your country.</td><td>A free version. Cozi Gold is $39 a year and Cozi Max $79 a year.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Ads</th></tr>
-      <tr><td>None.</td><td>The free version is supported by ads and sponsors. Gold removes them.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Free version</th></tr>
-      <tr><td>None. After the trial the household is read-only until someone subscribes, and nothing is deleted.</td><td>Yes. In it, events can be added from the Agenda view for the next 30 days.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">People</th></tr>
-      <tr><td>Up to 8, on one subscription.</td><td>Up to 12, on one subscription.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Signing in</th></tr>
-      <tr><td>Everyone has their own account.</td><td>Everyone signs in with their own email and one shared family password.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Shopping list</th></tr>
-      <tr><td>Sorted by aisle, filtered by shop, with photos on items, and it works with no signal.</td><td>Shared lists you divide into sections. No photos on items.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Chores and tasks</th></tr>
-      <tr><td>For one person or for anyone, with times, repeats, reminders and thanks.</td><td>To-do lists, and a chores list for each person in the apps.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Recipes and meals</th></tr>
-      <tr><td>The household's own recipes, typed in. The week's plan sends its ingredients to the list.</td><td>A recipe box that can import a recipe from its web address, and a meal planner.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Calendar</th></tr>
-      <tr><td>A month view. Each event is for one person or for everyone, in their colour, with a reminder an hour before.</td><td>Colour-coded by person. Gold adds the month view on phones, calendar search and up to three reminders per event.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Other calendars</th></tr>
-      <tr><td>No sync with Google, Apple or Outlook.</td><td>Read-only feeds both ways with Google, Apple and Outlook calendars.</td></tr>
-    </tbody>
-    <tbody>
-      <tr><th colspan="2" scope="rowgroup">Where it runs</th></tr>
-      <tr><td>iPhone and Android.</td><td>iPhone, Android and the web.</td></tr>
+    <tbody role="rowgroup">
+      <tr role="row"><th scope="row" role="rowheader">Price</th><td role="cell" class="us" data-label="Mazí">$3.49 a month or $28.99 a year.</td><td role="cell" data-label="Cozi">Free with ads. Gold is $39 a year, Max $79 a year.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Free trial</th><td role="cell" class="us" data-label="Mazí">30 days, every feature, no card.</td><td role="cell" data-label="Cozi">2 weeks of Gold, only when you subscribe on the web.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Free version</th><td role="cell" class="us" data-label="Mazí">None. After the trial the household is read-only, and nothing is deleted.</td><td role="cell" data-label="Cozi">Yes. Events can be added up to 30 days ahead.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Ads</th><td role="cell" class="us" data-label="Mazí">None.</td><td role="cell" data-label="Cozi">In the free version. Gold removes them.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">People</th><td role="cell" class="us" data-label="Mazí">Up to 8, one subscription.</td><td role="cell" data-label="Cozi">Up to 12, one subscription.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Signing in</th><td role="cell" class="us" data-label="Mazí">Everyone has their own account.</td><td role="cell" data-label="Cozi">Your own email, one shared family password.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Shopping list</th><td role="cell" class="us" data-label="Mazí">Sorted by aisle and by shop, photos on items, works offline.</td><td role="cell" data-label="Cozi">Lists you divide into sections. No photos.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Chores</th><td role="cell" class="us" data-label="Mazí">For one person or anyone, with times, repeats, reminders and thanks.</td><td role="cell" data-label="Cozi">To-do lists, and a chores list for each person.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Recipes and meals</th><td role="cell" class="us" data-label="Mazí">Your own recipes; the week's plan fills the shopping list.</td><td role="cell" data-label="Cozi">Recipe box with import from a web address, and a meal planner.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Calendar</th><td role="cell" class="us" data-label="Mazí">Month view in each person's colour, a reminder an hour before.</td><td role="cell" data-label="Cozi">Colour per person. Gold adds the month view on phones and up to 3 reminders.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Google, Apple, Outlook calendars</th><td role="cell" class="us" data-label="Mazí">No sync.</td><td role="cell" data-label="Cozi">Read-only feeds, both ways.</td></tr>
+      <tr role="row"><th scope="row" role="rowheader">Runs on</th><td role="cell" class="us" data-label="Mazí">iPhone and Android.</td><td role="cell" data-label="Cozi">iPhone, Android and the web.</td></tr>
     </tbody>
   </table>
 
@@ -191,6 +164,7 @@
 
   <h2>Where Mazí is different</h2>
   <ul>
+    <li>A year costs less than Cozi Gold: $28.99, against $39.</li>
     <li>No ads at all, and a 30-day free trial with every feature and no card. It never turns into a paid subscription by itself.</li>
     <li>Everyone has their own account, not a shared family password.</li>
     <li>The <a href="/shopping-list">shopping list</a> sorts itself by aisle, filters by shop, carries a photo of the exact brand, and keeps working with no signal.</li>
@@ -220,7 +194,7 @@
 
   <section class="qa">
     <h3>Is Mazí free, like Cozi?</h3>
-    <p>No. Mazí has a 30-day free trial with everything unlocked and no card needed, then a monthly or yearly subscription that covers the whole household. There is no free version, and there are no ads.</p>
+    <p>No. Mazí has a 30-day free trial with everything unlocked and no card needed. After that, one subscription covers the whole household: $3.49 a month or $28.99 a year in the US. There is no free version, and there are no ads.</p>
   </section>
 
   <section class="qa">

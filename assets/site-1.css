@@ -292,13 +292,36 @@ html.js .switch { display: block; }
   color: var(--muted); border-bottom: 2.5px solid var(--line);
 }
 .article tr:not(:last-child) > td { border-bottom: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
-/* A heading row over its own group of rows (the Mazí and Cozi comparison):
-   the thin line goes above it, so the heading reads with the rows below. */
-.article th[scope="rowgroup"] { border-bottom: 0; padding-bottom: 0; }
-.article tbody + tbody th[scope="rowgroup"] { border-top: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
 @media (max-width: 480px) {
   .article th, .article td { padding: 0.7rem 0.75rem; }
-  .article th[scope="rowgroup"] { padding-bottom: 0; }
+}
+
+/* The Mazí and Cozi comparison: the topic in bold on the left, Mazí's
+   column tinted. On a phone each row stacks into a block: the topic, then
+   Mazí's line and Cozi's, each named by its data-label. */
+.article table.compare { table-layout: fixed; }
+.compare .c-topic { width: 24%; }
+.compare .c-us, .compare .c-them { width: 38%; }
+.compare th[scope="row"] {
+  font-size: 0.95rem; font-weight: 700; letter-spacing: 0; text-transform: none;
+  color: var(--fg); border-bottom: 0;
+}
+.compare tr:not(:last-child) > th[scope="row"] { border-bottom: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
+.compare .us { background: var(--soft); transition: background-color .7s; }
+.compare thead .us { color: var(--accent-text); }
+@media (max-width: 560px) {
+  .compare, .compare tbody, .compare tr, .compare th, .compare td { display: block; }
+  .compare thead { display: none; }
+  .compare tr { padding: 0.85rem 0.9rem; }
+  .compare tr:not(:last-child) { border-bottom: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
+  .article .compare tr > th[scope="row"], .article .compare tr > td { border-bottom: 0; }
+  .compare th[scope="row"] { padding: 0 0 0.45rem; }
+  .compare td { display: grid; grid-template-columns: 3.4rem 1fr; gap: 0.5rem; padding: 0.4rem 0.6rem; border-radius: 10px; }
+  .compare td::before {
+    content: attr(data-label); padding-top: 0.15rem;
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  }
+  .compare td.us::before { color: var(--accent-text); }
 }
 
 /* A note set apart from the text. */
