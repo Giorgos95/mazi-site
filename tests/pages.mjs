@@ -15,7 +15,13 @@ export const PAGES = [
   { path: '/', file: 'index.html', kind: 'home' },
 ];
 
-// The inline script at the top of every page's <head>. It picks day or night
-// before anything is drawn, so a page never flashes the wrong colours, and
-// marks the page as scripted so the switch and the rise-ins can show.
-export const BOOT = `<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>`;
+// The inline script at the top of every page's <head>. It picks day, or
+// night if the visitor chose it with the switch, before anything is drawn,
+// so a page never flashes the wrong colours, and marks the page as scripted
+// so the switch and the rise-ins can show. The system's dark setting plays
+// no part: every page opens in day until the visitor picks night.
+export const BOOT = `<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}d.dataset.theme=t==='night'?'night':'day';d.classList.add('js')})(document.documentElement)</script>`;
+
+// A visitor who picked night on an earlier visit: the page reads 'night' as
+// the stored choice. Only this tab sees it, so nothing needs clearing after.
+export const PICKED_NIGHT = `(() => { const get = Storage.prototype.getItem; Storage.prototype.getItem = function (key) { return key === 'mazi-theme' ? 'night' : get.call(this, key); }; })()`;

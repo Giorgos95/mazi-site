@@ -99,13 +99,14 @@ search rankings and Lighthouse scores do not drop.
 
   The night colours pass as they are.
 - **My call:**
-  - First visit follows the visitor's system setting.
-  - A page that opens in night colours still shows the hero í waving. The sleepy pose and "is it bedtime already?"
-    appear only when the visitor flips the switch, so dark-mode phones are not greeted by a sleeping mascot.
+  - ~~First visit follows the visitor's system setting.~~ Changed 2026-11-05 at his request ("i prefer on light"):
+    every visitor opens in day, whatever their system is set to. Night comes only from the switch.
+  - A page that opens in night colours (a visitor who picked night before) still shows the hero í waving. The sleepy
+    pose and "is it bedtime already?" appear only when the visitor flips the switch.
   - Using the switch remembers the choice in `localStorage` and applies on every page.
   - The choice is applied by a tiny inline script in `<head>` before first paint, so there is no flash of the wrong
     theme.
-  - Without JavaScript the page follows the system setting and the switch is hidden.
+  - Without JavaScript the page is in day and the switch is hidden.
 - This replaces today's "At home in light and dark" section, which is removed (his choice).
 
 ## The homepage, top to bottom

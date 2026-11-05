@@ -45,7 +45,7 @@ export function setupHero() {
   });
 
   document.addEventListener('mazi:theme', ({ detail }) => {
-    // The system turning dark by itself (at sunset) wakes nobody.
+    // Only the switch itself wakes it, not Back taking up a choice made on another page.
     if (!detail.byUser) return;
     if (detail.theme === 'night') {
       buddy.base = 'sleepy';

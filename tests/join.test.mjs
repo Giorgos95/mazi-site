@@ -9,7 +9,10 @@ import { BOOT } from './pages.mjs';
 
 const html = readFile('join.html');
 // Inline scripts other than the theme boot script, which every page carries.
-const inlineScript = (s) => [...s.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[0]).filter((x) => x !== BOOT);
+// The baseline may hold an older boot script, so any script that only picks
+// the theme is left out, not just today's.
+const isBoot = (x) => x === BOOT || /^<script>\(function\(d\)\{var t;try\{t=localStorage\.getItem\('mazi-theme'\)\}[^<]*<\/script>$/.test(x);
+const inlineScript = (s) => [...s.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[0]).filter((x) => !isBoot(x));
 
 let server, browser;
 before(async () => { server = await startServer({ fixtures: true }); browser = await launch(); });

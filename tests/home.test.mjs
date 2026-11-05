@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { startServer } from './serve.mjs';
 import { launch } from './browser.mjs';
 import { CONTRAST_JS } from './contrast.mjs';
+import { PICKED_NIGHT } from './pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -18,6 +19,10 @@ after(async () => { await browser?.close(); await server?.close(); });
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const PHONE = { width: 360, height: 780, mobile: true };
+// Every visitor opens in day, also on a phone set to dark mode; night is a
+// visitor who picked it with the switch on an earlier visit.
+const DAY = { colorScheme: 'dark' };
+const NIGHT = { colorScheme: 'light', initScript: PICKED_NIGHT };
 
 // A new tab on the page. It is closed after fn, pass or fail.
 async function withPage(url, opts, fn) {
@@ -90,7 +95,7 @@ test('notifications are real ones', async () => {
 });
 
 test('the hero waves even when opened at night', async () => {
-  await withPage('/', { colorScheme: 'dark' }, async (page) => {
+  await withPage('/', NIGHT, async (page) => {
     assert.equal(await page.eval('document.documentElement.dataset.theme'), 'night');
     assert.equal(await until(page, `document.querySelector('#hero [data-pose]')?.dataset.pose`), 'wave');
     await sleep(500);
@@ -138,27 +143,26 @@ test('the hero í reacts to taps and to the store badges', async () => {
 });
 
 test('the stars come out only at night', async () => {
-  for (const [colorScheme, want] of [['light', '0'], ['dark', '1']]) {
+  for (const [theme, opts, want] of [['day', DAY, '0'], ['night', NIGHT, '1']]) {
     // Reduced motion, so the twinkle does not change the opacity being read.
-    await withPage('/', { colorScheme, reducedMotion: true }, async (page) => {
+    await withPage('/', { ...opts, reducedMotion: true }, async (page) => {
       const stars = await page.eval(`[...document.querySelectorAll('#hero .star')].map((s) => getComputedStyle(s).opacity)`);
       assert.equal(stars.length, 26);
-      assert.deepEqual([...new Set(stars)], [want], colorScheme);
+      assert.deepEqual([...new Set(stars)], [want], theme);
     });
   }
 });
 
-test('the hero phone shows the dark screen at night, also without JavaScript', async () => {
-  for (const javascript of [true, false]) {
-    for (const [colorScheme, want] of [['light', '0'], ['dark', '1']]) {
-      await withPage('/', { colorScheme, javascript, reducedMotion: true }, async (page) => {
-        const [light, dark] = await page.eval(`['.scr-day', '.scr-night'].map((s) => getComputedStyle(document.querySelector('#hero ' + s)).opacity)`);
-        assert.equal(light, '1', `${colorScheme}, javascript ${javascript}`);
-        assert.equal(dark, want, `${colorScheme}, javascript ${javascript}`);
-        // The day screen is the page's main image; the night one waits its turn.
-        assert.deepEqual(await page.eval(`['.scr-day', '.scr-night'].map((s) => document.querySelector('#hero ' + s).getAttribute('fetchpriority'))`), ['high', 'low']);
-      });
-    }
+// Without JavaScript there is no switch, so the phone shows the day screen.
+test('the hero phone shows the dark screen only at night', async () => {
+  for (const [setup, opts, want] of [['day', DAY, '0'], ['night', NIGHT, '1'], ['no JavaScript', { ...DAY, javascript: false }, '0']]) {
+    await withPage('/', { ...opts, reducedMotion: true }, async (page) => {
+      const [light, dark] = await page.eval(`['.scr-day', '.scr-night'].map((s) => getComputedStyle(document.querySelector('#hero ' + s)).opacity)`);
+      assert.equal(light, '1', setup);
+      assert.equal(dark, want, setup);
+      // The day screen is the page's main image; the night one waits its turn.
+      assert.deepEqual(await page.eval(`['.scr-day', '.scr-night'].map((s) => document.querySelector('#hero ' + s).getAttribute('fetchpriority'))`), ['high', 'low']);
+    });
   }
 });
 
@@ -313,14 +317,14 @@ test('the M stands on its two outer strokes', async () => {
 // At night the phone's frame is the dark screen's own colour, so no lighter
 // ring shows round the screen.
 test('at night the hero phone frame matches its screen', async () => {
-  for (const opts of [{ colorScheme: 'dark' }, { colorScheme: 'dark', javascript: false }]) {
+  await withPage('/', NIGHT, async (page) => {
+    assert.equal(await page.eval(`getComputedStyle(document.querySelector('#hero .phone')).backgroundColor`), 'rgb(19, 18, 23)');
+  });
+  for (const opts of [DAY, { ...DAY, javascript: false }]) {
     await withPage('/', opts, async (page) => {
-      assert.equal(await page.eval(`getComputedStyle(document.querySelector('#hero .phone')).backgroundColor`), 'rgb(19, 18, 23)');
+      assert.notEqual(await page.eval(`getComputedStyle(document.querySelector('#hero .phone')).backgroundColor`), 'rgb(19, 18, 23)');
     });
   }
-  await withPage('/', { colorScheme: 'light' }, async (page) => {
-    assert.notEqual(await page.eval(`getComputedStyle(document.querySelector('#hero .phone')).backgroundColor`), 'rgb(19, 18, 23)');
-  });
 });
 
 // Review Focus 4 on the homepage: without Fredoka the letters are measured in the fallback font.
@@ -607,11 +611,12 @@ test('mashing the button stays consistent', async () => {
 });
 
 test('the chat and the panel are readable, day and night', async () => {
-  for (const colorScheme of ['light', 'dark']) {
-    for (const javascript of [true, false]) {
+  // Without JavaScript there is no night, so that runs once, in day.
+  for (const [theme, opts] of [['day', DAY], ['night', NIGHT]]) {
+    for (const javascript of theme === 'day' ? [true, false] : [true]) {
       // With motion off every message is on show at once.
-      await withPage('/', { colorScheme, javascript, reducedMotion: true }, async (page) => {
-        const setup = `${colorScheme}, javascript ${javascript}`;
+      await withPage('/', { ...opts, javascript, reducedMotion: true }, async (page) => {
+        const setup = `${theme}, javascript ${javascript}`;
         assert.equal(await page.eval(shown('#problem .dmsg')), 9, setup);
         assert.deepEqual(await page.eval(CONTRAST_JS), [], `${setup}: the chat`);
         if (!javascript) return;
@@ -627,8 +632,8 @@ test('the chat and the panel are readable, day and night', async () => {
 // but for a sighted visitor they are the only sign of whose a row is.
 test('avatar initials read at 4.5:1 and wear their person’s colour', async () => {
   const MEMBER = { G: 'rgb(59, 91, 219)', M: 'rgb(230, 73, 128)', S: 'rgb(232, 89, 12)' };
-  for (const colorScheme of ['light', 'dark']) {
-    await withPage('/', { colorScheme, reducedMotion: true }, async (page) => {
+  for (const [colorScheme, opts] of [['day', DAY], ['night', NIGHT]]) {
+    await withPage('/', { ...opts, reducedMotion: true }, async (page) => {
       const avatars = await page.eval(`(() => {
         const rgb = (css) => css.match(/[\\d.]+/g).map(Number);
         const lum = ([r, g, b]) => [r, g, b].map((c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; })

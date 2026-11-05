@@ -34,7 +34,7 @@
 /* ---------- Colours ---------- */
 
 /* Day. The inline script in each page's <head> sets data-theme on <html>
-   before the first paint: "night" from the switch or a dark system. */
+   before the first paint: "night" only if the visitor picked it with the switch. */
 :root {
   color-scheme: light;
   --bg: #FFF7EC;
@@ -60,9 +60,8 @@
   --shadow: 4px 5px 0 var(--line);
 }
 
-/* Night, from the switch. The block after it is the same colours for
-   visitors without JavaScript whose system is dark; tests/static.test.mjs
-   keeps the two identical, so change both together. */
+/* Night, only from the switch: every visitor opens in day, whatever their
+   system is set to (his choice, 2026-11-05). */
 :root[data-theme="night"] {
   color-scheme: dark;
   --bg: #141E33;
@@ -80,26 +79,6 @@
   --tint4: #2B2F57;
   --accent-text: #3FD3C3;
   --on-blob: #fff;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-    --bg: #141E33;
-    --fg: #F3EEDF;
-    --muted: #AEB8C8;
-    --card: #1F2B45;
-    --blob: #0B7B72;
-    --line: #070C18;
-    --soft: #26375A;
-    --hi: #2E2A55;
-    --accent: #3FD3C3;
-    --tint1: #17364A;
-    --tint2: #3A3350;
-    --tint3: #3E2C45;
-    --tint4: #2B2F57;
-    --accent-text: #3FD3C3;
-    --on-blob: #fff;
-  }
 }
 
 
@@ -183,7 +162,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outlin
 
 /* ---------- Day/night switch ---------- */
 
-/* Without JavaScript the page follows the system and the switch would do
+/* Without JavaScript the page stays in day and the switch would do
    nothing, so it only shows once the inline script has marked <html>. */
 .switch {
   display: none; flex: none; position: relative;

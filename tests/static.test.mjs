@@ -110,18 +110,21 @@ for (const { file } of PAGES) {
   });
 }
 
-// The night colours are written twice: for the switch, and for visitors
-// without JavaScript whose system is dark. CSS cannot share one block
-// without a build step, so this keeps the two copies the same.
 const css = () => read('assets/site-1.css').replace(/\/\*[\s\S]*?\*\//g, '');
 const declarations = (block) => block.split(';').map((d) => d.trim().replace(/\s*:\s*/, ': ')).filter(Boolean);
 
-test('site-1.css: the two night blocks match', () => {
-  const switched = [...css().matchAll(/:root\[data-theme="night"\]\s*\{([^}]*)\}/g)];
-  const system = [...css().matchAll(/@media\s*\(prefers-color-scheme:\s*dark\)\s*\{\s*:root:not\(\[data-theme\]\)\s*\{([^}]*)\}/g)];
-  assert.equal(switched.length, 1, 'one :root[data-theme="night"] block');
-  assert.equal(system.length, 1, 'one no-JS dark block');
-  assert.deepEqual(declarations(system[0][1]), declarations(switched[0][1]));
+// Every page opens in day, whatever the visitor's system is set to; night
+// comes only from the switch (his choice, 2026-11-05). So nothing on the
+// site may look at the system's dark setting, and the browser's bar is cream.
+test('nothing follows the system dark setting', () => {
+  const files = [...fs.readdirSync(ROOT).filter((n) => n.endsWith('.html')),
+    ...fs.readdirSync(path.join(ROOT, 'assets')).filter((n) => /\.(css|js)$/.test(n)).map((n) => `assets/${n}`)];
+  for (const f of files) assert.doesNotMatch(read(f), /prefers-color-scheme/, f);
+  for (const { file } of PAGES) {
+    assert.deepEqual([...read(file).matchAll(/<meta name="theme-color"[^>]*>/g)].map((m) => m[0]),
+      ['<meta name="theme-color" content="#FFF7EC">'], file);
+  }
+  assert.equal([...css().matchAll(/:root\[data-theme="night"\]\s*\{([^}]*)\}/g)].length, 1, 'one :root[data-theme="night"] block');
 });
 
 test('site-1.css: the colours are the agreed ones', () => {

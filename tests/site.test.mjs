@@ -4,7 +4,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { startServer } from './serve.mjs';
 import { launch } from './browser.mjs';
-import { PAGES } from './pages.mjs';
+import { PAGES, PICKED_NIGHT } from './pages.mjs';
 import { CONTRAST_JS } from './contrast.mjs';
 
 let server, browser;
@@ -29,37 +29,44 @@ async function withPage(path, opts, fn) {
 // Tabs share localStorage, so a test that picks a theme forgets it after.
 const forget = () => withPage('/privacy', {}, (page) => page.eval('localStorage.clear()'));
 
+// Day is what every visitor opens in, also on a phone set to dark mode;
+// night is a visitor who picked it with the switch on an earlier visit.
+const THEMES = [['day', { colorScheme: 'dark' }], ['night', { colorScheme: 'light', initScript: PICKED_NIGHT }]];
+const DAY_BG = 'rgb(255, 247, 236)';
+
 for (const { path, kind, pose, prop } of PAGES) {
   test(`${path}: no errors, day and night, desktop and 360px phone`, async () => {
-    for (const colorScheme of ['light', 'dark']) {
+    for (const [theme, opts] of THEMES) {
       for (const width of [1280, 360]) {
-        const setup = `${colorScheme} ${width}px`;
-        await withPage(path, { colorScheme, width, height: width > 400 ? 900 : 780, mobile: width <= 400 }, async (page, { status }) => {
+        const setup = `${theme} ${width}px`;
+        await withPage(path, { ...opts, width, height: width > 400 ? 900 : 780, mobile: width <= 400 }, async (page, { status }) => {
           assert.equal(status, kind === '404' ? 404 : 200, setup);
           assert.deepEqual(page.errors, [], setup);
           // On a phone Chrome zooms out to fit anything too wide, which makes innerWidth grow too.
           const [inner, scroll] = await page.eval('[innerWidth, document.documentElement.scrollWidth]');
           assert.equal(inner, width, `${setup}: the page was zoomed out to fit something wider`);
           assert.ok(scroll <= inner, `${setup}: scrolls sideways (${scroll} > ${inner})`);
-          assert.equal(await page.eval('document.documentElement.dataset.theme'), colorScheme === 'dark' ? 'night' : 'day', setup);
+          assert.equal(await page.eval('document.documentElement.dataset.theme'), theme, setup);
         });
       }
     }
   });
 
+  // On a phone set to dark mode too: without JavaScript there is no switch, so it is day.
   test(`${path}: readable without JavaScript`, async () => {
-    await withPage(path, { javascript: false }, async (page) => {
+    await withPage(path, { javascript: false, colorScheme: 'dark' }, async (page) => {
       const h1 = await page.eval(`(() => { const r = document.querySelector('h1').getBoundingClientRect(); return [r.width, r.height]; })()`);
       assert.ok(h1[0] > 0 && h1[1] > 0, 'the h1 has no box');
       assert.equal(await page.eval(`document.querySelectorAll('.pending').length`), 0);
       assert.equal(await page.eval(`getComputedStyle(document.getElementById('theme-switch')).display`), 'none');
+      assert.equal(await page.eval('getComputedStyle(document.body).backgroundColor'), DAY_BG);
     });
   });
 
   test(`${path}: contrast passes, day and night`, async () => {
-    for (const colorScheme of ['light', 'dark']) {
-      await withPage(path, { colorScheme }, async (page) => {
-        assert.deepEqual(await page.eval(CONTRAST_JS), [], colorScheme);
+    for (const [theme, opts] of THEMES) {
+      await withPage(path, opts, async (page) => {
+        assert.deepEqual(await page.eval(CONTRAST_JS), [], theme);
       });
     }
   });
@@ -227,7 +234,7 @@ test('the switch flips and remembers', async () => {
       assert.equal(await page.eval('document.documentElement.dataset.theme'), 'night');
       assert.equal(await page.eval(`document.getElementById('theme-switch').getAttribute('aria-pressed')`), 'true');
       assert.equal(await page.eval(`localStorage.getItem('mazi-theme')`), 'night');
-      assert.deepEqual(await page.eval(THEME_COLOURS), ['#141E33', '#141E33']);
+      assert.deepEqual(await page.eval(THEME_COLOURS), ['#141E33']);
       assert.deepEqual(await page.eval('window.heard'), { theme: 'night', byUser: true });
     });
     await withPage('/terms', { colorScheme: 'light' }, async (page) => {
@@ -239,12 +246,12 @@ test('the switch flips and remembers', async () => {
   }
 });
 
-test('a stored choice beats the system', async () => {
+test('a stored day stays day on a dark phone', async () => {
   try {
     await withPage('/privacy', {}, (page) => page.eval(`localStorage.setItem('mazi-theme', 'day')`));
     await withPage('/privacy', { colorScheme: 'dark' }, async (page) => {
       assert.equal(await page.eval('document.documentElement.dataset.theme'), 'day');
-      assert.deepEqual(await page.eval(THEME_COLOURS), ['#FFF7EC', '#FFF7EC']);
+      assert.deepEqual(await page.eval(THEME_COLOURS), ['#FFF7EC']);
     });
   } finally {
     await forget();
@@ -255,7 +262,7 @@ test('a stored choice beats the system', async () => {
 // must take up a choice made on the page the visitor came back from.
 test('Back shows the choice made on the next page', async () => {
   try {
-    // A choice is stored all along, so the system theme plays no part.
+    // A choice is stored all along, so Back never falls back to plain day.
     await withPage('/privacy', {}, (page) => page.eval(`localStorage.setItem('mazi-theme', 'day')`));
     let restored = false;
     // Chrome now and then empties its cache; the page then simply loads
@@ -274,7 +281,7 @@ test('Back shows the choice made on the next page', async () => {
         assert.equal(await page.eval('location.pathname'), '/privacy');
         assert.equal(await page.eval('document.documentElement.dataset.theme'), 'night');
         assert.equal(await page.eval(`document.getElementById('theme-switch').getAttribute('aria-pressed')`), 'true');
-        assert.deepEqual(await page.eval(THEME_COLOURS), ['#141E33', '#141E33']);
+        assert.deepEqual(await page.eval(THEME_COLOURS), ['#141E33']);
         assert.deepEqual(page.errors, []);
       });
     }
@@ -300,32 +307,20 @@ test('storage that throws does not break the switch', async () => {
   });
 });
 
-// Review Focus 2: the system goes dark (at sunset, say) while the page is open.
-test('follows the system while no choice is stored', async () => {
-  try {
-    await withPage('/privacy', { colorScheme: 'light' }, async (page) => {
-      const themeWithin = async (ms, want) => {
-        let theme;
-        for (const end = Date.now() + ms; Date.now() < end; await sleep(25)) {
-          theme = await page.eval('document.documentElement.dataset.theme');
-          if (theme === want) break;
-        }
-        return theme;
-      };
-      await page.eval(`document.addEventListener('mazi:theme', (e) => { window.heard = e.detail; })`);
-      await page.media({ colorScheme: 'dark' });
-      assert.equal(await themeWithin(500, 'night'), 'night');
-      assert.deepEqual(await page.eval('window.heard'), { theme: 'night', byUser: false });
-      assert.equal(await page.eval(`document.getElementById('theme-switch').getAttribute('aria-pressed')`), 'true');
-
-      // Once the visitor has used the switch, their choice stays put.
-      await page.click('#theme-switch');
-      await page.media({ colorScheme: 'light' });
-      await page.media({ colorScheme: 'dark' });
-      await sleep(300);
-      assert.equal(await page.eval('document.documentElement.dataset.theme'), 'day');
-    });
-  } finally {
-    await forget();
-  }
+// A phone set to dark mode, or one going dark at sunset while the page is
+// open, leaves the page in day: night comes only from the switch.
+test('opens in day and stays there when the system goes dark', async () => {
+  await withPage('/privacy', { colorScheme: 'dark' }, async (page) => {
+    assert.equal(await page.eval('document.documentElement.dataset.theme'), 'day');
+    assert.equal(await page.eval(`document.getElementById('theme-switch').getAttribute('aria-pressed')`), 'false');
+    assert.deepEqual(await page.eval(THEME_COLOURS), ['#FFF7EC']);
+    assert.equal(await page.eval('getComputedStyle(document.body).backgroundColor'), DAY_BG);
+    await page.eval(`document.addEventListener('mazi:theme', (e) => { window.heard = e.detail; })`);
+    await page.media({ colorScheme: 'light' });
+    await page.media({ colorScheme: 'dark' });
+    await sleep(300);
+    assert.equal(await page.eval('document.documentElement.dataset.theme'), 'day');
+    assert.equal(await page.eval('window.heard ?? null'), null);
+    assert.deepEqual(page.errors, []);
+  });
 });

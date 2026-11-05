@@ -27,7 +27,6 @@ function storeTheme(theme) {
 
 export function setupThemeSwitch() {
   const button = document.getElementById('theme-switch');
-  const system = matchMedia('(prefers-color-scheme: dark)');
   // Whether the visitor used the switch on this page, for when storage fails.
   let picked = false;
 
@@ -51,19 +50,12 @@ export function setupThemeSwitch() {
     change(theme, true);
   });
 
-  // Until the visitor picks, the page follows the system, also when it
-  // changes while the page is open (a phone going dark at sunset).
-  system.addEventListener('change', () => {
-    if (picked || storedTheme()) return;
-    change(system.matches ? 'night' : 'day', false);
-  });
-
   // Back (or Forward) can show the page from the browser's back-forward
   // cache exactly as it was left, so it takes up a choice made on another
-  // page since. Nothing stored: what was picked here, or else the system.
+  // page since. Nothing stored: what was picked here, or else day.
   addEventListener('pageshow', (e) => {
     if (!e.persisted) return;
-    const theme = storedTheme() ?? (picked ? root.dataset.theme : system.matches ? 'night' : 'day');
+    const theme = storedTheme() ?? (picked ? root.dataset.theme : 'day');
     if (theme !== root.dataset.theme) change(theme, false);
   });
 }

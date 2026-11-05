@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mascot fixture</title>
 <!-- For tests/mascot.test.mjs: one í with a trolley, and two empty boxes for letters. -->
-<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}if(t!=='day'&&t!=='night')t=matchMedia('(prefers-color-scheme: dark)').matches?'night':'day';d.dataset.theme=t;d.classList.add('js')})(document.documentElement)</script>
+<script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}d.dataset.theme=t==='night'?'night':'day';d.classList.add('js')})(document.documentElement)</script>
 <link rel="stylesheet" href="/assets/site-1.css">
 <script type="module">import * as M from '/assets/mascot-1.js'; window.M = M;</script>
 </head>

@@ -75,7 +75,7 @@
 .floaty-cal { right: 30px; bottom: 30px; --r: -4deg; animation-delay: -3s; }
 
 /* The phone holds both Today screens. The dark one lies on top and fades in
-   at night; without JavaScript it follows a dark system. */
+   at night. */
 .phone {
   position: absolute; left: 50%; top: 24px; width: 222px; margin: 0 0 0 -60px; padding: 7px;
   background: var(--card); border: 3px solid var(--line); border-radius: 34px;
@@ -89,10 +89,6 @@
 /* At night the frame takes the dark screen's own colour (sampled from
    today-dark: #131217), so no navy ring shows between the frame and the screen. */
 [data-theme="night"] .phone { background: #131217; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) .scr .scr-night { opacity: 1; }
-  :root:not([data-theme]) .phone { background: #131217; }
-}
 
 /* Three notifications pop in over the phone in turn, 3 seconds each. */
 .notifs { position: absolute; z-index: 4; left: 30%; top: 4px; width: 280px; }
@@ -173,9 +169,6 @@ html:not(.js) .js-only { display: none; }
    way. The avatars keep the app's own colours. */
 :root { --name-george: #3B5BDB; --name-maria: #C2255C; --name-sofia: #B8460B; }
 :root[data-theme="night"] { --name-george: #91A7FF; --name-maria: #F783AC; --name-sofia: #FF922B; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) { --name-george: #91A7FF; --name-maria: #F783AC; --name-sofia: #FF922B; }
-}
 
 /* The chat: a header with the unread badge, then the messages. */
 .chat {
