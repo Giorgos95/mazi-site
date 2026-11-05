@@ -47,8 +47,9 @@ for (const { path: p, file } of INDEXABLE) {
     assert.equal(canonical(html), urlOf(p));
     const description = meta(html, 'name', 'description');
     assert.ok(description, 'no meta description');
-    // Google cuts a snippet at about 155-160 characters.
-    assert.ok(description.length >= 70 && description.length <= 160, `description is ${description.length} characters`);
+    // Google cuts a snippet at about 155-160 characters, and Bing Webmaster
+    // Tools called the homepage's 151 too long (2026-11-05), so 150 is the most.
+    assert.ok(description.length >= 70 && description.length <= 150, `description is ${description.length} characters`);
     for (const k of ['og:title', 'og:description', 'og:image', 'og:url', 'og:type', 'og:site_name', 'og:image:alt']) {
       assert.ok(meta(html, 'property', k), `no ${k}`);
     }
