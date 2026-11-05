@@ -9,7 +9,9 @@ import { baseline, mainBlocks, hrefs, readFile as read } from './baseline.mjs';
 import { PAGES, BOOT } from './pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const STYLESHEET = '<link rel="stylesheet" href="/assets/site-1.css">';
+// site-1.css became site-2.css on 2026-11-05: browsers keep /assets/* for a day,
+// so a stylesheet change that must reach every visitor at once gets a new name.
+const STYLESHEET = '<link rel="stylesheet" href="/assets/site-2.css">';
 
 // Text the redesign dropped on purpose (see the spec): the homepage's
 // self-ticking list card and its "At home in light and dark" section.
@@ -33,11 +35,15 @@ const REMOVED = {
   'faq.html': [
     'A morning digest at 9:00 of the tasks due today that are yours or anyone\'s, a reminder at the time you give a task, a reminder an hour before an event that is for you or for everyone (at 9:00 on the day for an all-day event), and a notification when someone assigns you a task or adds an event. One switch in Settings turns them all on or off.',
     'Mazí (μαζί) is Greek for together. The app is in English and Greek: it follows your phone\'s language, and you can switch it in Settings.',
-    // The prices went on the site on 2026-11-05.
-    'A monthly plan and a yearly plan, after the 30-day free trial. The app shows the price for your country before you subscribe.'],
+    // The prices went on the site on 2026-11-05, then one US price for both stores,
+    // with the yearly plan's price a month.
+    'A monthly plan and a yearly plan, after the 30-day free trial. The app shows the price for your country before you subscribe.',
+    'A monthly plan and a yearly plan, after the 30-day free trial, and one covers the whole household. In the US they are $3.49 a month or $28.99 a year, on the App Store and Google Play. Prices differ by country, and the app shows yours before you subscribe.'],
   'cozi-alternative.html': [
     'What this page says about Cozi comes from cozi.com, read on 5 November 2026. Prices are the US prices shown there.',
-    'No. Mazí has a 30-day free trial with everything unlocked and no card needed, then a monthly or yearly subscription that covers the whole household. There is no free version, and there are no ads.'],
+    'No. Mazí has a 30-day free trial with everything unlocked and no card needed, then a monthly or yearly subscription that covers the whole household. There is no free version, and there are no ads.',
+    'No. Mazí has a 30-day free trial with everything unlocked and no card needed. After that, one subscription covers the whole household: $3.49 a month or $28.99 a year in the US. There is no free version, and there are no ads.',
+    'A year costs less than Cozi Gold: $28.99, against $39.'],
 };
 
 // Every attribute value that names a URL; srcset holds several.
@@ -64,7 +70,7 @@ for (const { file } of PAGES) {
     assert.ok(at >= 0, 'the boot script is missing');
     assert.equal(html.indexOf(BOOT, at + 1), -1, 'the boot script appears twice');
     const sheet = html.indexOf(STYLESHEET);
-    assert.ok(sheet >= 0, 'site-1.css is not linked');
+    assert.ok(sheet >= 0, 'site-2.css is not linked');
     assert.ok(at < sheet, 'the boot script comes after the stylesheet');
   });
 
@@ -134,7 +140,7 @@ for (const { file } of PAGES) {
   });
 }
 
-const css = () => read('assets/site-1.css').replace(/\/\*[\s\S]*?\*\//g, '');
+const css = () => read('assets/site-2.css').replace(/\/\*[\s\S]*?\*\//g, '');
 const declarations = (block) => block.split(';').map((d) => d.trim().replace(/\s*:\s*/, ': ')).filter(Boolean);
 
 // Every page opens in day, whatever the visitor's system is set to; night
@@ -151,7 +157,7 @@ test('nothing follows the system dark setting', () => {
   assert.equal([...css().matchAll(/:root\[data-theme="night"\]\s*\{([^}]*)\}/g)].length, 1, 'one :root[data-theme="night"] block');
 });
 
-test('site-1.css: the colours are the agreed ones', () => {
+test('site-2.css: the colours are the agreed ones', () => {
   const tokens = (block) => Object.fromEntries(declarations(block)
     .filter((d) => d.startsWith('--')).map((d) => d.split(': ')).map(([k, v]) => [k, v.toLowerCase()]));
   const day = tokens(css().match(/(?:^|\})\s*:root\s*\{([^}]*)\}/)[1]);
@@ -171,10 +177,10 @@ test('site-1.css: the colours are the agreed ones', () => {
 });
 
 test('old stylesheets are gone', () => {
-  for (const f of ['assets/article.css', 'assets/feature.css']) assert.equal(fs.existsSync(path.join(ROOT, f)), false, f);
+  for (const f of ['assets/article.css', 'assets/feature.css', 'assets/site-1.css']) assert.equal(fs.existsSync(path.join(ROOT, f)), false, f);
   for (const f of fs.readdirSync(ROOT).filter((n) => n.endsWith('.html'))) {
     const html = read(f);
-    assert.ok(!/article\.css|feature\.css/.test(html), `${f} still mentions an old stylesheet`);
+    assert.ok(!/article\.css|feature\.css|site-1\.css/.test(html), `${f} still mentions an old stylesheet`);
   }
 });
 

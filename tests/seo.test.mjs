@@ -29,7 +29,7 @@ const canonical = (html) => head(html).match(/<link rel="canonical" href="([^"]*
 const noindex = (html) => /<meta name="robots" content="[^"]*noindex/.test(head(html));
 const jsonld = (html) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
 
-// The pages meant for search: everything but /join, /tiktok and the 404 page.
+// The pages meant for search: everything but /join and the 404 page.
 const INDEXABLE = PAGES.filter(({ file, kind }) => kind !== '404' && !noindex(read(file)));
 const urlOf = (p) => SITE + p;
 
@@ -37,7 +37,7 @@ test('the pages meant for search are the ones expected', () => {
   assert.deepEqual(INDEXABLE.map((p) => p.path).sort(),
     ['/', '/chores', '/cozi-alternative', '/delete-account', '/family-calendar', '/faq', '/meal-planner', '/privacy',
       '/shopping-list', '/terms']);
-  for (const file of ['join.html', 'tiktok.html']) assert.ok(noindex(read(file)), `${file} should stay out of search`);
+  for (const file of ['join.html']) assert.ok(noindex(read(file)), `${file} should stay out of search`);
 });
 
 for (const { path: p, file } of INDEXABLE) {
@@ -142,6 +142,14 @@ function exists(address) {
   if (redirects.has(p)) return exists(redirects.get(p));
   return [p, p + '.html'].some((f) => fs.existsSync(path.join(ROOT, f)) && fs.statSync(path.join(ROOT, f)).isFile());
 }
+
+// The TikTok bio linked /tiktok until its page came down (2026-11-05); links
+// to it still out there go to the homepage, and so does the old .html one.
+test('/tiktok goes to the homepage', () => {
+  assert.equal(fs.existsSync(path.join(ROOT, 'tiktok.html')), false);
+  assert.equal(redirects.get('/tiktok'), '/');
+  assert.equal(redirects.get('/tiktok.html'), '/');
+});
 
 test('every link and image on the site leads somewhere', () => {
   for (const { file } of PAGES) {

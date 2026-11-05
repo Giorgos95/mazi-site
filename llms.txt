@@ -22,7 +22,7 @@ In the App Store and on Google Play it is listed as "Mazi: Shared Family Organiz
 
 - A 30-day free trial with every feature unlocked. No card needed, and it never turns into a paid subscription by itself.
 - After the trial, a monthly or yearly subscription. One subscription covers the whole household, up to eight people, and the people invited pay nothing. There is no free plan.
-- In the US: $3.49 a month or $28.99 a year, the same on the App Store and Google Play. Prices differ by country, and the app shows the local price before subscribing.
+- In the US: $28.99 a year (which comes to $2.42 a month) or $3.49 month to month, the same on the App Store and Google Play. Prices differ by country, and the app shows the local price before subscribing.
 - When the trial ends without a subscription, the household becomes read-only. Nothing is deleted.
 
 ## Privacy

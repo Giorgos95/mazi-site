@@ -8,4 +8,8 @@
 /terms.html            /terms           301
 /delete-account.html   /delete-account  301
 /join.html             /join            301
-/tiktok.html           /tiktok          301
+
+# The TikTok page was taken down on 2026-11-05, and the TikTok bio now links
+# meetmazi.com itself. Links to the old page still out there go to the homepage.
+/tiktok                /                301
+/tiktok.html           /                301

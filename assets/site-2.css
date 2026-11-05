@@ -296,32 +296,46 @@ html.js .switch { display: block; }
   .article th, .article td { padding: 0.7rem 0.75rem; }
 }
 
-/* The Mazí and Cozi comparison: the topic in bold on the left, Mazí's
-   column tinted. On a phone each row stacks into a block: the topic, then
-   Mazí's line and Cozi's, each named by its data-label. */
+/* The Mazí and Cozi comparison. The names head the columns in the
+   headline face, Mazí's with its icon, and Mazí's column is tinted from its
+   name down. The price row leads with the figure in large type. On a phone
+   each row stacks into a block: the topic, then Mazí's line and Cozi's,
+   each named by its data-label. */
 .article table.compare { table-layout: fixed; }
-.compare .c-topic { width: 24%; }
-.compare .c-us, .compare .c-them { width: 38%; }
-.compare th[scope="row"] {
-  font-size: 0.95rem; font-weight: 700; letter-spacing: 0; text-transform: none;
-  color: var(--fg); border-bottom: 0;
+.compare .c-topic { width: 23%; }
+.compare .c-us, .compare .c-them { width: 38.5%; }
+.compare th, .compare td { padding: 0.9rem 1.1rem; }
+.compare thead > tr > * {
+  padding-block: 1.05rem 0.9rem; border-bottom: 2.5px solid var(--line);
+  font: 600 1.2rem/1.2 Fredoka, system-ui, sans-serif; letter-spacing: 0; text-transform: none;
+  color: var(--muted);
 }
-.compare tr:not(:last-child) > th[scope="row"] { border-bottom: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
+.compare thead .us { color: var(--fg); }
+.compare thead img {
+  width: 28px; height: 28px; margin-right: 0.55rem; vertical-align: -7px;
+  border: 2px solid var(--line); border-radius: 9px;
+}
+.compare tbody th { font-size: 0.95rem; letter-spacing: 0; text-transform: none; color: var(--fg); border-bottom: 0; }
+.compare tbody tr:not(:last-child) > * { border-bottom: 2px solid color-mix(in srgb, var(--fg) 10%, transparent); }
 .compare .us { background: var(--soft); transition: background-color .7s; }
-.compare thead .us { color: var(--accent-text); }
+.compare .fig { display: block; margin-bottom: 0.2rem; font: 600 1.35rem/1.2 Fredoka, system-ui, sans-serif; }
 @media (max-width: 560px) {
   .compare, .compare tbody, .compare tr, .compare th, .compare td { display: block; }
   .compare thead { display: none; }
-  .compare tr { padding: 0.85rem 0.9rem; }
-  .compare tr:not(:last-child) { border-bottom: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
-  .article .compare tr > th[scope="row"], .article .compare tr > td { border-bottom: 0; }
-  .compare th[scope="row"] { padding: 0 0 0.45rem; }
-  .compare td { display: grid; grid-template-columns: 3.4rem 1fr; gap: 0.5rem; padding: 0.4rem 0.6rem; border-radius: 10px; }
-  .compare td::before {
-    content: attr(data-label); padding-top: 0.15rem;
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  .compare tbody tr { padding: 0.95rem 0.85rem 0.85rem; }
+  .compare tbody tr:not(:last-child) { border-bottom: 2px solid color-mix(in srgb, var(--fg) 10%, transparent); }
+  .article .compare tbody tr > * { border-bottom: 0; }
+  .compare tbody th { padding: 0 0.2rem 0.5rem; font-size: 1rem; }
+  /* The label sits in its own column; everything in the cell goes beside it. */
+  .compare td {
+    display: grid; grid-template-columns: 3.1rem 1fr; gap: 0 0.5rem; align-items: baseline;
+    padding: 0.55rem 0.7rem; border-radius: 12px;
   }
+  .compare td > * { grid-column: 2; }
+  .compare td + td { margin-top: 0.3rem; }
+  .compare td::before { content: attr(data-label); font: 600 0.95rem/1.5 Fredoka, system-ui, sans-serif; color: var(--muted); }
   .compare td.us::before { color: var(--accent-text); }
+  .compare .fig { font-size: 1.2rem; }
 }
 
 /* A note set apart from the text. */
@@ -377,14 +391,14 @@ html.js .switch { display: block; }
    keeps the full-width stage, crowded but still on the screen. */
 @media (max-width: 499.98px) {
   @supports (zoom: .5) {
-    .fstage:not(.tiktok-phone) { width: 460px; zoom: .69; }
-    .fstage:not(.tiktok-phone) .say { zoom: 1.45; }
+    .fstage { width: 460px; zoom: .69; }
+    .fstage .say { zoom: 1.45; }
   }
 }
 @media (max-width: 356.98px) {
   @supports (zoom: .5) {
-    .fstage:not(.tiktok-phone) { zoom: .6; }
-    .fstage:not(.tiktok-phone) .say { zoom: 1.67; }
+    .fstage { zoom: .6; }
+    .fstage .say { zoom: 1.67; }
   }
 }
 
@@ -500,7 +514,7 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
 }
 
 
-/* ---------- Invite, TikTok and not-found pages ---------- */
+/* ---------- Invite and not-found pages ---------- */
 
 /* The invite page's header is only the brand and the switch: leaving would
    drop the invite code. */
@@ -545,11 +559,4 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
 .article .note a { color: var(--accent-text); font-weight: 700; }
 [hidden] { display: none !important; }
 
-/* The TikTok page: what the app does, as sticker rows, and the phone below. */
-.article .what { list-style: none; padding: 0; margin: 2.2rem 0 0; display: grid; gap: 0.9rem; }
-.what li { margin: 0; padding: 0.9rem 1.1rem; }
-.what b { color: var(--accent-text); }
-.fstage.tiktok-phone { height: auto; max-width: 420px; margin: 2.4rem auto 0; padding: 1rem 0 1.6rem; }
-.fstage.tiktok-phone::before { inset: 20px 0 10px; }
-.tiktok-phone .fphone { position: relative; right: auto; top: auto; margin: 0 auto; }
 #badges { margin-top: 1.2rem; }

@@ -1,10 +1,10 @@
-/* The homepage's own parts, loaded after site-1.css: the hero stage with the
+/* The homepage's own parts, loaded after site-2.css: the hero stage with the
    Today screen, "the problem" (the family chat and the Mazí panel), the four
    feature rows, "Built for a household" and the closing, where the family
    spells Mazí. Colours, the header, bands, the í and the feature stages are
-   shared and live in site-1.css.
+   shared and live in site-2.css.
 
-   Like site-1.css, the name carries a number: a change that must reach every
+   Like site-2.css, the name carries a number: a change that must reach every
    visitor at once goes in a new file, home-2.css. */
 
 
@@ -377,7 +377,7 @@ html.js .tk { display: grid; }
   html.js .chat-body { height: 320px; }
   .sort-i { width: 96px; }
   /* The í stands at the left end of its row, so its lines grow rightwards
-     (see .say in site-1.css). */
+     (see .say in site-2.css). */
   .sort-i .say { --sx: -36px; --tail: 36px; }
 }
 
@@ -433,7 +433,7 @@ html.js .floor { display: flex; align-items: flex-end; gap: 10px; border-bottom:
 .member.dim:focus-visible { opacity: 1; filter: none; }
 .member .say { top: -14px; font-size: .9rem; }
 /* The first and last of the family stand at the edges of the column, so
-   their lines grow inwards (see .say in site-1.css). */
+   their lines grow inwards (see .say in site-2.css). */
 .member:first-child .say { --sx: -36px; --tail: 36px; }
 .member:last-child .say { --sx: calc(36px - 100%); --tail: calc(100% - 36px); }
 /* The letters shrink with the column on a narrow phone; the aspect ratio keeps
@@ -485,7 +485,7 @@ html.js .floor { display: flex; align-items: flex-end; gap: 10px; border-bottom:
 .cta .sec-lead { margin: 0 auto; }
 .cta .badges { width: fit-content; justify-content: center; margin: 1.1rem auto 0; }
 
-/* M, a, z and the í, all 140px tall (site-1.css sizes their drawings). The
+/* M, a, z and the í, all 140px tall (site-2.css sizes their drawings). The
    row's height is kept for them before they are drawn, so the heading below
    stays put. Without JavaScript nothing would draw them, so the row is not
    shown at all. */
