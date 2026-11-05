@@ -86,6 +86,12 @@
 .scr img { display: block; width: 100%; transition: opacity .7s; }
 .scr .scr-night { position: absolute; inset: 0; height: 100%; opacity: 0; }
 [data-theme="night"] .scr .scr-night { opacity: 1; }
+/* Once the dark screen has faded in, the day screen goes: the tilted phone
+   softens the dark screen's edge, and the light screen under it showed
+   through as a thin grey line. Back to day it returns at once, under the
+   fading dark screen. Opacity, not visibility, so its description is still read. */
+.scr .scr-day { transition: none; }
+[data-theme="night"] .scr .scr-day { opacity: 0; transition: opacity 0s .7s; }
 /* At night the frame takes the dark screen's own colour (sampled from
    today-dark: #131217), so no navy ring shows between the frame and the screen. */
 [data-theme="night"] .phone { background: #131217; }

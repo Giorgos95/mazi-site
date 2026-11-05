@@ -153,16 +153,38 @@ test('the stars come out only at night', async () => {
   }
 });
 
-// Without JavaScript there is no switch, so the phone shows the day screen.
-test('the hero phone shows the dark screen only at night', async () => {
-  for (const [setup, opts, want] of [['day', DAY, '0'], ['night', NIGHT, '1'], ['no JavaScript', { ...DAY, javascript: false }, '0']]) {
+const SCREENS = `['.scr-day', '.scr-night'].map((s) => getComputedStyle(document.querySelector('#hero ' + s)).opacity)`;
+
+// One screen at a time. At night the day screen must not lie under the dark
+// one: the tilted phone softens the dark screen's edge, and the light screen
+// showed through it as a thin grey line round the screen (his screenshot,
+// 2026-11-05). Without JavaScript there is no switch, so it is the day screen.
+test('the hero phone shows the dark screen only at night, and nothing under it', async () => {
+  for (const [setup, opts, want] of [['day', DAY, ['1', '0']], ['night', NIGHT, ['0', '1']], ['no JavaScript', { ...DAY, javascript: false }, ['1', '0']]]) {
     await withPage('/', { ...opts, reducedMotion: true }, async (page) => {
-      const [light, dark] = await page.eval(`['.scr-day', '.scr-night'].map((s) => getComputedStyle(document.querySelector('#hero ' + s)).opacity)`);
-      assert.equal(light, '1', setup);
-      assert.equal(dark, want, setup);
+      assert.deepEqual(await page.eval(SCREENS), want, setup);
       // The day screen is the page's main image; the night one waits its turn.
       assert.deepEqual(await page.eval(`['.scr-day', '.scr-night'].map((s) => document.querySelector('#hero ' + s).getAttribute('fetchpriority'))`), ['high', 'low']);
     });
+  }
+});
+
+// With motion the dark screen fades in over the day one, so the day screen
+// stays until it is covered, and by day it is back at once under the fading
+// dark screen, so the phone never looks empty in between.
+test('switching, the day screen leaves once covered and is back at once', async () => {
+  try {
+    await withPage('/', {}, async (page) => {
+      await page.click('#theme-switch');
+      assert.deepEqual(await page.eval(`getComputedStyle(document.querySelector('#hero .scr-day')).opacity`), '1', 'gone before the dark screen covers it');
+      assert.equal(await until(page, `getComputedStyle(document.querySelector('#hero .scr-day')).opacity === '0'`, 2500), true, 'still under the dark screen');
+      assert.deepEqual(await page.eval(SCREENS), ['0', '1']);
+      await page.click('#theme-switch');
+      assert.equal(await page.eval(`getComputedStyle(document.querySelector('#hero .scr-day')).opacity`), '1', 'not back at once');
+      assert.deepEqual(page.errors, []);
+    });
+  } finally {
+    await forget();
   }
 });
 
