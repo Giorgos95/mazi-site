@@ -1,20 +1,27 @@
 # Mazí
 
-> Mazí (also written Mazi) is a shared organiser app for one household, on Android and iPhone. It keeps the shopping list, chores and tasks, recipes and meal plan, and the family calendar in one place, and everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together.
+> Mazí is a family organiser app for one household, on Android and iPhone. It keeps the shopping list, chores and tasks, recipes and meal plan, and the family calendar in one place, and everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together.
+
+In the App Store and on Google Play it is listed as "Mazi: Shared Family Organizer" ("Mazi: Shared Family Organiser" in the UK, "Mazi: Οργάνωση οικογένειας" in Greek), and the phone shows it as Mazi. Mazí, Mazi and meetmazi.com are the same app.
 
 ## What it does
 
-- Shopping list: one shared list, grouped by aisle (eight built-in categories plus up to 20 of your own) and filtered by shop, with photos on items for the exact brand. Mazí learns which category the household files each item under.
-- Chores and tasks: given to one person or left for anyone, with due dates, times and repeats (every day, week, 2 weeks, month or year). A morning digest at 9:00 lists the day's tasks, and a task with a time sends a reminder at that time.
+- Shopping list: one shared list, grouped by aisle (eight built-in categories plus up to 20 of your own) and filtered by shop, with photos on items for the exact brand. Mazí learns which category the household files each item under. It works with no signal: ticks, adds and edits made offline are saved once the phone is back online.
+- Chores and tasks: given to one person or left for anyone, with due dates, times and repeats (every day, week, 2 weeks, month or year). A task with a time sends a reminder at that time, and a heart on a finished task thanks whoever did it.
+- Your day: each morning at 9:00 one notification sums up the day, the events that are yours or everyone's, then your tasks due and the ones anyone can take.
 - Meal planner: the household's recipes and a weekly plan with breakfast, lunch and dinner. One tap adds the week's ingredients to the shopping list, merging what is already there.
 - Family calendar: each event is for one person or for everyone, shows in that person's colour (grey for everyone), and reminds the people it is for an hour before. Events can repeat and can run over several days.
 - Joining: one person starts a household and shares its invite code. Android and iPhone members share the same household.
 - Languages: English and Greek, following the phone's language.
 
+## Who it is for
+
+- Families and couples who share one home and want the shopping, the chores, the meals and the week out of the group chat and in one place.
+
 ## Price
 
 - A 30-day free trial with every feature unlocked. No card needed, and it never turns into a paid subscription by itself.
-- After the trial, a monthly or yearly subscription. One subscription covers the whole household, up to eight people, and the people invited pay nothing. There is no free plan.
+- After the trial, a monthly or yearly subscription, priced in the app for each country. One subscription covers the whole household, up to eight people, and the people invited pay nothing. There is no free plan.
 - When the trial ends without a subscription, the household becomes read-only. Nothing is deleted.
 
 ## Privacy
@@ -26,17 +33,19 @@
 
 - One household per person at a time, up to eight people per household.
 - It does not sync with Google Calendar or other calendar apps.
-- It needs an internet connection; there is no offline mode.
+- Offline, only the shopping list takes changes; the rest of the app shows what it last loaded and needs a connection to change anything.
 - No barcode scanning, prices, recipe import from websites, nutrition, or points and rewards for chores.
+- The calendar shows a month at a time; there is no week or day view in the calendar itself.
 
 ## Pages
 
 - [Home](https://meetmazi.com/): what Mazí is, with screenshots of each part of the app
 - [Shopping list](https://meetmazi.com/shopping-list): the shared shopping list in detail
-- [Chores and tasks](https://meetmazi.com/chores): assigning, repeating and reminders
+- [Chores and tasks](https://meetmazi.com/chores): assigning, repeating, reminders and thanks
 - [Meal planner](https://meetmazi.com/meal-planner): recipes, the weekly plan and the shopping list link
 - [Family calendar](https://meetmazi.com/family-calendar): events, colours, repeats and reminders
-- [Questions](https://meetmazi.com/faq): the trial, the subscription, how households and invites work, and privacy
+- [Questions](https://meetmazi.com/faq): what Mazí is, the trial, the subscription, how households and invites work, offline use, and privacy
+- [Mazí and Cozi](https://meetmazi.com/cozi-alternative): Mazí and Cozi side by side, with where Cozi does more, its details dated and linked to cozi.com
 
 ## Get the app
 

@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { baseline, headParts, mainBlocks, hrefs, readFile as read } from './baseline.mjs';
+import { baseline, mainBlocks, hrefs, readFile as read } from './baseline.mjs';
 import { PAGES, BOOT } from './pages.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -13,9 +13,26 @@ const STYLESHEET = '<link rel="stylesheet" href="/assets/site-1.css">';
 
 // Text the redesign dropped on purpose (see the spec): the homepage's
 // self-ticking list card and its "At home in light and dark" section.
+// The SEO work of 2026-11-05 rewrote these: the hero says what Mazí is, and
+// the pages describe app 1.2.3 (offline Shopping, the 9:00 Your day summary,
+// thanks on finished tasks, the Mazi spelling in the stores).
 const REMOVED = {
   'index.html': ['At home in light and dark.', 'This week', 'Bread, feta, kitchen roll', 'Take out the recycling',
-    'Wednesday: chicken thighs', 'Dentist, Friday 16:00'],
+    'Wednesday: chicken thighs', 'Dentist, Friday 16:00',
+    '🏠 for the whole household',
+    'One shared space for what to buy, who is doing what, what is for dinner, and what is happening this week. Everyone in the household sees the same lists, updated the moment something changes.',
+    'A shared shopping list, organised by category and by shop. Tick items off as you go and watch the cart fill up. When a name is not enough, add a photo of the exact brand your partner actually meant.',
+    'Assign a task to someone, or leave it unclaimed for whoever gets there first. Give it a date, add a time to get a reminder right then, or make a chore repeat every day, week or month. Each morning brings one quiet digest of what is due today.'],
+  'shopping-list.html': [
+    'The list groups itself into Produce, Bakery, Meat & Fish, Dairy, Pantry, Household, Frozen and Other. Mazí learns where your household files things: put oat milk under Dairy once, and next time it goes there by itself, on everyone\'s phone.',
+    'No. Adding and ticking items needs an internet connection, which is what keeps everyone\'s list the same.'],
+  'chores.html': [
+    'Each morning at 9:00, a digest lists the tasks due today that are yours or anyone\'s, and leaves out everyone else\'s. Give a task a time and a reminder arrives right then, with a Done button. When someone gives you a task, you hear about it.'],
+  'family-calendar.html': [
+    'An event reminds the person it is for, or everyone when it is for everyone: an hour before it starts, or at 9:00 on the day for an all-day event. When someone adds an event, the rest of the household hears about it.'],
+  'faq.html': [
+    'A morning digest at 9:00 of the tasks due today that are yours or anyone\'s, a reminder at the time you give a task, a reminder an hour before an event that is for you or for everyone (at 9:00 on the day for an all-day event), and a notification when someone assigns you a task or adds an event. One switch in Settings turns them all on or off.',
+    'Mazí (μαζί) is Greek for together. The app is in English and Greek: it follows your phone\'s language, and you can switch it in Settings.'],
 };
 
 // Every attribute value that names a URL; srcset holds several.
@@ -28,12 +45,14 @@ function urls(html) {
   return found;
 }
 
+// A page added since main has no earlier version to compare with.
+const inMain = (file) => { try { baseline(file); return true; } catch { return false; } };
+
+// The heads were compared with main's while the redesign was built; since the
+// SEO work of 2026-11-05 they are checked against rules instead, in seo.test.mjs.
 for (const { file } of PAGES) {
   const html = read(file);
-
-  test(`${file}: head is unchanged`, () => {
-    assert.deepEqual(headParts(html), headParts(baseline(file)));
-  });
+  const compared = inMain(file) ? test : test.skip;
 
   test(`${file}: has the boot script once, before the stylesheet`, () => {
     const at = html.indexOf(BOOT);
@@ -48,14 +67,14 @@ for (const { file } of PAGES) {
     assert.doesNotMatch(html, /article\.css|feature\.css/);
   });
 
-  test(`${file}: text is preserved`, () => {
+  compared(`${file}: text is preserved`, () => {
     const now = new Set(mainBlocks(html));
     const removed = new Set(REMOVED[file] ?? []);
     const lost = mainBlocks(baseline(file)).filter((block) => !now.has(block) && !removed.has(block));
     assert.deepEqual(lost, []);
   });
 
-  test(`${file}: links are preserved`, () => {
+  compared(`${file}: links are preserved`, () => {
     const now = new Set(hrefs(html));
     // The header's "Get the app" goes to the homepage's #get on pages without one.
     const ownGet = /\bid="get"/.test(html);

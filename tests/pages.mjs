@@ -9,6 +9,7 @@ export const PAGES = [
   { path: '/meal-planner', file: 'meal-planner.html', kind: 'feature', pose: 'stir', prop: 'pot' },
   { path: '/family-calendar', file: 'family-calendar.html', kind: 'feature', pose: 'awake', prop: 'thoughts' },
   { path: '/faq', file: 'faq.html', kind: 'faq', pose: 'surprised' },
+  { path: '/cozi-alternative', file: 'cozi-alternative.html', kind: 'compare', pose: 'cheeky' },
   { path: '/join', file: 'join.html', kind: 'join', pose: 'wave' },
   { path: '/tiktok', file: 'tiktok.html', kind: 'tiktok', pose: 'wave' },
   { path: '/nope/deeper', file: '404.html', kind: '404', pose: 'dizzy' },

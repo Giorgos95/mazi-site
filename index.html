@@ -3,15 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mazí: shared shopping list, tasks, meals and family calendar</title>
-<meta name="description" content="Mazí keeps a household running without the group chat: a shared shopping list, tasks, meal plans and family calendar. 30-day free trial, then one subscription covers the whole household.">
+<title>Family organiser app: calendar, lists, chores and meals | Mazí</title>
+<meta name="description" content="Mazí is a family organiser app for iPhone and Android: a shared calendar, shopping list, chores and meal plans for the household. No ads, 30 days free.">
 <link rel="canonical" href="https://meetmazi.com/">
 <link rel="icon" type="image/png" href="/assets/icon.png">
-<meta property="og:title" content="Mazí">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:title" content="Mazí, the family organiser app">
 <meta property="og:description" content="Shopping, tasks, meals and the family calendar, shared in one place.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:url" content="https://meetmazi.com/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Mazí">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Mazí: one shared space for the family. Groceries, tasks, meals and calendar.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFF7EC">
 <script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}d.dataset.theme=t==='night'?'night':'day';d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
@@ -30,9 +37,21 @@
       "@id": "https://meetmazi.com/#organization",
       "name": "Mazí",
       "alternateName": "Mazi",
+      "description": "Mazí is a family organiser app for Android and iPhone, written Mazi in the app stores. Mazí is Greek for together.",
       "url": "https://meetmazi.com/",
-      "logo": "https://meetmazi.com/assets/icon.png",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://meetmazi.com/assets/icon.png",
+        "width": 512,
+        "height": 512
+      },
       "email": "support@meetmazi.com",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "support@meetmazi.com",
+        "availableLanguage": ["English", "Greek"]
+      },
       "sameAs": [
         "https://www.tiktok.com/@meetmazi_app",
         "https://www.instagram.com/meetmazi/",
@@ -46,18 +65,31 @@
       "name": "Mazí",
       "alternateName": "Mazi",
       "url": "https://meetmazi.com/",
+      "inLanguage": "en",
       "publisher": { "@id": "https://meetmazi.com/#organization" }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://meetmazi.com/#webpage",
+      "url": "https://meetmazi.com/",
+      "name": "Family organiser app: calendar, lists, chores and meals | Mazí",
+      "description": "Mazí is a family organiser app for iPhone and Android: a shared calendar, shopping list, chores and meal plans for the household. No ads, 30 days free.",
+      "inLanguage": "en",
+      "isPartOf": { "@id": "https://meetmazi.com/#website" },
+      "about": { "@id": "https://meetmazi.com/#app" },
+      "mainEntity": { "@id": "https://meetmazi.com/#app" },
+      "primaryImageOfPage": "https://meetmazi.com/assets/screens/today.png"
     },
     {
       "@type": "MobileApplication",
       "@id": "https://meetmazi.com/#app",
       "name": "Mazí",
-      "alternateName": "Mazi",
-      "description": "Mazí is a shared organiser for one household: a shopping list sorted by category and by shop, tasks that can be assigned or left for whoever gets there first, recipes and a weekly meal plan that send ingredients to the shopping list, and a colour-coded family calendar. Everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together. 30-day free trial, then one subscription covers the whole household.",
+      "alternateName": ["Mazi", "Mazi: Shared Family Organizer", "Mazi: Shared Family Organiser"],
+      "description": "Mazí is a family organiser app for one household: a shared shopping list sorted by category and by shop that works with no signal, tasks that can be assigned or left for whoever gets there first, recipes and a weekly meal plan that send ingredients to the shopping list, and a colour-coded family calendar. Everyone in the household sees the same lists, updated the moment something changes. Mazí is Greek for together. 30-day free trial, then one subscription covers the whole household.",
       "applicationCategory": "LifestyleApplication",
       "applicationSubCategory": "Family organiser",
       "operatingSystem": "Android, iOS",
-      "inLanguage": "en",
+      "inLanguage": ["en", "el"],
       "url": "https://meetmazi.com/",
       "publisher": { "@id": "https://meetmazi.com/#organization" },
       "installUrl": [
@@ -79,8 +111,10 @@
       "featureList": [
         "Shared shopping list, grouped by category and filtered by shop",
         "Photos on shopping items for the exact brand",
+        "The shopping list works with no signal and saves once back online",
         "Tasks assigned to someone or left unclaimed, with due dates, times and repeats",
-        "One morning digest of what is due today, and a reminder at the time you set",
+        "A 9:00 summary of the day's events and tasks, and a reminder at the time you set",
+        "Thanks for a finished task, with a heart",
         "Recipes and a weekly meal plan that add ingredients to the shopping list",
         "Shared family calendar, each event for one person or everyone, in their colour",
         "Repeating events and tasks, every day, week, 2 weeks, month or year",
@@ -105,11 +139,11 @@
 <main>
   <section class="wrap hero" id="hero">
     <div>
-      <p class="chip">🏠 for the whole household</p>
+      <p class="chip">🏠 The family organiser app</p>
       <h1>Keeps the household running without the <span class="strike">group chat</span>.</h1>
-      <p class="lead">One shared space for what to buy, who is doing what, what is for
-      dinner, and what is happening this week. Everyone in the household sees the same
-      lists, updated the moment something changes.</p>
+      <p class="lead">Mazí gives the household one shared space for what to buy, who is
+      doing what, what is for dinner, and what is happening this week. Everyone sees the
+      same lists, updated the moment something changes.</p>
 
       <div class="badges">
         <a class="badge" href="https://play.google.com/store/apps/details?id=com.mazi.family">
@@ -225,8 +259,8 @@
       <p class="eyebrow">🛒 Shopping</p>
       <h2>One list, sorted the way you shop.</h2>
       <p>A shared shopping list, organised by category and by shop. Tick items off as
-      you go and watch the cart fill up. When a name is not enough, add a photo of the
-      exact brand your partner actually meant.</p>
+      you go and watch the cart fill up, even with no signal. When a name is not
+      enough, add a photo of the exact brand your partner actually meant.</p>
       <p class="more-link"><a href="/shopping-list">More about the shopping list</a></p>
     </div>
     <div class="fstage reveal" style="--tint: var(--tint1)">
@@ -241,8 +275,8 @@
       <h2>Claimed, assigned, or up for grabs.</h2>
       <p>Assign a task to someone, or leave it unclaimed for whoever gets there
       first. Give it a date, add a time to get a reminder right then, or make a
-      chore repeat every day, week or month. Each morning brings one quiet digest
-      of what is due today.</p>
+      chore repeat every day, week or month. Each morning brings one quiet summary
+      of the day.</p>
       <p class="more-link"><a href="/chores">More about chores and tasks</a></p>
     </div>
     <div class="fstage reveal" style="--tint: var(--tint2)">
@@ -363,6 +397,7 @@
       <a href="/family-calendar">Family calendar</a>
       <a href="/meal-planner">Meal planner</a>
       <a href="/faq">Questions</a>
+      <a href="/cozi-alternative">Mazí vs Cozi</a>
     </div>
     <div class="foot-links">
       <a href="/privacy">Privacy policy</a>

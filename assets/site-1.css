@@ -292,8 +292,13 @@ html.js .switch { display: block; }
   color: var(--muted); border-bottom: 2.5px solid var(--line);
 }
 .article tr:not(:last-child) > td { border-bottom: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
+/* A heading row over its own group of rows (the Mazí and Cozi comparison):
+   the thin line goes above it, so the heading reads with the rows below. */
+.article th[scope="rowgroup"] { border-bottom: 0; padding-bottom: 0; }
+.article tbody + tbody th[scope="rowgroup"] { border-top: 2px solid color-mix(in srgb, var(--fg) 12%, transparent); }
 @media (max-width: 480px) {
   .article th, .article td { padding: 0.7rem 0.75rem; }
+  .article th[scope="rowgroup"] { padding-bottom: 0; }
 }
 
 /* A note set apart from the text. */

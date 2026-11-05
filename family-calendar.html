@@ -4,14 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shared family calendar app, colour-coded by person | Mazí</title>
-<meta name="description" content="One calendar the whole household shares. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.">
+<meta name="description" content="A shared family calendar for iPhone and Android. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.">
 <link rel="canonical" href="https://meetmazi.com/family-calendar">
 <link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:title" content="A shared family calendar, colour-coded by person">
-<meta property="og:description" content="One calendar the whole household shares. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.">
+<meta property="og:description" content="A shared family calendar for iPhone and Android. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:url" content="https://meetmazi.com/family-calendar">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Mazí">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Mazí: one shared space for the family. Groceries, tasks, meals and calendar.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFF7EC">
 <script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}d.dataset.theme=t==='night'?'night':'day';d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
@@ -28,7 +35,7 @@
       "@id": "https://meetmazi.com/family-calendar#page",
       "url": "https://meetmazi.com/family-calendar",
       "name": "Shared family calendar app, colour-coded by person | Mazí",
-      "description": "One calendar the whole household shares. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.",
+      "description": "A shared family calendar for iPhone and Android. Each event is for one person or for everyone, shows in their colour, and reminds the people it is for.",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://meetmazi.com/#website"
@@ -62,6 +69,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "The calendar shows a month at a time. Tap a day to see its events in a list, and the Today screen shows the week ahead."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I see tasks and appointments on one screen?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The Today screen starts with the next seven days, and shows the chosen day's events next to the tasks due and the meals planned."
           }
         },
         {
@@ -132,7 +147,7 @@
   <p>Pick who an event is for, and it shows in that person's colour, or in grey when it is for everyone. A legend under the month says whose colour is whose. A new event is for whoever adds it, so the usual case takes no extra tap.</p>
 
   <h2>Reminders for the people it is for</h2>
-  <p>An event reminds the person it is for, or everyone when it is for everyone: an hour before it starts, or at 9:00 on the day for an all-day event. When someone adds an event, the rest of the household hears about it.</p>
+  <p>An event reminds the person it is for, or everyone when it is for everyone, an hour before it starts. All-day events, and trips over several days, are in the 9:00 Your day notification on each day they cover. When someone adds an event, the rest of the household hears about it.</p>
 
   <h2>Enter it once</h2>
   <p>Make an event repeat every day, every week, every 2 weeks, every month or every year, until a date or for good. Change one date on its own, or that date and all after it. Birthdays and name days go in once, with Every year.</p>
@@ -158,6 +173,11 @@
   <section class="qa">
     <h3>Is there a week or day view?</h3>
     <p>The calendar shows a month at a time. Tap a day to see its events in a list, and the Today screen shows the week ahead.</p>
+  </section>
+
+  <section class="qa">
+    <h3>Can I see tasks and appointments on one screen?</h3>
+    <p>Yes. The Today screen starts with the next seven days, and shows the chosen day's events next to the tasks due and the meals planned.</p>
   </section>
 
   <section class="qa">
@@ -197,6 +217,7 @@
       <a href="/family-calendar">Family calendar</a>
       <a href="/meal-planner">Meal planner</a>
       <a href="/faq">Questions</a>
+      <a href="/cozi-alternative">Mazí vs Cozi</a>
     </div>
     <div class="foot-links">
       <a href="/privacy">Privacy policy</a>

@@ -4,14 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mazí FAQ: free trial, subscription, privacy and invites</title>
-<meta name="description" content="Straight answers about Mazí, the shared household organiser: how the 30-day free trial and the subscription work, who pays, how invites work, where your data lives, and which phones it runs on.">
+<meta name="description" content="Answers about Mazí, the family organiser app: the 30-day free trial, the subscription and who pays, invites, offline use, privacy and where data is stored.">
 <link rel="canonical" href="https://meetmazi.com/faq">
 <link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:title" content="Questions about Mazí">
 <meta property="og:description" content="Free trial, subscription, privacy and how the household works.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:url" content="https://meetmazi.com/faq">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Mazí">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Mazí: one shared space for the family. Groceries, tasks, meals and calendar.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFF7EC">
 <script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}d.dataset.theme=t==='night'?'night':'day';d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
@@ -22,12 +29,31 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@graph": [
+  {
   "@type": "FAQPage",
+  "@id": "https://meetmazi.com/faq#page",
   "url": "https://meetmazi.com/faq",
+  "name": "Mazí FAQ: free trial, subscription, privacy and invites",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@id": "https://meetmazi.com/#website"
+  },
   "about": {
     "@id": "https://meetmazi.com/#app"
   },
+  "breadcrumb": {
+    "@id": "https://meetmazi.com/faq#breadcrumb"
+  },
   "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is Mazí?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mazí is a family organiser app for Android and iPhone. One household, up to eight people, shares a shopping list, chores and tasks, recipes and a weekly meal plan, and a family calendar, and everyone sees the same lists, updated the moment something changes."
+      }
+    },
     {
       "@type": "Question",
       "name": "Is Mazí free?",
@@ -158,10 +184,26 @@
     },
     {
       "@type": "Question",
+      "name": "How is Mazí different from Cozi?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Mazí has no ads and no free version: a 30-day free trial, then one subscription for the household. Everyone has their own account, the shopping list carries photos and works with no signal, and tasks can be left for anyone. Cozi has a free version with ads, a web version and read-only feeds from other calendars. The Mazí and Cozi comparison has the details."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "What notifications does it send?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A morning digest at 9:00 of the tasks due today that are yours or anyone's, a reminder at the time you give a task, a reminder an hour before an event that is for you or for everyone (at 9:00 on the day for an all-day event), and a notification when someone assigns you a task or adds an event. One switch in Settings turns them all on or off."
+        "text": "Your day at 9:00, which names the day's events that are yours or everyone's and counts the tasks due for you and the ones anyone can take; a reminder at the time you give a task; a reminder an hour before a timed event that is for you or for everyone; a notification when someone assigns you a task or adds an event; and a quiet one when someone thanks you for a finished task. One switch in Settings turns them all on or off."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Mazí work offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The shopping list does: tick, add and edit items with no signal, and Mazí saves the changes once the phone is back online. The rest of the app shows what it last loaded, and changes there need a connection."
       }
     },
     {
@@ -169,9 +211,29 @@
       "name": "What does Mazí mean, and is the app in Greek?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Mazí (μαζί) is Greek for together. The app is in English and Greek: it follows your phone's language, and you can switch it in Settings."
+        "text": "Mazí (μαζί) is Greek for together. In the app stores and under the icon on your phone it is written Mazi. The app is in English and Greek: it follows your phone's language, and you can switch it in Settings."
       }
     }
+  ]
+  },
+  {
+    "@type": "BreadcrumbList",
+    "@id": "https://meetmazi.com/faq#breadcrumb",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Mazí",
+        "item": "https://meetmazi.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Questions",
+        "item": "https://meetmazi.com/faq"
+      }
+    ]
+  }
   ]
 }
 </script>
@@ -194,6 +256,16 @@
   </div>
   <div class="fi" data-i-pose="surprised" data-looker></div>
   </div>
+
+  <section class="qa">
+    <h3>What is Mazí?</h3>
+    <p>Mazí is a family organiser app for Android and iPhone. One household, up to eight
+    people, shares a <a href="/shopping-list">shopping list</a>,
+    <a href="/chores">chores and tasks</a>, recipes and a weekly
+    <a href="/meal-planner">meal plan</a>, and a <a href="/family-calendar">family
+    calendar</a>, and everyone sees the same lists, updated the moment something
+    changes.</p>
+  </section>
 
   <h2>Trial and subscription</h2>
 
@@ -310,18 +382,36 @@
   </section>
 
   <section class="qa">
+    <h3>How is Mazí different from Cozi?</h3>
+    <p>Mazí has no ads and no free version: a 30-day free trial, then one subscription
+    for the household. Everyone has their own account, the shopping list carries photos
+    and works with no signal, and tasks can be left for anyone. Cozi has a free version
+    with ads, a web version and read-only feeds from other calendars. The
+    <a href="/cozi-alternative">Mazí and Cozi comparison</a> has the details.</p>
+  </section>
+
+  <section class="qa">
     <h3>What notifications does it send?</h3>
-    <p>A morning digest at 9:00 of the tasks due today that are yours or anyone's, a
-    reminder at the time you give a task, a reminder an hour before an event that is for
-    you or for everyone (at 9:00 on the day for an all-day event), and a notification
-    when someone assigns you a task or adds an event. One switch in Settings turns them
-    all on or off.</p>
+    <p>Your day at 9:00, which names the day's events that are yours or everyone's and
+    counts the tasks due for you and the ones anyone can take; a reminder at the time
+    you give a task; a reminder an hour before a timed event that is for you or for
+    everyone; a notification when someone assigns you a task or adds an event; and a
+    quiet one when someone thanks you for a finished task. One switch in Settings turns
+    them all on or off.</p>
+  </section>
+
+  <section class="qa">
+    <h3>Does Mazí work offline?</h3>
+    <p>The <a href="/shopping-list">shopping list</a> does: tick, add and edit items
+    with no signal, and Mazí saves the changes once the phone is back online. The rest
+    of the app shows what it last loaded, and changes there need a connection.</p>
   </section>
 
   <section class="qa">
     <h3>What does Mazí mean, and is the app in Greek?</h3>
-    <p>Mazí (μαζί) is Greek for together. The app is in English and Greek: it follows
-    your phone's language, and you can switch it in Settings.</p>
+    <p>Mazí (μαζί) is Greek for together. In the app stores and under the icon on your
+    phone it is written Mazi. The app is in English and Greek: it follows your phone's
+    language, and you can switch it in Settings.</p>
   </section>
 
   <section class="get" id="get">
@@ -348,6 +438,7 @@
       <a href="/family-calendar">Family calendar</a>
       <a href="/meal-planner">Meal planner</a>
       <a href="/faq">Questions</a>
+      <a href="/cozi-alternative">Mazí vs Cozi</a>
     </div>
     <div class="foot-links">
       <a href="/privacy">Privacy policy</a>

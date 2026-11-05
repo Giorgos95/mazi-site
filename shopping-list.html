@@ -4,14 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shared shopping list app for families and couples | Mazí</title>
-<meta name="description" content="One shopping list for the whole household, sorted by aisle and by shop, and updated on every phone the moment it changes. Photos for the exact brand.">
+<meta name="description" content="A shared shopping and grocery list for couples and families, on iPhone and Android. Sorted by aisle and by shop, with photos, and it works with no signal.">
 <link rel="canonical" href="https://meetmazi.com/shopping-list">
 <link rel="icon" type="image/png" href="/assets/icon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:title" content="A shared shopping list for the whole household">
-<meta property="og:description" content="One shopping list for the whole household, sorted by aisle and by shop, and updated on every phone the moment it changes. Photos for the exact brand.">
+<meta property="og:description" content="A shared shopping and grocery list for couples and families, on iPhone and Android. Sorted by aisle and by shop, with photos, and it works with no signal.">
 <meta property="og:image" content="https://meetmazi.com/assets/og-image.png">
 <meta property="og:url" content="https://meetmazi.com/shopping-list">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Mazí">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="500">
+<meta property="og:image:alt" content="Mazí: one shared space for the family. Groceries, tasks, meals and calendar.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#FFF7EC">
 <script>(function(d){var t;try{t=localStorage.getItem('mazi-theme')}catch(e){}d.dataset.theme=t==='night'?'night':'day';d.classList.add('js')})(document.documentElement)</script>
 <link rel="preload" href="/assets/fonts/fredoka.woff2" as="font" type="font/woff2" crossorigin>
@@ -28,7 +35,7 @@
       "@id": "https://meetmazi.com/shopping-list#page",
       "url": "https://meetmazi.com/shopping-list",
       "name": "Shared shopping list app for families and couples | Mazí",
-      "description": "One shopping list for the whole household, sorted by aisle and by shop, and updated on every phone the moment it changes. Photos for the exact brand.",
+      "description": "A shared shopping and grocery list for couples and families, on iPhone and Android. Sorted by aisle and by shop, with photos, and it works with no signal.",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://meetmazi.com/#website"
@@ -50,6 +57,14 @@
         },
         {
           "@type": "Question",
+          "name": "Can an iPhone and an Android phone share the same grocery list?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Mazí is on the App Store and on Google Play, and the household shares one list whatever phone each person has. One person starts the household and the others join with its invite code."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Can we keep separate lists for different shops?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -61,7 +76,7 @@
           "name": "Does it work offline?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Adding and ticking items needs an internet connection, which is what keeps everyone's list the same."
+            "text": "Yes. You can tick, add and edit items with no signal, and Mazí saves the changes once the phone is back online, so everyone's list catches up. The rest of Mazí shows what it last loaded while you are offline, and changes there need a connection."
           }
         },
         {
@@ -137,7 +152,7 @@
 
 <div class="article">
   <h2>Sorted the way you walk the shop</h2>
-  <p>The list groups itself into Produce, Bakery, Meat &amp; Fish, Dairy, Pantry, Household, Frozen and Other. Mazí learns where your household files things: put oat milk under Dairy once, and next time it goes there by itself, on everyone's phone.</p>
+  <p>The list sorts itself by aisle, into Produce, Bakery, Meat &amp; Fish, Dairy, Pantry, Household, Frozen and Other. Mazí learns where your household files things: put oat milk under Dairy once, and next time it goes there by itself, on everyone's phone.</p>
   <p>Add up to 20 categories of your own, each with a colour and an icon, and put them in the order of your usual shop. The order is shared, so the list reads the same for whoever does the shopping.</p>
 
   <h2>One list, every shop</h2>
@@ -152,6 +167,9 @@
   <h2>Ticked off together</h2>
   <p>Tap an item to tick it. It drops into Done with a dot in the colour of whoever ticked it, and the cart fills up as you go, so everyone at home can see how far along the shop is. Clear the done items when you are back.</p>
 
+  <h2>Works with no signal</h2>
+  <p>A shop's basement or a car park can lose the signal, and the list keeps working. Tick, add and edit items offline: each change shows a small clock until it is saved, and once the phone is back online the changes go out in the order you made them.</p>
+
   <h2>From the meal plan to the list</h2>
   <p>A recipe's ingredients, or the whole week's from the <a href="/meal-planner">meal planner</a>, go onto the list in one tap. Items already on the list are merged rather than doubled, and quantities in the same unit add up: 500 g and 250 g make 750 g.</p>
 
@@ -163,13 +181,18 @@
   </section>
 
   <section class="qa">
+    <h3>Can an iPhone and an Android phone share the same grocery list?</h3>
+    <p>Yes. Mazí is on the App Store and on Google Play, and the household shares one list whatever phone each person has. One person starts the household and the others join with its invite code.</p>
+  </section>
+
+  <section class="qa">
     <h3>Can we keep separate lists for different shops?</h3>
     <p>Mazí keeps one list per household, and your shops are views of it. Choose a shop to see only what to buy there, or All to see everything.</p>
   </section>
 
   <section class="qa">
     <h3>Does it work offline?</h3>
-    <p>No. Adding and ticking items needs an internet connection, which is what keeps everyone's list the same.</p>
+    <p>Yes. You can tick, add and edit items with no signal, and Mazí saves the changes once the phone is back online, so everyone's list catches up. The rest of Mazí shows what it last loaded while you are offline, and changes there need a connection.</p>
   </section>
 
   <section class="qa">
@@ -214,6 +237,7 @@
       <a href="/family-calendar">Family calendar</a>
       <a href="/meal-planner">Meal planner</a>
       <a href="/faq">Questions</a>
+      <a href="/cozi-alternative">Mazí vs Cozi</a>
     </div>
     <div class="foot-links">
       <a href="/privacy">Privacy policy</a>
