@@ -37,7 +37,7 @@
 
 <main class="article">
 <h1>Mazí Privacy Policy</h1>
-<p class="updated">Last updated: 28 October 2026</p>
+<p class="updated">Last updated: 8 November 2026</p>
 
 <p>
   Mazí is a shared organiser for one family or household: groceries, chores,
@@ -52,6 +52,10 @@
   <tr>
     <td>Email address and password</td>
     <td>To create and sign in to your account. Passwords are stored only as a salted hash, so we never see them.</td>
+  </tr>
+  <tr>
+    <td>If you continue with Google or Apple instead: the name and email address of that account (with Apple, possibly a private relay address that Apple forwards to you, if you chose to hide yours), and with Apple a token for revoking Mazí's access</td>
+    <td>To create and sign in to your account without a password. We receive nothing else from your Google or Apple account. The Apple token is used for one thing only: to revoke Mazí's access to your Apple ID when you delete your account.</td>
   </tr>
   <tr>
     <td>Display name and chosen colour</td>
@@ -100,6 +104,11 @@
   <li><strong>Expo</strong> for delivery of push notifications.</li>
   <li><strong>Google Firebase Cloud Messaging</strong> for the Android transport that actually delivers a push to your device.</li>
 </ul>
+<p>
+  If you choose to continue with Google or Apple, that company confirms who you
+  are to Mazí when you sign in. What Google or Apple do with your sign-in is
+  governed by their own privacy policies.
+</p>
 
 <h2>Who can see your content</h2>
 <p>
@@ -133,7 +142,8 @@
   Your data is kept for as long as your account exists. You can delete your
   account at any time from <strong>Settings → Delete account</strong> inside the
   app. See the <a href="/delete-account">account deletion page</a> for what
-  is removed and what is kept.
+  is removed and what is kept. If you signed in with Apple, deleting your
+  account also revokes Mazí's access to your Apple ID.
 </p>
 
 <h2>Your rights</h2>

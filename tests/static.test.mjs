@@ -44,6 +44,11 @@ const REMOVED = {
     'No. Mazí has a 30-day free trial with everything unlocked and no card needed, then a monthly or yearly subscription that covers the whole household. There is no free version, and there are no ads.',
     'No. Mazí has a 30-day free trial with everything unlocked and no card needed. After that, one subscription covers the whole household: $3.49 a month or $28.99 a year in the US. There is no free version, and there are no ads.',
     'A year costs less than Cozi Gold: $28.99, against $39.'],
+  // Google and Apple sign-in (app 1.2.4, 2026-11-08): a new date, and deletion
+  // also revokes Sign in with Apple.
+  'privacy.html': [
+    'Last updated: 28 October 2026',
+    'Your data is kept for as long as your account exists. You can delete your account at any time from Settings → Delete account inside the app. See the account deletion page for what is removed and what is kept.'],
 };
 
 // Every attribute value that names a URL; srcset holds several.
