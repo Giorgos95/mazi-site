@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["SHVMFZXHDN.com.mazi.family"],
+        "components": [
+          {
+            "/": "/join",
+            "comment": "Invite links, https://meetmazi.com/join?code=. Only this path, so the privacy and terms links in the app stay in the browser."
+          }
+        ]
+      }
+    ]
+  }
+}
