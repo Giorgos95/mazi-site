@@ -46,9 +46,12 @@ const REMOVED = {
     'A year costs less than Cozi Gold: $28.99, against $39.'],
   // Google and Apple sign-in (app 1.2.4, 2026-11-08): a new date, and deletion
   // also revokes Sign in with Apple.
+  // Then the Android install source (app 1.2.4, 2026-11-08), with Google Play
+  // named beside the App Store as where Mazí advertises.
   'privacy.html': [
     'Last updated: 28 October 2026',
-    'Your data is kept for as long as your account exists. You can delete your account at any time from Settings → Delete account inside the app. See the account deletion page for what is removed and what is kept.'],
+    'Your data is kept for as long as your account exists. You can delete your account at any time from Settings → Delete account inside the app. See the account deletion page for what is removed and what is kept.',
+    'No advertising inside the app, and no advertising identifiers. We advertise Mazí on the App Store, but nothing in the app follows you across other apps or websites.'],
 };
 
 // Every attribute value that names a URL; srcset holds several.
