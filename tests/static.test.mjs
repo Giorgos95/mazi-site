@@ -54,6 +54,26 @@ const REMOVED = {
     'No advertising inside the app, and no advertising identifiers. We advertise Mazí on the App Store, but nothing in the app follows you across other apps or websites.'],
 };
 
+// Which store a link goes to, tagged or not.
+function storeOf(href) {
+  if (href.startsWith('https://play.google.com/store/apps/details?id=com.mazi.family')) return 'play';
+  if (/^https:\/\/apps\.apple\.com\/app\/[^/]+\/id6807159485(\?|$)/.test(href)) return 'apple';
+  return null;
+}
+
+// The campaign each page's store links carry: utm_campaign on Play,
+// ct on the App Store. A new page with store buttons gets its own here.
+const CAMPAIGNS = {
+  'index.html': 'site_home',
+  'shopping-list.html': 'site_shopping_list',
+  'chores.html': 'site_chores',
+  'family-calendar.html': 'site_family_calendar',
+  'meal-planner.html': 'site_meal_planner',
+  'faq.html': 'site_faq',
+  'cozi-alternative.html': 'site_cozi_alternative',
+  'join.html': 'invite',
+};
+
 // Every attribute value that names a URL; srcset holds several.
 function urls(html) {
   const found = [];
@@ -97,8 +117,28 @@ for (const { file } of PAGES) {
     const now = new Set(hrefs(html));
     // The header's "Get the app" goes to the homepage's #get on pages without one.
     const ownGet = /\bid="get"/.test(html);
-    const lost = hrefs(baseline(file)).filter((h) => !now.has(h) && !(h === '#get' && !ownGet && now.has('/#get')));
+    // A store link that gained its campaign tag (2026-11-08) still goes to the same store.
+    const stillInStore = (h) => storeOf(h) !== null && [...now].some((n) => storeOf(n) === storeOf(h));
+    const lost = hrefs(baseline(file)).filter((h) => !now.has(h) && !(h === '#get' && !ownGet && now.has('/#get')) && !stillInStore(h));
     assert.deepEqual(lost, []);
+  });
+
+  // Every store link names the page it sits on, so Play's referrer (which the
+  // app keeps per account, see the app's docs/install-source.sql) and App Store
+  // Connect's campaigns can tell the site's installs from a store search. The
+  // structured data in the head keeps the plain addresses.
+  test(`${file}: store links carry the page's campaign`, () => {
+    const links = hrefs(html).filter((h) => storeOf(h) !== null);
+    if (links.length === 0) return;
+    const campaign = CAMPAIGNS[file];
+    assert.ok(campaign, `${file} has store links but no campaign in CAMPAIGNS`);
+    for (const h of links) {
+      if (storeOf(h) === 'play') {
+        assert.equal(h, `https://play.google.com/store/apps/details?id=com.mazi.family&referrer=utm_source%3D${campaign === 'invite' ? 'invite' : 'site'}%26utm_medium%3Dlink%26utm_campaign%3D${campaign}`);
+      } else {
+        assert.equal(h, `https://apps.apple.com/app/apple-store/id6807159485?pt=129389033&ct=${campaign}&mt=8`);
+      }
+    }
   });
 
   // The header menu lists the parts of Mazí in the homepage's order (/join has no menu).
