@@ -51,7 +51,10 @@ const REMOVED = {
   'privacy.html': [
     'Last updated: 28 October 2026',
     'Your data is kept for as long as your account exists. You can delete your account at any time from Settings → Delete account inside the app. See the account deletion page for what is removed and what is kept.',
-    'No advertising inside the app, and no advertising identifiers. We advertise Mazí on the App Store, but nothing in the app follows you across other apps or websites.'],
+    'No advertising inside the app, and no advertising identifiers. We advertise Mazí on the App Store, but nothing in the app follows you across other apps or websites.',
+    // Resend named and the app's own emails described, 2026-11-11.
+    'Last updated: 8 November 2026',
+    'Mazí relies on four service providers, and no others:'],
 };
 
 // Which store a link goes to, tagged or not.
