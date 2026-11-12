@@ -54,7 +54,10 @@ const REMOVED = {
     'No advertising inside the app, and no advertising identifiers. We advertise Mazí on the App Store, but nothing in the app follows you across other apps or websites.',
     // Resend named and the app's own emails described, 2026-11-11.
     'Last updated: 8 November 2026',
-    'Mazí relies on four service providers, and no others:'],
+    'Mazí relies on four service providers, and no others:',
+    // The first-session steps and app errors (app 0063), 2026-11-12.
+    'Last updated: 11 November 2026',
+    "Your data is kept for as long as your account exists. You can delete your account at any time from Settings → Delete account inside the app. See the account deletion page for what is removed and what is kept. If you signed in with Apple, deleting your account also revokes Mazí's access to your Apple ID."],
 };
 
 // Which store a link goes to, tagged or not.
