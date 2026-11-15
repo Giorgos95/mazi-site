@@ -52,9 +52,16 @@
   </div>
 
   <section id="invite" class="code-card" hidden>
-    <p class="label" id="code-label">Your invite code</p>
-    <p class="code" id="code"></p>
-    <button class="button quiet" id="copy" type="button">Copy code</button>
+    <div class="code-main">
+      <p class="label" id="code-label">Your invite code</p>
+      <p class="code" id="code"></p>
+      <button class="button quiet" id="copy" type="button">Copy code</button>
+    </div>
+    <!-- On a computer: the same invite as a QR code, for the phone's camera. -->
+    <div class="code-qr" id="qr-side" hidden>
+      <div id="qr" class="qr"></div>
+      <p class="qr-note" id="qr-note">Point your phone's camera at this code to carry on there.</p>
+    </div>
   </section>
 
   <p id="bad" class="note" hidden>This link is missing its invite code. Ask whoever sent it
@@ -76,8 +83,6 @@
 
   <p id="ios" class="note" hidden><span id="ios-have">Already have Mazí?</span> <a id="ios-open" href="#">Open it here</a>.</p>
   <p id="desktop" class="note" hidden>Open this link on your phone to get Mazí there.</p>
-  <!-- On a computer: the same link as a QR code, for the phone's camera. -->
-  <div id="qr" class="qr" hidden></div>
 
   <ol class="steps">
     <li id="step-get">Get Mazí on your phone.</li>
@@ -257,23 +262,25 @@
       say('step-code', w.stepIos);
     }
   } else {
-    show('desktop');
     // About a third of the visits to this page in its second week came from a
     // computer (WhatsApp Web, most likely), where Mazí cannot be installed. A
-    // QR code of the same invite carries the person to their phone. The box
-    // keeps its size from the start, so the code arriving moves nothing, and
-    // the encoder loads only here, from this site.
+    // QR code of the same invite, beside the code in its card, carries the
+    // person to their phone. The box keeps its size from the start, so the
+    // code arriving moves nothing, and the encoder loads only here, from this site.
     if (valid) {
-      say('desktop', w.scan);
+      say('qr-note', w.scan);
       var box = document.getElementById('qr');
       box.setAttribute('role', 'img');
       box.setAttribute('aria-label', w.qr);
-      show('qr');
+      document.getElementById('invite').classList.add('with-qr');
+      show('qr-side');
       var link = location.origin + '/join?code=' + code;
       var loader = document.createElement('script');
       loader.src = '/assets/qrcode-1.js';
       loader.onload = function () { drawQr(box, link); };
       document.head.appendChild(loader);
+    } else {
+      show('desktop');
     }
   }
 

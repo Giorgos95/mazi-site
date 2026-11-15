@@ -41,7 +41,7 @@ test('script is byte-identical', () => {
 });
 
 test('every id the script uses exists', () => {
-  for (const id of 'invite code copy bad android android-open play apple ios ios-open desktop step-code heading lead code-label ios-have qr step-get step-account'.split(' ')) {
+  for (const id of 'invite code copy bad android android-open play apple ios ios-open desktop step-code heading lead code-label ios-have qr step-get step-account qr-side qr-note'.split(' ')) {
     assert.match(html, new RegExp(`id="${id}"`), id);
   }
 });
@@ -50,7 +50,9 @@ test('desktop with a code', async () => {
   await withPage('/join?code=ABCD2345', {}, async (page) => {
     assert.ok(await visible(page, 'invite'));
     assert.equal(await page.eval(`document.getElementById('code').textContent`), 'ABCD2345');
-    assert.ok(await visible(page, 'desktop'));
+    // The QR code in the card replaces the line asking to open the link on a phone.
+    assert.ok(await visible(page, 'qr-side'));
+    assert.ok(!(await visible(page, 'desktop')));
     assert.ok((await page.eval(`document.getElementById('play').href`)).endsWith('%26code%3DABCD2345'));
     assert.deepEqual(page.errors, []);
   });
@@ -171,8 +173,9 @@ async function waitFor(fn, ms = 3000) {
 test('desktop draws a qr code of the invite', async () => {
   await withPage('/join?code=ABCD2345', {}, async (page) => {
     assert.ok(await visible(page, 'qr'));
+    assert.ok(await page.eval(`document.getElementById('invite').contains(document.getElementById('qr'))`), 'qr in the code card');
     assert.ok(await waitFor(() => qrDrawn(page)), 'qr drawn');
-    assert.match(await text(page, 'desktop'), /camera/);
+    assert.match(await text(page, 'qr-note'), /camera/);
     assert.equal(await attr(page, 'qr', 'role'), 'img');
     const box = await page.eval(`JSON.stringify(document.getElementById('qr').getBoundingClientRect())`);
     const { width, height } = JSON.parse(box);
@@ -184,14 +187,15 @@ test('desktop draws a qr code of the invite', async () => {
 test('greek desktop says it in greek', async () => {
   await withPage('/join?code=ABCD2345', { initScript: GREEK }, async (page) => {
     assert.ok(await waitFor(() => qrDrawn(page)), 'qr drawn');
-    assert.match(await text(page, 'desktop'), /κάμερα/);
+    assert.match(await text(page, 'qr-note'), /κάμερα/);
     assert.equal(await attr(page, 'qr', 'aria-label'), 'Κωδικός QR για αυτή την πρόσκληση');
   });
 });
 
 test('no qr code without a code, and none on a phone', async () => {
   await withPage('/join', {}, async (page) => {
-    assert.ok(!(await visible(page, 'qr')));
+    assert.ok(!(await visible(page, 'qr-side')));
+    assert.ok(await visible(page, 'desktop'));
     assert.match(await text(page, 'desktop'), /Open this link on your phone/);
   });
   for (const userAgent of [ANDROID, IPHONE]) {

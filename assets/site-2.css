@@ -553,12 +553,25 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
 .button:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--line); }
 .button.quiet { background: var(--card); color: var(--accent-text); }
 .open { margin: 1.4rem 0 0; }
-/* The invite's QR code on a computer. Sized before the code is drawn, so it moves nothing. */
+/* On a computer the code card holds the invite twice: the code to copy, and
+   beside it the same invite as a QR code to scan. The QR box is sized before
+   the code is drawn, so it moves nothing. */
+.code-card.with-qr { display: flex; align-items: center; gap: 1.4rem; }
+.code-main { flex: 1; min-width: 0; }
+.code-qr {
+  display: flex; flex-direction: column; align-items: center; width: 220px; flex: none;
+  padding-left: 1.4rem; border-left: 2px dashed var(--line);
+}
 .qr {
-  width: 196px; height: 196px; margin: 1rem 0 0; padding: 6px; box-sizing: content-box;
+  width: 196px; height: 196px; padding: 6px; box-sizing: content-box;
   background: #fff; border: 3px solid var(--line); border-radius: 16px;
 }
 .qr svg { display: block; }
+.qr-note { margin: 0.6rem 0 0; color: var(--muted); font-size: 0.88rem; }
+@media (max-width: 640px) {
+  .code-card.with-qr { flex-direction: column; }
+  .code-qr { width: 100%; padding: 1.2rem 0 0; border-left: 0; border-top: 2px dashed var(--line); }
+}
 .steps { margin: 2rem 0 0; padding-left: 1.3rem; }
 .steps li { margin: 0.5rem 0; }
 .article .note { font-size: 0.92rem; color: var(--muted); margin: 0.6rem 0 0; }
