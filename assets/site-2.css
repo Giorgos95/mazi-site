@@ -553,6 +553,12 @@ footer .fine { font-size: 0.8rem; margin-top: 0.3rem; }
 .button:active { transform: translate(2px, 3px); box-shadow: 1px 1px 0 var(--line); }
 .button.quiet { background: var(--card); color: var(--accent-text); }
 .open { margin: 1.4rem 0 0; }
+/* The invite's QR code on a computer. Sized before the code is drawn, so it moves nothing. */
+.qr {
+  width: 196px; height: 196px; margin: 1rem 0 0; padding: 6px; box-sizing: content-box;
+  background: #fff; border: 3px solid var(--line); border-radius: 16px;
+}
+.qr svg { display: block; }
 .steps { margin: 2rem 0 0; padding-left: 1.3rem; }
 .steps li { margin: 0.5rem 0; }
 .article .note { font-size: 0.92rem; color: var(--muted); margin: 0.6rem 0 0; }

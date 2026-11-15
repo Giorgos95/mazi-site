@@ -44,15 +44,15 @@
 <main class="article">
   <div class="page-head">
   <div>
-  <h1>You're invited to a household on Mazí</h1>
-  <p class="lead">Mazí keeps the household's shopping list, tasks, meals and calendar in
+  <h1 id="heading">You're invited to a household on Mazí</h1>
+  <p class="lead" id="lead">Mazí keeps the household's shopping list, tasks, meals and calendar in
   one place, shared with everyone in it.</p>
   </div>
   <div class="fi" data-i-pose="wave" aria-hidden="true"></div>
   </div>
 
   <section id="invite" class="code-card" hidden>
-    <p class="label">Your invite code</p>
+    <p class="label" id="code-label">Your invite code</p>
     <p class="code" id="code"></p>
     <button class="button quiet" id="copy" type="button">Copy code</button>
   </section>
@@ -74,12 +74,14 @@
     </a>
   </div>
 
-  <p id="ios" class="note" hidden>Already have Mazí? <a id="ios-open" href="#">Open it here</a>.</p>
+  <p id="ios" class="note" hidden><span id="ios-have">Already have Mazí?</span> <a id="ios-open" href="#">Open it here</a>.</p>
   <p id="desktop" class="note" hidden>Open this link on your phone to get Mazí there.</p>
+  <!-- On a computer: the same link as a QR code, for the phone's camera. -->
+  <div id="qr" class="qr" hidden></div>
 
   <ol class="steps">
-    <li>Get Mazí on your phone.</li>
-    <li>Create your account.</li>
+    <li id="step-get">Get Mazí on your phone.</li>
+    <li id="step-account">Create your account.</li>
     <li id="step-code">Open this link again and your code is filled in. Or paste it under
     "Join an existing one".</li>
   </ol>
@@ -118,7 +120,8 @@
   // The shape generate_invite_code produces. The app checks the same pattern in
   // src/features/household/inviteLinkLogic.ts (FamilyApp repo); change both together.
   var SHAPE = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{8}$/;
-  var raw = new URLSearchParams(location.search).get('code') || '';
+  var params = new URLSearchParams(location.search);
+  var raw = params.get('code') || '';
   var code = raw.trim().toUpperCase();
   var valid = SHAPE.test(code);
 
@@ -127,8 +130,86 @@
   // iPadOS reports itself as a Mac; touch points tell them apart.
   var ios = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
+  // Nearly everyone who sends an invite uses Mazí in Greek (2026-11-15), so a
+  // phone set to Greek reads this page in Greek. ?lang=el or ?lang=en wins over
+  // the phone. The words in the app this page names are the app's own:
+  // "Μπείτε σε υπάρχον" is onboarding's joinSection in src/lib/i18n/el.ts.
+  // Greek addresses the reader in the plural, as the app does.
+  var WORDS = {
+    en: {
+      title: "You're invited to Mazí",
+      heading: "You're invited to a household on Mazí",
+      lead: "Mazí keeps the household's shopping list, tasks, meals and calendar in one place, shared with everyone in it.",
+      codeLabel: 'Your invite code',
+      copy: 'Copy code',
+      copied: 'Copied',
+      selected: 'Selected, copy it from the menu',
+      bad: 'This link is missing its invite code. Ask whoever sent it for a fresh invite from Settings in their Mazí app.',
+      open: 'Open in Mazí',
+      iosHave: 'Already have Mazí?',
+      iosOpen: 'Open it here',
+      desktop: 'Open this link on your phone to get Mazí there.',
+      scan: "Point your phone's camera at this code to carry on there.",
+      qr: 'QR code for this invite',
+      stepGet: 'Get Mazí on your phone.',
+      stepAccount: 'Create your account.',
+      stepCode: 'Open this link again and your code is filled in. Or paste it under "Join an existing one".',
+      stepAndroid: 'Got Mazí from the button above? Your code is already filled in. ' +
+        'Otherwise open this link again, or paste it under "Join an existing one".',
+      stepIos: 'The App Store button copies your code. Once your account is made, paste it under ' +
+        '"Join an existing one", or open this link again.'
+    },
+    el: {
+      title: 'Πρόσκληση στο Mazí',
+      heading: 'Σας προσκάλεσαν σε ένα νοικοκυριό στο Mazí',
+      lead: 'Το Mazí κρατά σε ένα μέρος τη λίστα για ψώνια, τις εργασίες, τα γεύματα και το ημερολόγιο του νοικοκυριού, κοινά για όλους.',
+      codeLabel: 'Ο κωδικός πρόσκλησής σας',
+      copy: 'Αντιγραφή κωδικού',
+      copied: 'Αντιγράφηκε',
+      selected: 'Επιλέχθηκε, αντιγράψτε τον από το μενού',
+      bad: 'Από αυτό το link λείπει ο κωδικός πρόσκλησης. Ζητήστε από όποιον το έστειλε μια νέα πρόσκληση από τις Ρυθμίσεις του Mazí.',
+      open: 'Άνοιγμα στο Mazí',
+      iosHave: 'Έχετε ήδη το Mazí;',
+      iosOpen: 'Ανοίξτε το εδώ',
+      desktop: 'Ανοίξτε αυτό το link στο κινητό σας για να κατεβάσετε εκεί το Mazí.',
+      scan: 'Στρέψτε την κάμερα του κινητού σας σε αυτόν τον κωδικό για να συνεχίσετε εκεί.',
+      qr: 'Κωδικός QR για αυτή την πρόσκληση',
+      stepGet: 'Κατεβάστε το Mazí στο κινητό σας.',
+      stepAccount: 'Δημιουργήστε λογαριασμό.',
+      stepCode: 'Ανοίξτε ξανά αυτό το link και ο κωδικός θα είναι ήδη συμπληρωμένος. Ή επικολλήστε τον στο «Μπείτε σε υπάρχον».',
+      stepAndroid: 'Κατεβάσατε το Mazí από το κουμπί παραπάνω; Ο κωδικός σας είναι ήδη συμπληρωμένος. ' +
+        'Αλλιώς ανοίξτε ξανά αυτό το link ή επικολλήστε τον στο «Μπείτε σε υπάρχον».',
+      stepIos: 'Το κουμπί του App Store αντιγράφει τον κωδικό σας. Μόλις φτιάξετε λογαριασμό, ' +
+        'επικολλήστε τον στο «Μπείτε σε υπάρχον» ή ανοίξτε ξανά αυτό το link.'
+    }
+  };
+  var asked = params.get('lang');
+  var first = (navigator.languages && navigator.languages[0]) || navigator.language || '';
+  var lang = asked === 'el' || asked === 'en' ? asked : /^el\b/i.test(first) ? 'el' : 'en';
+  var w = WORDS[lang];
+
   function show(id) { document.getElementById(id).hidden = false; }
   function hide(id) { document.getElementById(id).hidden = true; }
+  function say(id, text) { document.getElementById(id).textContent = text; }
+
+  // The page is written in English, so it reads without JavaScript; Greek is
+  // put in place here, before the first paint.
+  if (lang === 'el') {
+    document.documentElement.lang = 'el';
+    document.title = w.title;
+    say('heading', w.heading);
+    say('lead', w.lead);
+    say('code-label', w.codeLabel);
+    say('copy', w.copy);
+    say('bad', w.bad);
+    say('android-open', w.open);
+    say('ios-have', w.iosHave);
+    say('ios-open', w.iosOpen);
+    say('desktop', w.desktop);
+    say('step-get', w.stepGet);
+    say('step-account', w.stepAccount);
+    say('step-code', w.stepCode);
+  }
 
   if (valid) {
     document.getElementById('code').textContent = code;
@@ -154,9 +235,7 @@
       show('android');
       // From 1.2.1 an install through the Play button above brings the code
       // with it, so coming back here is only for an app installed some other way.
-      document.getElementById('step-code').textContent =
-        'Got Mazí from the button above? Your code is already filled in. ' +
-        'Otherwise open this link again, or paste it under "Join an existing one".';
+      say('step-code', w.stepAndroid);
     }
   } else if (ios) {
     hide('play');
@@ -166,12 +245,76 @@
     if (valid) {
       document.getElementById('ios-open').href = 'mazi://join?code=' + code;
       show('ios');
+      // iPhone has no install referrer, so an install through the App Store
+      // button arrives without the code. Copying it on the way lets Mazi's
+      // Paste button beside the code field put it back (onboarding.tsx in the
+      // FamilyApp repo, from 1.2.4; earlier builds take a long press paste).
+      // The tap is what lets Safari write the clipboard, and the App Store
+      // opens whether or not the write worked.
+      document.getElementById('apple').addEventListener('click', function () {
+        writeCode().then(function () { copy.textContent = w.copied; }, function () {});
+      });
+      say('step-code', w.stepIos);
     }
   } else {
     show('desktop');
+    // About a third of the visits to this page in its second week came from a
+    // computer (WhatsApp Web, most likely), where Mazí cannot be installed. A
+    // QR code of the same invite carries the person to their phone. The box
+    // keeps its size from the start, so the code arriving moves nothing, and
+    // the encoder loads only here, from this site.
+    if (valid) {
+      say('desktop', w.scan);
+      var box = document.getElementById('qr');
+      box.setAttribute('role', 'img');
+      box.setAttribute('aria-label', w.qr);
+      show('qr');
+      var link = location.origin + '/join?code=' + code;
+      var loader = document.createElement('script');
+      loader.src = '/assets/qrcode-1.js';
+      loader.onload = function () { drawQr(box, link); };
+      document.head.appendChild(loader);
+    }
+  }
+
+  // Dark squares on white whatever the page's colours, with the four module
+  // quiet zone the standard asks for, or a camera may not find the code.
+  function drawQr(box, text) {
+    var qr = window.qrcode(0, 'M');
+    qr.addData(text);
+    qr.make();
+    var n = qr.getModuleCount();
+    var d = '';
+    for (var y = 0; y < n; y++) {
+      for (var x = 0; x < n; x++) {
+        if (qr.isDark(y, x)) d += 'M' + (x + 4) + ' ' + (y + 4) + 'h1v1h-1z';
+      }
+    }
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + (n + 8) + ' ' + (n + 8));
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.setAttribute('shape-rendering', 'crispEdges');
+    svg.setAttribute('aria-hidden', 'true');
+    var bg = document.createElementNS(NS, 'rect');
+    bg.setAttribute('width', n + 8);
+    bg.setAttribute('height', n + 8);
+    bg.setAttribute('fill', '#fff');
+    var dots = document.createElementNS(NS, 'path');
+    dots.setAttribute('d', d);
+    dots.setAttribute('fill', '#000');
+    svg.appendChild(bg);
+    svg.appendChild(dots);
+    box.appendChild(svg);
   }
 
   var copy = document.getElementById('copy');
+  function writeCode() {
+    return navigator.clipboard && navigator.clipboard.writeText
+      ? navigator.clipboard.writeText(code)
+      : Promise.reject(new Error('no clipboard'));
+  }
   copy.addEventListener('click', function () {
     function selectCode() {
       var range = document.createRange();
@@ -179,15 +322,11 @@
       var selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
-      copy.textContent = 'Selected, copy it from the menu';
+      copy.textContent = w.selected;
     }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(code).then(function () {
-        copy.textContent = 'Copied';
-      }, selectCode);
-    } else {
-      selectCode();
-    }
+    writeCode().then(function () {
+      copy.textContent = w.copied;
+    }, selectCode);
   });
 })();
 </script>
