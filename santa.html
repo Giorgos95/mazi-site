@@ -61,7 +61,7 @@
 }
 .form-note { font-weight: 700; }
 .santa-card .button + .form-note { margin-top: 1rem; }
-.santa-card .switch-form { margin: 1rem 0 0; }
+.santa-card .switch-form, #closed-code { margin: 1rem 0 0; }
 .notice {
   margin: 1.4rem 0 0; padding: 0.8rem 1rem; border-radius: 16px;
   background: var(--hi); border: 2.5px solid var(--line); font-weight: 700;
@@ -105,6 +105,9 @@
   </section>
 
   <p id="closed" class="notice" hidden>This Secret Santa is not taking new people right now.</p>
+  <!-- Someone who joined in another browser still gets back in while the draw
+       takes nobody new. -->
+  <p class="switch-form" id="closed-code" hidden><button class="more" id="closed-have-code" type="button">Already joined? Open with your code</button></p>
 
   <!-- Before the draw, for a browser that has not joined. -->
   <form id="join" class="santa-card" novalidate hidden>
@@ -124,7 +127,8 @@
     <p class="switch-form"><button class="more" id="have-code" type="button">Already joined? Open with your code</button></p>
   </form>
 
-  <!-- A browser the draw does not know: back in with a name and its code. -->
+  <!-- A browser the draw does not know: back in with a name and its code, or,
+       while the draw takes people, into the join form. -->
   <form id="recover" class="santa-card" novalidate hidden>
     <p id="too-late" class="form-note" hidden>The names are already drawn. Ask the organizer.</p>
     <p id="changed" hidden>If you opened this before, the organizer may have changed your code.</p>
@@ -147,6 +151,8 @@
       <p class="code" id="code"></p>
       <p class="note" id="code-keep">Keep it, a screenshot works. It opens your match from any phone or browser.</p>
     </div>
+    <!-- A join the server took whose answer, with the code, never arrived. -->
+    <p id="code-lost" class="notice" hidden>You're in. We could not show your code: ask the organizer for a new one before you change phone or browser.</p>
     <p id="waiting" class="note">The names are not drawn yet. Open this same link again when the organizer says they are.</p>
   </section>
 
@@ -162,7 +168,7 @@
       <p id="keep-ask" class="form-note">Have Mazí on this phone?</p>
       <button class="button" id="keep-go" type="button">Keep it in Mazí</button>
       <p id="keep-failed" class="form-note" role="alert" hidden></p>
-      <p id="keep-note" class="note">Your match stays in the app and the exchange goes on your calendar. Needs the latest Mazí.</p>
+      <p id="keep-note" class="note">Your match stays in the app, and Mazí offers to add the exchange to your calendar. Needs the latest Mazí.</p>
     </div>
   </section>
 
@@ -275,6 +281,8 @@
       changed: 'If you opened this before, the organizer may have changed your code.',
       tooLate: 'The names are already drawn. Ask the organizer.',
       nameTaken: 'Someone already has that name. Add a letter.',
+      badJoin: 'That name or wish was not accepted. Try plain letters.',
+      codeLost: "You're in. We could not show your code: ask the organizer for a new one before you change phone or browser.",
       notTaking: 'This Secret Santa is not taking new people right now.',
       failed: 'That did not work. Check your connection and try again.',
       retry: 'Try again',
@@ -282,7 +290,7 @@
       made: 'Organized with Mazí, the family organizer',
       keepAsk: 'Have Mazí on this phone?',
       keepGo: 'Keep it in Mazí',
-      keepNote: 'Your match stays in the app and the exchange goes on your calendar. Needs the latest Mazí.',
+      keepNote: 'Your match stays in the app, and Mazí offers to add the exchange to your calendar. Needs the latest Mazí.',
       days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
       months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
@@ -296,14 +304,14 @@
       wishes: 'Οι επιθυμίες σας (προαιρετικά)',
       add: 'Προσθέστε άλλη μία',
       join: 'Μπαίνω',
-      soFar: 'Μέχρι τώρα: ',
+      soFar: 'Μέχρι τώρα μπήκαν: ',
       youreIn: 'Μπήκατε, ',
       codeLabel: 'Ο κωδικός σας',
-      keep: 'Κρατήστε τον, αρκεί ένα στιγμιότυπο. Ανοίγει το όνομά σας από κάθε κινητό ή browser.',
+      keep: 'Κρατήστε τον, αρκεί ένα στιγμιότυπο. Με αυτόν βλέπετε ποιος σας έτυχε από κάθε κινητό ή browser.',
       waiting: 'Η κλήρωση δεν έχει γίνει ακόμα. Ανοίξτε ξανά αυτό το link όταν σας πει ο διοργανωτής.',
       buying: ', παίρνετε δώρο για',
       theirWishes: ' · επιθυμίες',
-      notRecognised: 'Αυτό το κινητό δεν αναγνωρίζεται. Γράψτε το όνομα και τον κωδικό σας για να δείτε το όνομα.',
+      notRecognised: 'Αυτό το κινητό δεν αναγνωρίζεται. Γράψτε το όνομα και τον κωδικό σας για να δείτε ποιος σας έτυχε.',
       open: 'Άνοιγμα',
       haveCode: 'Έχετε ήδη μπει; Ανοίξτε με τον κωδικό σας',
       noCode: 'Δεν έχετε μπει ακόμα; Προσθέστε το όνομά σας',
@@ -315,6 +323,8 @@
       changed: 'Αν το είχατε ανοίξει πριν, ο διοργανωτής ίσως άλλαξε τον κωδικό σας.',
       tooLate: 'Η κλήρωση έχει ήδη γίνει. Ρωτήστε τον διοργανωτή.',
       nameTaken: 'Υπάρχει ήδη αυτό το όνομα. Προσθέστε ένα γράμμα.',
+      badJoin: 'Αυτό το όνομα ή η επιθυμία δεν έγινε δεκτό. Δοκιμάστε με απλά γράμματα.',
+      codeLost: 'Μπήκατε. Δεν μπορέσαμε να δείξουμε τον κωδικό σας: ζητήστε νέο από τον διοργανωτή πριν αλλάξετε κινητό ή browser.',
       notTaking: 'Αυτό το Secret Santa δεν δέχεται νέα άτομα αυτή τη στιγμή.',
       failed: 'Κάτι δεν πήγε καλά. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.',
       retry: 'Δοκιμάστε ξανά',
@@ -322,7 +332,7 @@
       made: 'Οργανώθηκε με το Mazí, τον οικογενειακό οργανωτή',
       keepAsk: 'Έχετε το Mazí σε αυτό το κινητό;',
       keepGo: 'Κρατήστε το στο Mazí',
-      keepNote: 'Το όνομα μένει στην εφαρμογή και η ανταλλαγή μπαίνει στο ημερολόγιό σας. Χρειάζεται το πιο πρόσφατο Mazí.',
+      keepNote: 'Το άτομο που σας έτυχε μένει στην εφαρμογή και το Mazí προτείνει να μπει η ανταλλαγή στο ημερολόγιό σας. Χρειάζεται την πιο πρόσφατη έκδοση του Mazí.',
       days: ['Κυρ', 'Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ'],
       months: ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαΐ', 'Ιουν', 'Ιουλ', 'Αυγ', 'Σεπ', 'Οκτ', 'Νοε', 'Δεκ']
     }
@@ -351,7 +361,9 @@
     say('recover-code-label', w.codeLabel);
     say('recover-submit', w.open);
     say('have-code', w.haveCode);
+    say('closed-have-code', w.haveCode);
     say('no-code', w.noCode);
+    say('code-lost', w.codeLost);
     say('too-late', w.tooLate);
     say('changed', w.changed);
     say('lost', w.lost);
@@ -492,6 +504,14 @@
   var code = null;      // the code from santa_join, shown once and kept nowhere
   var tooLate = false;  // a join that met a draw already drawn
   var returning = false; // the join form swapped for the code form by "Already joined?"
+  // The join form asked for by "Not joined yet?" over a stored key the server
+  // no longer knows: the organizer removed that person (there is no rename,
+  // so a mistyped name is removed and added again), and their code went with them.
+  var joining = false;
+  var codeLost = false;   // a join that landed though its answer, and the code in it, was lost
+  // The join form's key: made on its first submit and sent again by every
+  // retry, so a join that landed with its answer lost is found, not repeated.
+  var pendingKey = null;
 
   // One state at a time: loading, failed, ended, join, returning, closed,
   // recover, waiting or match. `page` is santa_page's answer, or
@@ -503,10 +523,12 @@
     var view;
     if (s === 'loading' || s === 'failed' || s === 'ended') view = s;
     else if (me) view = s === 'drawn' && me.match ? 'match' : 'waiting';
-    // Once this browser has joined a draw it never sees the join form for it again.
-    else if (known || s === 'drawn') view = 'recover';
-    else if (page.can_join) view = returning ? 'returning' : 'join';
-    else view = 'closed';
+    else if (s === 'drawn') view = 'recover';
+    // A browser whose key the draw no longer knows gets the code form, or the
+    // join form when it asks for it while the draw takes people.
+    else if (known) view = joining && page.can_join ? 'join' : 'recover';
+    else if (returning) view = 'returning';
+    else view = page.can_join ? 'join' : 'closed';
     main.dataset.state = view;
     var draw = view !== 'loading' && view !== 'failed' && view !== 'ended';
 
@@ -516,14 +538,16 @@
     shown('reset', !!(me && me.reset));
     shown('failed', view === 'failed');
     shown('closed', view === 'closed');
+    shown('closed-code', view === 'closed');
 
     shown('join', view === 'join');
     // Before the draw the code form is the same one, without "not recognised"
-    // and with the way back to the join form.
+    // when this browser chose it, and with the way to the join form while the
+    // draw takes people.
     var codeForm = view === 'recover' || view === 'returning';
     shown('recover', codeForm);
     shown('recover-intro', view === 'recover');
-    shown('back-line', view === 'returning');
+    shown('back-line', codeForm && s === 'open' && !!page.can_join);
     shown('lost', codeForm);
     shown('changed', view === 'recover' && known);
     shown('too-late', view === 'recover' && tooLate);
@@ -534,6 +558,7 @@
       if (code !== null) say('code', code);
       shown('code-card', code !== null);
     }
+    shown('code-lost', view === 'waiting' && codeLost && code === null);
 
     shown('match', view === 'match');
     // Keep it in Mazí: only a phone can have the app to keep it in.
@@ -582,15 +607,19 @@
   $('retry').addEventListener('click', load);
 
   // Swapping between the join form and the code form, before the draw.
-  $('have-code').addEventListener('click', function () {
+  function toCodeForm() {
     returning = true;
+    joining = false;
     if (!$('recover-name').value) $('recover-name').value = $('join-name').value.trim();
     shown('recover-note', false);
     render(last);
     $($('recover-name').value ? 'recover-code' : 'recover-name').focus();
-  });
+  }
+  $('have-code').addEventListener('click', toCodeForm);
+  $('closed-have-code').addEventListener('click', toCodeForm);
   $('no-code').addEventListener('click', function () {
     returning = false;
+    joining = true;
     shown('join-note', false);
     render(last);
     $('join-name').focus();
@@ -599,19 +628,52 @@
   // ---------- Joining ----------
 
   $('join-name').addEventListener('input', function () { shown('join-note', false); });
+
+  // A join whose answer never came may still have landed, and a retry with
+  // the same key is answered bad_input, since a key holds one person. Either
+  // way santa_page, asked with that key, says whether this browser is in now:
+  // then the key is kept and the waiting state shows, saying the code, which
+  // was in the lost answer, could not be shown. Otherwise `words` are said.
+  function joinLandedOrSay(key, words) {
+    var button = $('join-submit');
+    call('santa_page', { p_token: token, p_key: key }).then(function (page) {
+      if (page.state === 'ended') { render(page); return; }
+      if (isPage(page) && page.me) {
+        keepKey(key);
+        pendingKey = null;
+        joining = false;
+        code = null;
+        codeLost = true;
+        button.disabled = false;
+        last = page;
+        render(page);
+        $('in-heading').scrollIntoView({ block: 'start' });
+        return;
+      }
+      button.disabled = false;
+      note('join-note', words);
+    }, function () {
+      button.disabled = false;
+      note('join-note', w.failed);
+    });
+  }
+
   $('join').addEventListener('submit', function (e) {
     e.preventDefault();
     var name = $('join-name').value.trim();
     if (!name) { $('join-name').focus(); return; }
     var wishes = joinWishes.values();
-    var key = newKey();
+    if (!pendingKey) pendingKey = newKey();
+    var key = pendingKey;
     var button = $('join-submit');
     button.disabled = true;
     shown('join-note', false);
     call('santa_join', { p_token: token, p_name: name, p_wishes: wishes, p_key: key }).then(function (r) {
-      button.disabled = false;
       if (r.ok === true && isText(r.code)) {
+        button.disabled = false;
         keepKey(key);
+        pendingKey = null;
+        joining = false;
         code = r.code;
         var page = {};
         for (var k in last) page[k] = last[k];
@@ -622,14 +684,15 @@
         $('in-heading').scrollIntoView({ block: 'start' });
         return;
       }
+      if (r.reason === 'bad_input') { joinLandedOrSay(key, w.badJoin); return; }
+      button.disabled = false;
       if (r.reason === 'ended') { render({ state: 'ended' }); return; }
       if (r.reason === 'drawn') { tooLate = true; load(); return; }
       note('join-note', r.reason === 'name_taken' ? w.nameTaken
         : r.reason === 'full' || r.reason === 'busy' || r.reason === 'closed' ? w.notTaking
         : w.failed);
     }, function () {
-      button.disabled = false;
-      note('join-note', w.failed);
+      joinLandedOrSay(key, w.failed);
     });
   });
 

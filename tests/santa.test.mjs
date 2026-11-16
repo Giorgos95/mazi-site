@@ -319,6 +319,83 @@ test('a full or closed draw, and a lost connection, say so and keep the form', a
   }
 });
 
+// A join the server took whose answer never arrived: the retry would send a
+// new key, meet the name as taken, and put the same person in twice.
+test('a join retried after a lost answer sends the same key', async () => {
+  const table = { santa_page: draw(), santa_join: 'fail' };
+  await withPage(URL_, stub(table), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    await type(page, 'join-name', 'Petros');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(() => visible(page, 'join-note')));
+    assert.equal(await text(page, 'join-note'), 'That did not work. Check your connection and try again.');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(async () => (await calls(page)).filter((c) => c.fn === 'santa_join').length === 2));
+    const joins = (await calls(page)).filter((c) => c.fn === 'santa_join');
+    assert.match(joins[0].args.p_key, HEX64);
+    assert.equal(joins[1].args.p_key, joins[0].args.p_key);
+    // The page asked, with that key, whether the join had landed after all.
+    const asks = (await calls(page)).filter((c) => c.fn === 'santa_page');
+    assert.ok(asks.slice(1).every((c) => c.args.p_key === joins[0].args.p_key), JSON.stringify(asks.map((c) => c.args.p_key)));
+    assert.equal(await stored(page), null);
+  });
+});
+
+test('a join that landed though its answer was lost shows the waiting state, saying the code could not be shown', async () => {
+  for (const answer of ['fail', { ok: false, reason: 'bad_input' }]) {
+    const table = { santa_page: [draw(), draw({ people: ['Eleni', 'Nikos', 'Petros'], me: me({ wishes: [] }) })], santa_join: answer };
+    await withPage(URL_, stub(table), async (page) => {
+      assert.ok(await waitFor(() => visible(page, 'join')));
+      await type(page, 'join-name', 'Petros');
+      await page.click('#join-submit');
+      assert.ok(await waitFor(async () => (await state(page)) === 'waiting'), JSON.stringify(answer));
+      const join = (await calls(page)).find((c) => c.fn === 'santa_join');
+      const ask = (await calls(page)).filter((c) => c.fn === 'santa_page').at(-1);
+      assert.equal(ask.args.p_key, join.args.p_key);
+      assert.equal(await stored(page), join.args.p_key);
+      assert.equal(await text(page, 'in-heading'), "You're in, Petros");
+      assert.ok(!(await visible(page, 'code-card')));
+      assert.ok(await visible(page, 'code-lost'));
+      assert.equal(await text(page, 'code-lost'),
+        "You're in. We could not show your code: ask the organizer for a new one before you change phone or browser.");
+      assert.ok(!(await visible(page, 'join')));
+      assert.ok(!(await visible(page, 'join-note')));
+      assert.deepEqual(page.errors, []);
+    });
+  }
+  const table = { santa_page: [draw(), draw({ me: me() })], santa_join: 'fail' };
+  await withPage(`${URL_}&lang=el`, stub(table), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    await type(page, 'join-name', 'Petros');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(() => visible(page, 'code-lost')));
+    assert.equal(await text(page, 'code-lost'),
+      'Μπήκατε. Δεν μπορέσαμε να δείξουμε τον κωδικό σας: ζητήστε νέο από τον διοργανωτή πριν αλλάξετε κινητό ή browser.');
+  });
+});
+
+test('a join refused as bad input says the name or wish was not accepted, not the connection', async () => {
+  const table = { santa_page: draw(), santa_join: { ok: false, reason: 'bad_input' } };
+  await withPage(URL_, stub(table), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    await type(page, 'join-name', 'Petros');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(() => visible(page, 'join-note')));
+    assert.equal(await text(page, 'join-note'), 'That name or wish was not accepted. Try plain letters.');
+    assert.ok(await visible(page, 'join'));
+    assert.equal(await page.eval(`document.getElementById('join-submit').disabled`), false);
+    assert.equal(await stored(page), null);
+    assert.ok(!(await visible(page, 'code-lost')));
+  });
+  await withPage(`${URL_}&lang=el`, stub(table), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    await type(page, 'join-name', 'Petros');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(() => visible(page, 'join-note')));
+    assert.equal(await text(page, 'join-note'), 'Αυτό το όνομα ή η επιθυμία δεν έγινε δεκτό. Δοκιμάστε με απλά γράμματα.');
+  });
+});
+
 test('a join that comes too late shows the drawn draw, never the join form', async () => {
   const table = { santa_page: [draw(), draw({ state: 'drawn', can_join: false })], santa_join: { ok: false, reason: 'drawn' } };
   await withPage(URL_, stub(table), async (page) => {
@@ -331,11 +408,29 @@ test('a join that comes too late shows the drawn draw, never the join form', asy
   });
 });
 
-test('an open draw that takes nobody new says so', async () => {
-  await withPage(URL_, stub({ santa_page: draw({ can_join: false }) }), async (page) => {
+test('an open draw that takes nobody new says so, and still lets someone who joined in with their code', async () => {
+  const table = { santa_page: [draw({ can_join: false }), draw({ can_join: false, me: me() })], santa_open: { ok: true } };
+  await withPage(URL_, stub(table), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'closed')));
     assert.equal(await text(page, 'closed'), 'This Secret Santa is not taking new people right now.');
     assert.ok(!(await visible(page, 'join')));
+    assert.ok(await visible(page, 'closed-code'));
+    assert.equal(await text(page, 'closed-have-code'), 'Already joined? Open with your code');
+    await page.click('#closed-have-code');
+    assert.equal(await state(page), 'returning');
+    assert.ok(await visible(page, 'recover'));
+    assert.ok(!(await visible(page, 'closed-code')));
+    // No way to the join form: the draw takes nobody new.
+    assert.ok(!(await visible(page, 'back-line')));
+    await type(page, 'recover-name', 'Petros');
+    await type(page, 'recover-code', '4821');
+    await page.click('#recover-submit');
+    assert.ok(await waitFor(async () => (await state(page)) === 'waiting'));
+    assert.deepEqual(page.errors, []);
+  });
+  await withPage(`${URL_}&lang=el`, stub({ santa_page: draw({ can_join: false }) }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'closed-code')));
+    assert.equal(await text(page, 'closed-have-code'), 'Έχετε ήδη μπει; Ανοίξτε με τον κωδικό σας');
   });
 });
 
@@ -509,6 +604,8 @@ test('a stored key the server no longer knows gets the code form, with a line ab
       assert.ok(await visible(page, 'changed'), state);
       assert.equal(await text(page, 'changed'), 'If you opened this before, the organizer may have changed your code.');
       assert.ok(!(await visible(page, 'join')), state);
+      // While the draw takes people, the way to the join form is offered too.
+      assert.equal(await visible(page, 'back-line'), state === 'open', state);
       // The old key stays until a new one is accepted.
       await type(page, 'recover-name', 'Petros');
       await type(page, 'recover-code', '1111');
@@ -517,6 +614,44 @@ test('a stored key the server no longer knows gets the code form, with a line ab
       assert.equal(await stored(page), KEY, state);
     });
   }
+  // An open draw that takes nobody new offers only the code.
+  await withPage(URL_, stub({ santa_page: draw({ can_join: false }) }, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'recover')));
+    assert.ok(!(await visible(page, 'back-line')));
+  });
+});
+
+// The organizer removed this person (a mistyped name has no rename), so their
+// code is gone with them: they join again from the same browser.
+test('a removed person joins again from the same browser, and the new key replaces the old one', async () => {
+  const table = { santa_page: draw(), santa_join: { ok: true, code: '7310' } };
+  await withPage(URL_, stub(table, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'recover')));
+    assert.equal(await text(page, 'no-code'), 'Not joined yet? Add yourself');
+    await page.click('#no-code');
+    assert.equal(await state(page), 'join');
+    assert.ok(await visible(page, 'join'));
+    assert.ok(!(await visible(page, 'recover')));
+    await type(page, 'join-name', 'Petros');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(() => visible(page, 'code-card')));
+    const join = (await calls(page)).find((c) => c.fn === 'santa_join');
+    assert.match(join.args.p_key, HEX64);
+    assert.notEqual(join.args.p_key, KEY);
+    assert.equal(await stored(page), join.args.p_key);
+    assert.equal(await text(page, 'code'), '7310');
+    assert.equal(await text(page, 'in-heading'), "You're in, Petros");
+    assert.deepEqual(page.errors, []);
+  });
+  // And back to the code form from there.
+  await withPage(URL_, stub({ santa_page: draw() }, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'recover')));
+    await page.click('#no-code');
+    await page.click('#have-code');
+    assert.equal(await state(page), 'recover');
+    assert.ok(await visible(page, 'changed'));
+    assert.ok(await visible(page, 'back-line'));
+  });
 });
 
 test('a code reset by the organizer is said once', async () => {
@@ -591,8 +726,16 @@ test('?lang=el, and a phone set to Greek, read the page in Greek', async () => {
     assert.equal(await text(page, 'facts'), 'Έως €20 · ανταλλαγή Παρ 25 Δεκ');
     assert.equal(await text(page, 'join-submit'), 'Μπαίνω');
     assert.equal(await text(page, 'join-name-label'), 'Το όνομά σας');
-    assert.equal(await text(page, 'people'), 'Μέχρι τώρα: Eleni, Nikos');
+    assert.equal(await text(page, 'people'), 'Μέχρι τώρα μπήκαν: Eleni, Nikos');
     assert.deepEqual(page.errors, []);
+  });
+  const joined = { santa_page: draw(), santa_join: { ok: true, code: '4821' } };
+  await withPage(`${URL_}&lang=el`, stub(joined), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    await type(page, 'join-name', 'Petros');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(() => visible(page, 'code-card')));
+    assert.equal(await text(page, 'code-keep'), 'Κρατήστε τον, αρκεί ένα στιγμιότυπο. Με αυτόν βλέπετε ποιος σας έτυχε από κάθε κινητό ή browser.');
   });
   const table = { santa_page: draw({ state: 'drawn', can_join: false, me: me({ match: MATCH }) }) };
   await withPage(`${URL_}&lang=el`, stub(table, { stored: KEY }), async (page) => {
@@ -603,7 +746,7 @@ test('?lang=el, and a phone set to Greek, read the page in Greek', async () => {
   const wrong = { santa_page: draw({ state: 'drawn', can_join: false }), santa_open: { ok: false, reason: 'wrong', left: 3 } };
   await withPage(`${URL_}&lang=el`, stub(wrong), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'recover')));
-    assert.equal(await text(page, 'recover-intro'), 'Αυτό το κινητό δεν αναγνωρίζεται. Γράψτε το όνομα και τον κωδικό σας για να δείτε το όνομα.');
+    assert.equal(await text(page, 'recover-intro'), 'Αυτό το κινητό δεν αναγνωρίζεται. Γράψτε το όνομα και τον κωδικό σας για να δείτε ποιος σας έτυχε.');
     assert.equal(await text(page, 'recover-submit'), 'Άνοιγμα');
     await type(page, 'recover-name', 'Petros');
     await type(page, 'recover-code', '1111');
@@ -661,7 +804,7 @@ const drawn = (over = {}) => draw({ state: 'drawn', can_join: false, me: me({ ma
 const keepWords = {
   ask: 'Have Mazí on this phone?',
   button: 'Keep it in Mazí',
-  note: 'Your match stays in the app and the exchange goes on your calendar. Needs the latest Mazí.',
+  note: 'Your match stays in the app, and Mazí offers to add the exchange to your calendar. Needs the latest Mazí.',
 };
 // Asserts the code is nowhere but in the link the page asked to open.
 async function codeKeptNowhere(page) {
@@ -780,7 +923,7 @@ test('Keep it in Mazí reads Greek in Greek', async () => {
     assert.ok(await waitFor(() => visible(page, 'keep')));
     assert.equal(await text(page, 'keep-ask'), 'Έχετε το Mazí σε αυτό το κινητό;');
     assert.equal(await text(page, 'keep-go'), 'Κρατήστε το στο Mazí');
-    assert.equal(await text(page, 'keep-note'), 'Το όνομα μένει στην εφαρμογή και η ανταλλαγή μπαίνει στο ημερολόγιό σας. Χρειάζεται το πιο πρόσφατο Mazí.');
+    assert.equal(await text(page, 'keep-note'), 'Το άτομο που σας έτυχε μένει στην εφαρμογή και το Mazí προτείνει να μπει η ανταλλαγή στο ημερολόγιό σας. Χρειάζεται την πιο πρόσφατη έκδοση του Mazí.');
     await page.click('#keep-go');
     assert.ok(await waitFor(() => visible(page, 'keep-failed')));
     assert.equal(await text(page, 'keep-failed'), 'Κάτι δεν πήγε καλά. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.');
