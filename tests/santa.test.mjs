@@ -77,14 +77,29 @@ function stub(table, { stored = null, blocked = false, greek = false, now = TODA
   })()`;
 }
 
-async function withPage(url, initScript, fn) {
-  const page = await browser.newPage({ initScript });
+async function withPage(url, initScript, fn, { userAgent } = {}) {
+  const page = await browser.newPage({ initScript, userAgent });
   try {
     await page.goto(server.origin + url);
     return await fn(page);
   } finally {
     await page.close();
   }
+}
+
+// The same phones as the invite page's tests (tests/join.test.mjs).
+const ANDROID = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36';
+const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1';
+
+// Every navigation the page asks for, read from Chrome itself: a desktop Chrome
+// knows neither intent:// nor mazi://, so the page stays where it is and only
+// the request tells where it meant to go.
+function navigations(page) {
+  const urls = [];
+  page.conn.listeners.add((m) => {
+    if (m.sessionId === page.sessionId && m.method === 'Page.frameRequestedNavigation') urls.push(m.params.url);
+  });
+  return urls;
 }
 
 const visible = (page, id) => page.eval(`(() => { const e = document.getElementById('${id}'); return !!e && getComputedStyle(e).display !== 'none' && e.getBoundingClientRect().height > 0; })()`);
@@ -369,7 +384,7 @@ test('after the draw a known browser sees its match and the wishes, never the jo
     assert.ok(!(await visible(page, 'join')));
     assert.ok(!(await visible(page, 'recover')));
     assert.ok(!(await visible(page, 'waiting')));
-    // Left for Keep it in Mazí, which comes later.
+    // Keep it in Mazí is for a phone; this is a computer.
     assert.equal(await page.eval(`document.getElementById('keep').hidden`), true);
     assert.equal(await page.eval(`document.getElementById('match').contains(document.getElementById('keep'))`), true);
     // Nothing but the key is kept, and the match goes nowhere else.
@@ -635,6 +650,141 @@ test('both store buttons carry the Secret Santa campaign', async () => {
   const html = readFile('santa.html');
   assert.ok(html.includes('utm_campaign%3Dsite_santa"'));
   assert.ok(html.includes('ct=site_santa&amp;'));
+});
+
+// ---------- Keep it in Mazí ----------
+
+// Unlike KEY in every part, so finding one is never finding the other.
+const CODE = 'fedcba98765432100f1e2d3c4b5a6978';
+const PLAY = 'https://play.google.com/store/apps/details?id=com.mazi.family&referrer=utm_source%3Dsite%26utm_medium%3Dlink%26utm_campaign%3Dsite_santa';
+const drawn = (over = {}) => draw({ state: 'drawn', can_join: false, me: me({ match: MATCH }), ...over });
+const keepWords = {
+  ask: 'Have Mazí on this phone?',
+  button: 'Keep it in Mazí',
+  note: 'Your match stays in the app and the exchange goes on your calendar. Needs the latest Mazí.',
+};
+// Asserts the code is nowhere but in the link the page asked to open.
+async function codeKeptNowhere(page) {
+  assert.equal(await page.eval(`(() => {
+    const code = ${JSON.stringify(CODE)};
+    const attrs = [...document.querySelectorAll('*')].some((e) => [...e.attributes].some((a) => a.value.includes(code)));
+    return JSON.stringify(localStorage).includes(code) || JSON.stringify(sessionStorage).includes(code)
+      || location.href.includes(code) || document.title.includes(code)
+      || document.documentElement.textContent.includes(code) || attrs;
+  })()`), false);
+}
+
+test('Keep it in Mazí shows under the match on a phone, never on a computer or before the match', async () => {
+  for (const userAgent of [ANDROID, IPHONE]) {
+    await withPage(URL_, stub({ santa_page: drawn() }, { stored: KEY }), async (page) => {
+      assert.ok(await waitFor(() => visible(page, 'match')));
+      assert.ok(await visible(page, 'keep'), userAgent);
+      assert.equal(await page.eval(`document.getElementById('match').contains(document.getElementById('keep'))`), true);
+      assert.equal(await text(page, 'keep-ask'), keepWords.ask);
+      assert.equal(await text(page, 'keep-go'), keepWords.button);
+      assert.equal(await text(page, 'keep-note'), keepWords.note);
+      assert.ok(!(await visible(page, 'keep-failed')));
+      // Showing it asks nothing: the code is made only on a tap.
+      assert.deepEqual((await calls(page)).map((c) => c.fn), ['santa_page']);
+      assert.deepEqual(page.errors, []);
+    }, { userAgent });
+    // Before the draw there is no match to keep.
+    await withPage(URL_, stub({ santa_page: draw({ me: me() }) }, { stored: KEY }), async (page) => {
+      assert.ok(await waitFor(() => visible(page, 'waiting')));
+      assert.ok(!(await visible(page, 'keep')), userAgent);
+    }, { userAgent });
+    // Nor while the page loads, nor for a browser the draw does not know.
+    await withPage(URL_, stub({ santa_page: 'fail' }), async (page) => {
+      assert.ok(await waitFor(() => visible(page, 'failed')));
+      assert.ok(!(await visible(page, 'keep')), userAgent);
+    }, { userAgent });
+    await withPage(URL_, stub({ santa_page: draw({ state: 'drawn', can_join: false }) }), async (page) => {
+      assert.ok(await waitFor(() => visible(page, 'recover')));
+      assert.ok(!(await visible(page, 'keep')), userAgent);
+    }, { userAgent });
+  }
+  await withPage(URL_, stub({ santa_page: drawn() }, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'match')));
+    assert.ok(!(await visible(page, 'keep')));
+  });
+});
+
+test('on Android a tap asks for a one time code and opens Mazí through an intent, with Play behind it', async () => {
+  const table = { santa_page: drawn(), santa_handoff: { ok: true, code: CODE } };
+  await withPage(URL_, stub(table, { stored: KEY }), async (page) => {
+    const went = navigations(page);
+    assert.ok(await waitFor(() => visible(page, 'keep')));
+    await page.click('#keep-go');
+    assert.ok(await waitFor(async () => went.length > 0));
+    const handoff = (await calls(page)).filter((c) => c.fn === 'santa_handoff');
+    assert.equal(handoff.length, 1);
+    assert.equal(handoff[0].method, 'POST');
+    assert.deepEqual(handoff[0].args, { p_token: TOKEN, p_key: KEY });
+    assert.deepEqual(went, [
+      `intent://santa-keep?c=${CODE}#Intent;scheme=mazi;package=com.mazi.family;S.browser_fallback_url=${encodeURIComponent(PLAY)};end`,
+    ]);
+    await codeKeptNowhere(page);
+    assert.ok(!(await visible(page, 'keep-failed')));
+    // Back from the app, the button asks for a new code: a spent one is never reused.
+    assert.ok(await waitFor(async () => !(await page.eval(`document.getElementById('keep-go').disabled`)), 6000));
+  }, { userAgent: ANDROID });
+});
+
+test('on an iPhone a tap opens mazi://santa-keep with the code', async () => {
+  const table = { santa_page: drawn(), santa_handoff: { ok: true, code: CODE } };
+  await withPage(URL_, stub(table, { stored: KEY }), async (page) => {
+    const went = navigations(page);
+    assert.ok(await waitFor(() => visible(page, 'keep')));
+    await page.click('#keep-go');
+    assert.ok(await waitFor(async () => went.length > 0));
+    assert.deepEqual(went, [`mazi://santa-keep?c=${CODE}`]);
+    assert.deepEqual((await calls(page)).find((c) => c.fn === 'santa_handoff').args, { p_token: TOKEN, p_key: KEY });
+    await codeKeptNowhere(page);
+  }, { userAgent: IPHONE });
+});
+
+test('a handoff refused, failed or malformed says so and goes nowhere', async () => {
+  for (const answer of [{ ok: false }, 'fail', { ok: true }, { ok: true, code: 'abc' }, { ok: true, code: `${CODE};end` }]) {
+    const table = { santa_page: drawn(), santa_handoff: answer };
+    await withPage(URL_, stub(table, { stored: KEY }), async (page) => {
+      const went = navigations(page);
+      assert.ok(await waitFor(() => visible(page, 'keep')));
+      await page.click('#keep-go');
+      assert.ok(await waitFor(() => visible(page, 'keep-failed')), JSON.stringify(answer));
+      assert.equal(await text(page, 'keep-failed'), 'That did not work. Check your connection and try again.');
+      assert.equal(await page.eval(`document.getElementById('keep-go').disabled`), false);
+      await new Promise((r) => setTimeout(r, 300));
+      assert.deepEqual(went, [], JSON.stringify(answer));
+      assert.ok(await visible(page, 'match'));
+      assert.deepEqual(page.errors, []);
+    }, { userAgent: ANDROID });
+  }
+});
+
+test('the button waits for its answer, so two taps ask once', async () => {
+  const table = { santa_page: drawn(), santa_handoff: { ok: true, code: CODE } };
+  await withPage(URL_, stub(table, { stored: KEY }), async (page) => {
+    const went = navigations(page);
+    assert.ok(await waitFor(() => visible(page, 'keep')));
+    await page.eval(`(() => { const b = document.getElementById('keep-go'); b.click(); b.click(); return b.disabled; })()`);
+    assert.ok(await waitFor(async () => went.length > 0));
+    await new Promise((r) => setTimeout(r, 300));
+    assert.equal((await calls(page)).filter((c) => c.fn === 'santa_handoff').length, 1);
+    assert.equal(went.length, 1);
+  }, { userAgent: IPHONE });
+});
+
+test('Keep it in Mazí reads Greek in Greek', async () => {
+  const table = { santa_page: drawn(), santa_handoff: { ok: false } };
+  await withPage(`${URL_}&lang=el`, stub(table, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'keep')));
+    assert.equal(await text(page, 'keep-ask'), 'Έχετε το Mazí σε αυτό το κινητό;');
+    assert.equal(await text(page, 'keep-go'), 'Κρατήστε το στο Mazí');
+    assert.equal(await text(page, 'keep-note'), 'Το όνομα μένει στην εφαρμογή και η ανταλλαγή μπαίνει στο ημερολόγιό σας. Χρειάζεται το πιο πρόσφατο Mazí.');
+    await page.click('#keep-go');
+    assert.ok(await waitFor(() => visible(page, 'keep-failed')));
+    assert.equal(await text(page, 'keep-failed'), 'Κάτι δεν πήγε καλά. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.');
+  }, { userAgent: ANDROID });
 });
 
 test('the page builds no markup from strings', () => {
