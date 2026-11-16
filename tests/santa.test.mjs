@@ -173,6 +173,84 @@ test('a name already in the draw says so and keeps the form filled', async () =>
   });
 });
 
+// Someone who joined in another browser gets back in, rather than joining
+// again under a second name and putting a duplicate person in the draw.
+test('name taken leaves the way back in right under the words', async () => {
+  await withPage(URL_, stub({ santa_page: draw(), santa_join: { ok: false, reason: 'name_taken' } }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    assert.ok(await visible(page, 'have-code'));
+    await type(page, 'join-name', 'Eleni');
+    await page.click('#join-submit');
+    assert.ok(await waitFor(() => visible(page, 'join-note')));
+    assert.ok(await visible(page, 'have-code'));
+    assert.equal(await text(page, 'have-code'), 'Already joined? Open with your code');
+    // Next in the page after the words: nothing stands between them.
+    assert.equal(await page.eval(`document.getElementById('join-note').nextElementSibling.contains(document.getElementById('have-code'))`), true);
+  });
+});
+
+test('Already joined? swaps the join form for the code form, and back', async () => {
+  await withPage(URL_, stub({ santa_page: draw() }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    await type(page, 'join-name', 'Petros');
+    await page.click('#have-code');
+    assert.equal(await state(page), 'returning');
+    assert.ok(await visible(page, 'recover'));
+    assert.ok(!(await visible(page, 'join')));
+    assert.ok(!(await visible(page, 'recover-intro')), 'not the "not recognised" sentence');
+    assert.ok(!(await visible(page, 'changed')));
+    assert.equal(await page.eval(`document.getElementById('recover-name').value`), 'Petros');
+    assert.equal(await text(page, 'no-code'), 'Not joined yet? Add yourself');
+    assert.equal(await text(page, 'people'), 'In so far: Eleni, Nikos');
+    await page.click('#no-code');
+    assert.equal(await state(page), 'join');
+    assert.ok(await visible(page, 'join'));
+    assert.ok(!(await visible(page, 'recover')));
+    assert.ok(await visible(page, 'have-code'));
+    assert.deepEqual((await calls(page)).map((c) => c.fn), ['santa_page']);
+    assert.deepEqual(page.errors, []);
+  });
+});
+
+test('a right code before the draw keeps the new key and shows the waiting state, with no code', async () => {
+  const table = {
+    santa_page: [draw(), draw({ me: me() })],
+    santa_open: { ok: true },
+  };
+  await withPage(URL_, stub(table), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    await page.click('#have-code');
+    await type(page, 'recover-name', 'Petros');
+    await type(page, 'recover-code', '4821');
+    await page.click('#recover-submit');
+    assert.ok(await waitFor(async () => (await state(page)) === 'waiting'));
+    const all = await calls(page);
+    const open = all.find((c) => c.fn === 'santa_open');
+    assert.deepEqual([open.args.p_token, open.args.p_name, open.args.p_code], [TOKEN, 'Petros', '4821']);
+    assert.match(open.args.p_key, HEX64);
+    assert.equal(all.at(-1).fn, 'santa_page');
+    assert.equal(all.at(-1).args.p_key, open.args.p_key);
+    assert.equal(await stored(page), open.args.p_key);
+    assert.equal(await text(page, 'in-heading'), "You're in, Petros");
+    assert.ok(await visible(page, 'waiting'));
+    assert.ok(!(await visible(page, 'code-card')), 'no new code');
+    assert.ok(await visible(page, 'own'));
+    assert.equal(await page.eval(`document.getElementById('own-wish-1').value`), 'A good book');
+    assert.ok(!(await visible(page, 'join')));
+    assert.ok(!(await visible(page, 'recover')));
+    assert.deepEqual(page.errors, []);
+  });
+});
+
+test('the way back in reads Greek in Greek', async () => {
+  await withPage(`${URL_}&lang=el`, stub({ santa_page: draw() }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    assert.equal(await text(page, 'have-code'), 'Έχετε ήδη μπει; Ανοίξτε με τον κωδικό σας');
+    await page.click('#have-code');
+    assert.equal(await text(page, 'no-code'), 'Δεν έχετε μπει ακόμα; Προσθέστε το όνομά σας');
+  });
+});
+
 test('a full or closed draw, and a lost connection, say so and keep the form', async () => {
   for (const [answer, words] of [
     [{ ok: false, reason: 'full' }, 'This Secret Santa is not taking new people right now.'],

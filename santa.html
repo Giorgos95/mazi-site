@@ -60,6 +60,8 @@
   text-decoration-thickness: 2px; text-underline-offset: 3px;
 }
 .form-note { font-weight: 700; }
+.santa-card .button + .form-note { margin-top: 1rem; }
+.santa-card .switch-form { margin: 1rem 0 0; }
 .notice {
   margin: 1.4rem 0 0; padding: 0.8rem 1rem; border-radius: 16px;
   background: var(--hi); border: 2.5px solid var(--line); font-weight: 700;
@@ -115,8 +117,11 @@
       <input id="join-wish-3" type="text" maxlength="60" autocomplete="off" aria-labelledby="join-wishes-label" hidden>
       <button class="more" id="join-add" type="button">Add another wish</button>
     </fieldset>
-    <p id="join-note" class="form-note" role="alert" hidden></p>
     <button class="button" id="join-submit" type="submit">I'm in</button>
+    <p id="join-note" class="form-note" role="alert" hidden></p>
+    <!-- Someone who joined in another browser gets back in here, rather than
+         joining again under a second name. -->
+    <p class="switch-form"><button class="more" id="have-code" type="button">Already joined? Open with your code</button></p>
   </form>
 
   <!-- A browser the draw does not know: back in with a name and its code. -->
@@ -130,6 +135,7 @@
     <input id="recover-code" type="text" maxlength="4" inputmode="numeric" autocomplete="one-time-code" enterkeyhint="go">
     <p id="recover-note" class="form-note" role="alert" hidden></p>
     <button class="button" id="recover-submit" type="submit">Open my match</button>
+    <p class="switch-form" id="back-line" hidden><button class="more" id="no-code" type="button">Not joined yet? Add yourself</button></p>
   </form>
   <p id="lost" class="note" hidden>Lost your code? Ask the organizer for a new one.</p>
 
@@ -253,6 +259,8 @@
       theirWishes: ' · wishes',
       notRecognised: 'This phone is not recognised. Enter your name and code to see your match.',
       open: 'Open my match',
+      haveCode: 'Already joined? Open with your code',
+      noCode: 'Not joined yet? Add yourself',
       wrong: 'That is not the right code.',
       left: function (n) { return n === 1 ? '1 try left.' : n + ' tries left.'; },
       locked: 'Too many wrong codes. Ask the organizer for a new one.',
@@ -288,6 +296,8 @@
       theirWishes: ' · επιθυμίες',
       notRecognised: 'Αυτό το κινητό δεν αναγνωρίζεται. Γράψτε το όνομα και τον κωδικό σας για να δείτε το όνομα.',
       open: 'Άνοιγμα',
+      haveCode: 'Έχετε ήδη μπει; Ανοίξτε με τον κωδικό σας',
+      noCode: 'Δεν έχετε μπει ακόμα; Προσθέστε το όνομά σας',
       wrong: 'Ο κωδικός δεν είναι σωστός.',
       left: function (n) { return n === 1 ? 'Απομένει 1 προσπάθεια.' : 'Απομένουν ' + n + ' προσπάθειες.'; },
       locked: 'Πολλοί λάθος κωδικοί. Ζητήστε νέο από τον διοργανωτή.',
@@ -328,6 +338,8 @@
     say('recover-name-label', w.name);
     say('recover-code-label', w.codeLabel);
     say('recover-submit', w.open);
+    say('have-code', w.haveCode);
+    say('no-code', w.noCode);
     say('too-late', w.tooLate);
     say('changed', w.changed);
     say('lost', w.lost);
@@ -464,10 +476,11 @@
   var last = null;      // the latest answer of santa_page that showed a draw
   var code = null;      // the code from santa_join, shown once and kept nowhere
   var tooLate = false;  // a join that met a draw already drawn
+  var returning = false; // the join form swapped for the code form by "Already joined?"
 
-  // One state at a time: loading, failed, ended, join, closed, recover,
-  // waiting or match. `page` is santa_page's answer, or { state: 'loading' },
-  // { state: 'failed' } or { state: 'ended' }.
+  // One state at a time: loading, failed, ended, join, returning, closed,
+  // recover, waiting or match. `page` is santa_page's answer, or
+  // { state: 'loading' }, { state: 'failed' } or { state: 'ended' }.
   function render(page) {
     var s = page.state;
     var me = page.me || null;
@@ -477,7 +490,7 @@
     else if (me) view = s === 'drawn' && me.match ? 'match' : 'waiting';
     // Once this browser has joined a draw it never sees the join form for it again.
     else if (known || s === 'drawn') view = 'recover';
-    else if (page.can_join) view = 'join';
+    else if (page.can_join) view = returning ? 'returning' : 'join';
     else view = 'closed';
     main.dataset.state = view;
     var draw = view !== 'loading' && view !== 'failed' && view !== 'ended';
@@ -490,8 +503,13 @@
     shown('closed', view === 'closed');
 
     shown('join', view === 'join');
-    shown('recover', view === 'recover');
-    shown('lost', view === 'recover');
+    // Before the draw the code form is the same one, without "not recognised"
+    // and with the way back to the join form.
+    var codeForm = view === 'recover' || view === 'returning';
+    shown('recover', codeForm);
+    shown('recover-intro', view === 'recover');
+    shown('back-line', view === 'returning');
+    shown('lost', codeForm);
     shown('changed', view === 'recover' && known);
     shown('too-late', view === 'recover' && tooLate);
 
@@ -524,7 +542,7 @@
       shown('own-note', false);
     }
 
-    var listed = (view === 'join' || view === 'closed' || view === 'waiting') && page.people.length > 0;
+    var listed = (view === 'join' || view === 'returning' || view === 'closed' || view === 'waiting') && page.people.length > 0;
     if (listed) say('people', w.soFar + page.people.join(', '));
     shown('people', listed);
   }
@@ -544,6 +562,21 @@
   }
 
   $('retry').addEventListener('click', load);
+
+  // Swapping between the join form and the code form, before the draw.
+  $('have-code').addEventListener('click', function () {
+    returning = true;
+    if (!$('recover-name').value) $('recover-name').value = $('join-name').value.trim();
+    shown('recover-note', false);
+    render(last);
+    $($('recover-name').value ? 'recover-code' : 'recover-name').focus();
+  });
+  $('no-code').addEventListener('click', function () {
+    returning = false;
+    shown('join-note', false);
+    render(last);
+    $('join-name').focus();
+  });
 
   // ---------- Joining ----------
 
@@ -600,6 +633,7 @@
       if (r.ok === true) {
         keepKey(key);
         tooLate = false;
+        returning = false;
         $('recover-code').value = '';
         load();
         return;
