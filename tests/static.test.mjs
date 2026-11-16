@@ -57,6 +57,8 @@ const REMOVED = {
     'Mazí relies on four service providers, and no others:',
     // The first-session steps and app errors (app 0063), 2026-11-12.
     'Last updated: 11 November 2026',
+    // Secret Santa's names and wishes, 2026-11-16.
+    'Last updated: 12 November 2026',
     "Your data is kept for as long as your account exists. You can delete your account at any time from Settings → Delete account inside the app. See the account deletion page for what is removed and what is kept. If you signed in with Apple, deleting your account also revokes Mazí's access to your Apple ID."],
 };
 
@@ -78,6 +80,7 @@ const CAMPAIGNS = {
   'faq.html': 'site_faq',
   'cozi-alternative.html': 'site_cozi_alternative',
   'join.html': 'invite',
+  'santa.html': 'site_santa',
 };
 
 // Every attribute value that names a URL; srcset holds several.
@@ -147,10 +150,10 @@ for (const { file } of PAGES) {
     }
   });
 
-  // The header menu lists the parts of Mazí in the homepage's order (/join has no menu).
+  // The header menu lists the parts of Mazí in the homepage's order (/join and /santa have no menu).
   test(`${file}: the menu reads Shopping, Tasks, Calendar, Meals, FAQ`, () => {
     const nav = html.match(/<nav class="nav"[^>]*>([\s\S]*?)<\/nav>/);
-    if (file === 'join.html') { assert.equal(nav, null); return; }
+    if (file === 'join.html' || file === 'santa.html') { assert.equal(nav, null); return; }
     assert.ok(nav, 'no header menu');
     assert.deepEqual([...nav[1].matchAll(/<a href="([^"]+)">([^<]+)<\/a>/g)].map((m) => `${m[2]} ${m[1]}`),
       ['Shopping /shopping-list', 'Tasks /chores', 'Calendar /family-calendar', 'Meals /meal-planner', 'FAQ /faq']);
@@ -163,7 +166,10 @@ for (const { file } of PAGES) {
     assert.deepEqual(order, ['shopping-list', 'chores', 'family-calendar', 'meal-planner']);
   });
 
+  // /santa is the one page people type on: a first name, wishes and a code,
+  // sent to the draw's own functions and shown back only as text.
   test(`${file}: no free text`, () => {
+    if (file === 'santa.html') return;
     assert.doesNotMatch(html, /<input|<textarea|contenteditable/i);
   });
 

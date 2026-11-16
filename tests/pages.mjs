@@ -11,6 +11,7 @@ export const PAGES = [
   { path: '/faq', file: 'faq.html', kind: 'faq', pose: 'surprised' },
   { path: '/cozi-alternative', file: 'cozi-alternative.html', kind: 'compare', pose: 'cheeky' },
   { path: '/join', file: 'join.html', kind: 'join', pose: 'wave' },
+  { path: '/santa', file: 'santa.html', kind: 'join', pose: 'joy' },
   { path: '/nope/deeper', file: '404.html', kind: '404', pose: 'dizzy' },
   { path: '/', file: 'index.html', kind: 'home' },
 ];
