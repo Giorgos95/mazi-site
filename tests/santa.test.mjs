@@ -18,10 +18,36 @@ const KEY = '0123456789abcdef'.repeat(4);
 const URL_ = `/santa?d=${TOKEN}`;
 const HEX64 = /^[0-9a-f]{64}$/;
 
+// The page hides the wishes editor once its own date passes the exchange
+// date, so the draws here are dated from today, never on a fixed day that a
+// later run would find in the past. SANTA_TEST_TODAY=2027-01-05 runs the whole
+// file as if that were today: the dates here and every page's clock move to it.
+const TODAY = process.env.SANTA_TEST_TODAY || null;
+const BASE = TODAY ? new Date(`${TODAY}T12:00:00`) : new Date();
+// A local date, as the page reads its own: offset days from today.
+const day = (offset) => {
+  const d = new Date(BASE.getFullYear(), BASE.getMonth(), BASE.getDate() + offset, 12);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+// The tests of the short date use fixed far-future days, whose weekdays were
+// read from two other calendars: 2099-12-25 is a Friday, 2099-01-05 a Monday.
+const CHRISTMAS_2099 = '2099-12-25';
+
 const draw = (over = {}) => ({
-  state: 'open', name: 'Family Secret Santa', budget: '€20', exchange_date: '2026-12-25',
+  state: 'open', name: 'Family Secret Santa', budget: '€20', exchange_date: day(10),
   can_join: true, people: ['Eleni', 'Nikos'], me: null, ...over,
 });
+
+// Moves the page's clock to noon on a local date, for Date.now() and new Date().
+const clock = (iso) => `(() => {
+  const Real = Date;
+  const shift = new Real('${iso}T12:00:00').getTime() - Real.now();
+  class Shifted extends Real {
+    constructor(...a) { if (a.length) super(...a); else super(Real.now() + shift); }
+    static now() { return Real.now() + shift; }
+  }
+  window.Date = Shifted;
+})();`;
 const me = (over = {}) => ({ name: 'Petros', wishes: ['A good book'], reset: false, match: null, ...over });
 const MATCH = { name: 'Maria', wishes: ['A warm scarf', 'Hand cream'] };
 
@@ -29,8 +55,8 @@ const MATCH = { name: 'Maria', wishes: ['A warm scarf', 'Hand cream'] };
 // answers its entries in turn and then keeps answering the last; 'fail' is a
 // network failure. `stored` puts a key in localStorage for the draw first,
 // `blocked` makes localStorage throw, as some private tabs do.
-function stub(table, { stored = null, blocked = false, greek = false } = {}) {
-  return `(() => {
+function stub(table, { stored = null, blocked = false, greek = false, now = TODAY } = {}) {
+  return `${now ? clock(now) : ''}(() => {
     const table = ${JSON.stringify(table)};
     window.__calls = [];
     window.__alerts = [];
@@ -98,7 +124,7 @@ test('the server saying ended is ended', async () => {
 });
 
 test('an open draw shows the join form with its name, budget, date and who is in', async () => {
-  await withPage(URL_, stub({ santa_page: draw() }), async (page) => {
+  await withPage(URL_, stub({ santa_page: draw({ exchange_date: CHRISTMAS_2099 }) }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'join')));
     assert.equal(await text(page, 'heading'), 'Family Secret Santa');
     assert.equal(await text(page, 'facts'), 'Up to €20 · exchange Fri 25 Dec');
@@ -242,6 +268,13 @@ test('a right code before the draw keeps the new key and shows the waiting state
   });
 });
 
+test('the line about a changed code reads Greek in Greek', async () => {
+  await withPage(`${URL_}&lang=el`, stub({ santa_page: draw({ state: 'drawn', can_join: false }) }, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'changed')));
+    assert.equal(await text(page, 'changed'), 'Αν το είχατε ανοίξει πριν, ο διοργανωτής ίσως άλλαξε τον κωδικό σας.');
+  });
+});
+
 test('the way back in reads Greek in Greek', async () => {
   await withPage(`${URL_}&lang=el`, stub({ santa_page: draw() }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'join')));
@@ -354,6 +387,37 @@ test('a match with no wishes shows no wishes list', async () => {
   });
 });
 
+// The server refuses new wishes after the exchange date, so the page stops offering them.
+test('past the exchange date the wishes editor is gone, before and after the draw', async () => {
+  for (const page_ of [draw({ exchange_date: day(-1), me: me() }),
+    draw({ state: 'drawn', can_join: false, exchange_date: day(-1), me: me({ match: MATCH }) })]) {
+    await withPage(URL_, stub({ santa_page: page_ }, { stored: KEY }), async (page) => {
+      assert.ok(await waitFor(async () => ['waiting', 'match'].includes(await state(page))));
+      assert.ok(!(await visible(page, 'own')), page_.state);
+      assert.deepEqual(page.errors, []);
+    });
+  }
+  // On the exchange day itself it still shows, by the page's own clock.
+  await withPage(URL_, stub({ santa_page: draw({ exchange_date: day(0), me: me() }) }, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'own')));
+  });
+});
+
+test('the page reads the exchange date against its own clock', async () => {
+  const christmas = draw({ state: 'drawn', can_join: false, exchange_date: '2026-12-25', me: me({ match: MATCH }) });
+  await withPage(URL_, stub({ santa_page: christmas }, { stored: KEY, now: '2026-12-25' }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'match')));
+    assert.ok(await visible(page, 'own'), 'on the day');
+    assert.equal(await page.eval('new Date().getDate()'), 25);
+  });
+  await withPage(URL_, stub({ santa_page: christmas }, { stored: KEY, now: '2026-12-26' }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'match')));
+    assert.ok(!(await visible(page, 'own')), 'the day after');
+    assert.equal(await text(page, 'match-name'), 'Maria');
+    assert.deepEqual(page.errors, []);
+  });
+});
+
 test('after the draw a browser nobody knows gets the name and code form', async () => {
   const table = {
     santa_page: [draw({ state: 'drawn', can_join: false }), draw({ state: 'drawn', can_join: false, me: me({ match: MATCH }) })],
@@ -458,7 +522,7 @@ test('names and wishes from people are shown as text, never as markup', async ()
   const greek = 'Ελένη & "Co"';
   const table = {
     santa_page: draw({
-      state: 'drawn', can_join: false, name: evil, budget: greek, people: [evil, greek],
+      state: 'drawn', can_join: false, name: evil, budget: greek, people: [evil, greek], exchange_date: CHRISTMAS_2099,
       me: me({ name: evil, wishes: [evil, greek], match: { name: greek, wishes: [evil, greek] } }),
     }),
   };
@@ -487,9 +551,9 @@ test('names and wishes from people are shown as text, never as markup', async ()
 });
 
 test('a draw with no budget shows only the date', async () => {
-  await withPage(URL_, stub({ santa_page: draw({ budget: '', exchange_date: '2027-01-05' }) }), async (page) => {
+  await withPage(URL_, stub({ santa_page: draw({ budget: '', exchange_date: '2099-01-05' }) }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'join')));
-    assert.equal(await text(page, 'facts'), 'Exchange Tue 5 Jan');
+    assert.equal(await text(page, 'facts'), 'Exchange Mon 5 Jan');
   });
 });
 
@@ -507,7 +571,7 @@ test('?lang=el, and a phone set to Greek, read the page in Greek', async () => {
     assert.equal(await page.eval('document.documentElement.lang'), 'en');
     assert.equal(await text(page, 'heading'), 'This Secret Santa has ended.');
   });
-  await withPage(`${URL_}&lang=el`, stub({ santa_page: draw() }), async (page) => {
+  await withPage(`${URL_}&lang=el`, stub({ santa_page: draw({ exchange_date: CHRISTMAS_2099 }) }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'join')));
     assert.equal(await text(page, 'facts'), 'Έως €20 · ανταλλαγή Παρ 25 Δεκ');
     assert.equal(await text(page, 'join-submit'), 'Μπαίνω');
