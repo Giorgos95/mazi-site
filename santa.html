@@ -91,6 +91,19 @@
 }
 #match-wishes-label { margin: 2rem 0 0.6rem; }
 #facts, #people, .santa-card p, .match-line, #in h2, #match-wishes li { overflow-wrap: anywhere; }
+/* The í wears a Santa hat on this page, and has a gift beside it once a match
+   shows. Both are pictures laid over the í's own box, here and not in
+   mascot-1.js, so no other page's í changes and nothing waits on a cached
+   file. The hat's tip leans where the í's accent does and stands in for it,
+   so the accent itself is not drawn. */
+#santa .fi svg > rect[transform] { display: none; }
+#santa .fi::after, #santa[data-state="match"] .fi::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: center / 100% 100% no-repeat;
+}
+#santa .fi::after { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 240'><path d='M88 72 C90 42 110 22 134 24 C146 25 154 34 154 46 C147 37 137 42 133 72 Z' fill='%23D62828' stroke='%231F2D3A' stroke-width='5' stroke-linejoin='round'/><rect x='80' y='64' width='60' height='19' rx='9.5' fill='%23fff' stroke='%231F2D3A' stroke-width='5'/><circle cx='155' cy='49' r='9' fill='%23fff' stroke='%231F2D3A' stroke-width='4.5'/></svg>"); }
+#santa[data-state="match"] .fi::before { background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 240'><g stroke='%231F2D3A' stroke-width='4' stroke-linejoin='round' stroke-linecap='round'><rect x='162' y='194' width='42' height='32' rx='4' fill='%23D62828'/><rect x='179' y='194' width='8' height='32' fill='%23FFD43B'/><rect x='158' y='182' width='50' height='14' rx='4' fill='%23D62828'/><rect x='179' y='182' width='8' height='14' fill='%23FFD43B'/><path d='M183 182 C168 158 154 176 183 182 Z M183 182 C198 158 212 176 183 182 Z' fill='%23FFD43B'/></g></svg>"); }
+[data-theme="night"] #santa .fi::after, [data-theme="night"] #santa .fi::before { filter: drop-shadow(0 0 1.6px rgba(243,238,223,.75)); }
 .made { margin: 3rem 0 0; padding: 1.4rem 0 0; border-top: 2px dashed var(--line); text-align: center; }
 .made p { margin: 0 0 0.4rem; font-weight: 700; }
 .made .badges { justify-content: center; }

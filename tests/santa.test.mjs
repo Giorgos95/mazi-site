@@ -258,6 +258,26 @@ test('Already joined? swaps the join form for the code form, and back', async ()
   });
 });
 
+// The í wears a Santa hat on this page only, in place of its accent, and has a
+// gift beside it once a match shows. Both are pictures over the í's own box.
+const HAT_LOOK = "(() => { const fi = document.querySelector('#santa .fi'); const accent = fi.querySelector('svg > rect[transform]'); const img = (pseudo) => getComputedStyle(fi, pseudo).backgroundImage; return { drawn: !!fi.querySelector('svg'), accentHidden: !!accent && getComputedStyle(accent).display === 'none', hat: img('::after').includes('data:image/svg+xml'), gift: img('::before').includes('data:image/svg+xml') }; })()";
+test('the í wears a hat on every state, and gets a gift only with a match', async () => {
+  const look = (page) => page.eval(HAT_LOOK);
+  await withPage(URL_, stub({ santa_page: draw() }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    assert.ok(await waitFor(async () => (await look(page)).drawn));
+    assert.deepEqual(await look(page), { drawn: true, accentHidden: true, hat: true, gift: false });
+    assert.deepEqual(page.errors, []);
+  });
+  const matched = { santa_page: draw({ state: 'drawn', can_join: false, me: me({ match: MATCH }) }) };
+  await withPage(URL_, stub(matched, { stored: KEY }), async (page) => {
+    assert.ok(await waitFor(async () => (await state(page)) === 'match'));
+    assert.ok(await waitFor(async () => (await look(page)).drawn));
+    assert.deepEqual(await look(page), { drawn: true, accentHidden: true, hat: true, gift: true });
+    assert.deepEqual(page.errors, []);
+  });
+});
+
 test('the code form lists the names in the draw, and a tap fills the name', async () => {
   const table = {
     santa_page: [draw({ state: 'drawn', can_join: false, people: ['Eleni', 'Nikos', 'Petros'] }), draw({ state: 'drawn', can_join: false, me: me({ match: MATCH }) })],
