@@ -70,6 +70,12 @@
   text-decoration-thickness: 2px; text-underline-offset: 3px;
 }
 .form-note { font-weight: 700; }
+/* What to do with the code: the one line on the page nobody should miss. */
+.code-keep {
+  margin: 1rem 0 0; padding: 0.75rem 0.9rem; border-radius: 14px;
+  background: var(--hi); border: 2.5px solid var(--line);
+  color: var(--fg); font-weight: 700; font-size: 1.05rem; line-height: 1.45;
+}
 .santa-card .button + .form-note { margin-top: 1rem; }
 .santa-card .switch-form, #closed-code { margin: 1rem 0 0; }
 .notice {
@@ -124,11 +130,11 @@
     <label for="join-name" id="join-name-label">Your name</label>
     <input id="join-name" type="text" maxlength="30" autocomplete="given-name" autocapitalize="words" enterkeyhint="next">
     <fieldset>
-      <legend id="join-wishes-label">Your wishes (optional)</legend>
+      <legend id="join-wishes-label">Your gift preferences (optional)</legend>
       <input id="join-wish-1" type="text" maxlength="60" autocomplete="off" aria-labelledby="join-wishes-label">
       <input id="join-wish-2" type="text" maxlength="60" autocomplete="off" aria-labelledby="join-wishes-label" hidden>
       <input id="join-wish-3" type="text" maxlength="60" autocomplete="off" aria-labelledby="join-wishes-label" hidden>
-      <button class="more" id="join-add" type="button">Add another wish</button>
+      <button class="more" id="join-add" type="button">Add another</button>
     </fieldset>
     <button class="button" id="join-submit" type="submit">I'm in</button>
     <p id="join-note" class="form-note" role="alert" hidden></p>
@@ -160,7 +166,7 @@
     <div class="code-card" id="code-card" hidden>
       <p class="label" id="code-label">Your code</p>
       <p class="code" id="code"></p>
-      <p class="note" id="code-keep">Keep it, a screenshot works. It opens your match from any phone or browser.</p>
+      <p class="code-keep" id="code-keep">Keep it, a screenshot works. It opens your match from any phone or browser.</p>
     </div>
     <!-- A join the server took whose answer, with the code, never arrived. -->
     <p id="code-lost" class="notice" hidden>You're in. We could not show your code: ask the organizer for a new one before you change phone or browser.</p>
@@ -186,11 +192,11 @@
   <!-- One's own wishes, editable until the exchange date. -->
   <form id="own" class="santa-card" novalidate hidden>
     <fieldset>
-      <legend id="own-wishes-label">Your wishes (optional)</legend>
+      <legend id="own-wishes-label">Your gift preferences (optional)</legend>
       <input id="own-wish-1" type="text" maxlength="60" autocomplete="off" aria-labelledby="own-wishes-label">
       <input id="own-wish-2" type="text" maxlength="60" autocomplete="off" aria-labelledby="own-wishes-label" hidden>
       <input id="own-wish-3" type="text" maxlength="60" autocomplete="off" aria-labelledby="own-wishes-label" hidden>
-      <button class="more" id="own-add" type="button">Add another wish</button>
+      <button class="more" id="own-add" type="button">Add another</button>
     </fieldset>
     <p id="own-note" class="form-note" role="alert" hidden></p>
     <button class="button quiet" id="own-save" type="submit" disabled>Save</button>
@@ -270,8 +276,8 @@
       exchange: 'exchange ',
       exchangeFirst: 'Exchange ',
       name: 'Your name',
-      wishes: 'Your wishes (optional)',
-      add: 'Add another wish',
+      wishes: 'Your gift preferences (optional)',
+      add: 'Add another',
       join: "I'm in",
       soFar: 'In so far: ',
       youreIn: "You're in, ",
@@ -279,7 +285,7 @@
       keep: 'Keep it, a screenshot works. It opens your match from any phone or browser.',
       waiting: 'The names are not drawn yet. Open this same link again when the organizer says they are.',
       buying: ', you are buying a gift for',
-      theirWishes: ' · wishes',
+      theirWishes: ' · gift preferences',
       notRecognised: 'This phone is not recognised. Enter your name and code to see your match.',
       open: 'Open my match',
       haveCode: 'Already joined? Open with your code',
@@ -292,7 +298,7 @@
       changed: 'If you opened this before, the organizer may have changed your code.',
       tooLate: 'The names are already drawn. Ask the organizer.',
       nameTaken: 'Someone already has that name. Add a letter.',
-      badJoin: 'That name or wish was not accepted. Try plain letters.',
+      badJoin: 'That name or gift preference was not accepted. Try plain letters.',
       codeLost: "You're in. We could not show your code: ask the organizer for a new one before you change phone or browser.",
       notTaking: 'This Secret Santa is not taking new people right now.',
       failed: 'That did not work. Check your connection and try again.',
@@ -312,7 +318,7 @@
       exchange: 'ανταλλαγή ',
       exchangeFirst: 'Ανταλλαγή ',
       name: 'Το όνομά σας',
-      wishes: 'Οι επιθυμίες σας (προαιρετικά)',
+      wishes: 'Οι προτιμήσεις σας για δώρο (προαιρετικά)',
       add: 'Προσθέστε άλλη μία',
       join: 'Μπαίνω',
       soFar: 'Μέχρι τώρα μπήκαν: ',
@@ -321,7 +327,7 @@
       keep: 'Κρατήστε τον, αρκεί ένα στιγμιότυπο. Με αυτόν βλέπετε ποιος σας έτυχε από κάθε κινητό ή browser.',
       waiting: 'Η κλήρωση δεν έχει γίνει ακόμα. Ανοίξτε ξανά αυτό το link όταν σας πει ο διοργανωτής.',
       buying: ', παίρνετε δώρο για',
-      theirWishes: ' · επιθυμίες',
+      theirWishes: ' · προτιμήσεις δώρου',
       notRecognised: 'Αυτό το κινητό δεν αναγνωρίζεται. Γράψτε το όνομα και τον κωδικό σας για να δείτε ποιος σας έτυχε.',
       open: 'Άνοιγμα',
       haveCode: 'Έχετε ήδη μπει; Ανοίξτε με τον κωδικό σας',
@@ -334,7 +340,7 @@
       changed: 'Αν το είχατε ανοίξει πριν, ο διοργανωτής ίσως άλλαξε τον κωδικό σας.',
       tooLate: 'Η κλήρωση έχει ήδη γίνει. Ρωτήστε τον διοργανωτή.',
       nameTaken: 'Υπάρχει ήδη αυτό το όνομα. Προσθέστε ένα γράμμα.',
-      badJoin: 'Αυτό το όνομα ή η επιθυμία δεν έγινε δεκτό. Δοκιμάστε με απλά γράμματα.',
+      badJoin: 'Αυτό το όνομα ή η προτίμηση δώρου δεν έγινε δεκτό. Δοκιμάστε με απλά γράμματα.',
       codeLost: 'Μπήκατε. Δεν μπορέσαμε να δείξουμε τον κωδικό σας: ζητήστε νέο από τον διοργανωτή πριν αλλάξετε κινητό ή browser.',
       notTaking: 'Αυτό το Secret Santa δεν δέχεται νέα άτομα αυτή τη στιγμή.',
       failed: 'Κάτι δεν πήγε καλά. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.',

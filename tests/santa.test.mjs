@@ -190,6 +190,11 @@ test('joining sends the name, the wishes and a new key, keeps the key and shows 
     assert.equal(await text(page, 'code'), '4821');
     assert.equal(await text(page, 'in-heading'), "You're in, Petros");
     assert.match(await text(page, 'code-card'), /Keep it, a screenshot works\. It opens your match from any phone or browser\./);
+    // The line about the code is body-coloured and bold, never the small grey note.
+    assert.deepEqual(
+      await page.eval(`(() => { const s = getComputedStyle(document.getElementById('code-keep')); const fg = getComputedStyle(document.body).color; return [Number(s.fontWeight) >= 700, s.color === fg]; })()`),
+      [true, true]
+    );
     assert.ok(await visible(page, 'waiting'));
     assert.equal(await text(page, 'people'), 'In so far: Eleni, Nikos, Petros');
     assert.ok(!(await visible(page, 'join')));
@@ -419,7 +424,7 @@ test('a join refused as bad input says the name or wish was not accepted, not th
     await type(page, 'join-name', 'Petros');
     await page.click('#join-submit');
     assert.ok(await waitFor(() => visible(page, 'join-note')));
-    assert.equal(await text(page, 'join-note'), 'That name or wish was not accepted. Try plain letters.');
+    assert.equal(await text(page, 'join-note'), 'That name or gift preference was not accepted. Try plain letters.');
     assert.ok(await visible(page, 'join'));
     assert.equal(await page.eval(`document.getElementById('join-submit').disabled`), false);
     assert.equal(await stored(page), null);
@@ -430,7 +435,7 @@ test('a join refused as bad input says the name or wish was not accepted, not th
     await type(page, 'join-name', 'Petros');
     await page.click('#join-submit');
     assert.ok(await waitFor(() => visible(page, 'join-note')));
-    assert.equal(await text(page, 'join-note'), 'Αυτό το όνομα ή η επιθυμία δεν έγινε δεκτό. Δοκιμάστε με απλά γράμματα.');
+    assert.equal(await text(page, 'join-note'), 'Αυτό το όνομα ή η προτίμηση δώρου δεν έγινε δεκτό. Δοκιμάστε με απλά γράμματα.');
   });
 });
 
@@ -512,7 +517,7 @@ test('after the draw a known browser sees its match and the wishes, never the jo
     assert.ok(await waitFor(() => visible(page, 'match')));
     assert.equal(await text(page, 'match-line'), 'Petros, you are buying a gift for');
     assert.equal(await text(page, 'match-name'), 'Maria');
-    assert.equal(await text(page, 'match-wishes-label'), 'Maria · wishes');
+    assert.equal(await text(page, 'match-wishes-label'), 'Maria · gift preferences');
     assert.deepEqual(await page.eval(`[...document.querySelectorAll('#match-wishes li')].map((li) => li.textContent)`), MATCH.wishes);
     assert.ok(!(await visible(page, 'join')));
     assert.ok(!(await visible(page, 'recover')));
@@ -720,7 +725,7 @@ test('names and wishes from people are shown as text, never as markup', async ()
     assert.equal(await text(page, 'facts'), `Up to ${greek} · exchange Fri 25 Dec`);
     assert.equal(await text(page, 'match-line'), `${evil}, you are buying a gift for`);
     assert.equal(await text(page, 'match-name'), greek);
-    assert.equal(await text(page, 'match-wishes-label'), `${greek} · wishes`);
+    assert.equal(await text(page, 'match-wishes-label'), `${greek} · gift preferences`);
     assert.deepEqual(await page.eval(`[...document.querySelectorAll('#match-wishes li')].map((li) => li.textContent)`), [evil, greek]);
     assert.equal(await page.eval(`document.getElementById('own-wish-1').value`), evil);
     assert.equal(await page.eval(`document.getElementById('own-wish-2').value`), greek);
@@ -779,7 +784,7 @@ test('?lang=el, and a phone set to Greek, read the page in Greek', async () => {
   await withPage(`${URL_}&lang=el`, stub(table, { stored: KEY }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'match')));
     assert.equal(await text(page, 'match-line'), 'Petros, παίρνετε δώρο για');
-    assert.equal(await text(page, 'match-wishes-label'), 'Maria · επιθυμίες');
+    assert.equal(await text(page, 'match-wishes-label'), 'Maria · προτιμήσεις δώρου');
   });
   const wrong = { santa_page: draw({ state: 'drawn', can_join: false }), santa_open: { ok: false, reason: 'wrong', left: 3 } };
   await withPage(`${URL_}&lang=el`, stub(wrong), async (page) => {
