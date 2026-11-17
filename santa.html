@@ -106,6 +106,8 @@
 [data-theme="night"] #santa .fi::after, [data-theme="night"] #santa .fi::before { filter: drop-shadow(0 0 1.6px rgba(243,238,223,.75)); }
 .made { margin: 3rem 0 0; padding: 1.4rem 0 0; border-top: 2px dashed var(--line); text-align: center; }
 .made p { margin: 0 0 0.4rem; font-weight: 700; }
+/* What Mazí is, for someone who came only for the draw. */
+.made .made-what { max-width: 30rem; margin: 0 auto 1rem; font-weight: 400; }
 .made .badges { justify-content: center; }
 </style>
 </head>
@@ -219,6 +221,7 @@
 
   <section class="made">
     <p id="made">Organized with Mazí, the family organizer</p>
+    <p id="made-what" class="made-what">Mazí keeps a family's shopping, chores and calendar in one shared place.</p>
     <div class="badges" id="badges">
       <a class="badge" id="play" href="https://play.google.com/store/apps/details?id=com.mazi.family&amp;referrer=utm_source%3Dsite%26utm_medium%3Dlink%26utm_campaign%3Dsite_santa">
         <img src="/assets/google-play-badge.png" alt="Get it on Google Play" width="165" height="64">
@@ -318,6 +321,7 @@
       retry: 'Try again',
       save: 'Save',
       made: 'Organized with Mazí, the family organizer',
+      madeWhat: "Mazí keeps a family's shopping, chores and calendar in one shared place.",
       keepAsk: 'Have Mazí on this phone?',
       keepGo: 'Keep it in Mazí',
       keepNote: 'Your match stays in the app, and Mazí offers to add the exchange to your calendar. Needs the latest Mazí.',
@@ -360,6 +364,7 @@
       retry: 'Δοκιμάστε ξανά',
       save: 'Αποθήκευση',
       made: 'Οργανώθηκε με το Mazí, τον οικογενειακό οργανωτή',
+      madeWhat: 'Το Mazí κρατά τα ψώνια, τις δουλειές και το ημερολόγιο της οικογένειας σε ένα κοινό μέρος.',
       keepAsk: 'Έχετε το Mazí σε αυτό το κινητό;',
       keepGo: 'Κρατήστε το στο Mazí',
       keepNote: 'Το άτομο που σας έτυχε μένει στην εφαρμογή και το Mazí προτείνει να μπει η ανταλλαγή στο ημερολόγιό σας. Χρειάζεται την πιο πρόσφατη έκδοση του Mazí.',
@@ -408,6 +413,7 @@
     say('failed-text', w.failed);
     say('retry', w.retry);
     say('made', w.made);
+    say('made-what', w.madeWhat);
     say('keep-ask', w.keepAsk);
     say('keep-go', w.keepGo);
     say('keep-note', w.keepNote);

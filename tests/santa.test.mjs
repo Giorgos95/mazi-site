@@ -779,6 +779,7 @@ test('?lang=el, and a phone set to Greek, read the page in Greek', async () => {
     assert.equal(await page.eval('document.documentElement.lang'), 'el');
     assert.equal(await text(page, 'heading'), 'Αυτό το Secret Santa έχει τελειώσει.');
     assert.equal(await text(page, 'made'), 'Οργανώθηκε με το Mazí, τον οικογενειακό οργανωτή');
+    assert.equal(await text(page, 'made-what'), 'Το Mazí κρατά τα ψώνια, τις δουλειές και το ημερολόγιο της οικογένειας σε ένα κοινό μέρος.');
   });
   await withPage('/santa?lang=en', stub({}, { greek: true }), async (page) => {
     assert.equal(await page.eval('document.documentElement.lang'), 'en');
@@ -852,6 +853,7 @@ test('both store buttons carry the Secret Santa campaign', async () => {
     assert.match(await page.eval(`document.getElementById('play').getAttribute('href')`), /utm_campaign%3Dsite_santa$/);
     assert.match(await page.eval(`document.getElementById('apple').getAttribute('href')`), /[?&]ct=site_santa&/);
     assert.equal(await text(page, 'made'), 'Organized with Mazí, the family organizer');
+    assert.equal(await text(page, 'made-what'), "Mazí keeps a family's shopping, chores and calendar in one shared place.");
   });
   const html = readFile('santa.html');
   assert.ok(html.includes('utm_campaign%3Dsite_santa"'));
