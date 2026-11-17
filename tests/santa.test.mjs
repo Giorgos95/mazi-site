@@ -253,6 +253,44 @@ test('Already joined? swaps the join form for the code form, and back', async ()
   });
 });
 
+test('the code form lists the names in the draw, and a tap fills the name', async () => {
+  const table = {
+    santa_page: [draw({ state: 'drawn', can_join: false, people: ['Eleni', 'Nikos', 'Petros'] }), draw({ state: 'drawn', can_join: false, me: me({ match: MATCH }) })],
+    santa_open: { ok: true },
+  };
+  await withPage(URL_, stub(table), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'recover')));
+    assert.ok(await visible(page, 'recover-names'));
+    const chips = () => page.eval(`[...document.querySelectorAll('#recover-names .name-chip')].map((c) => c.textContent + ':' + c.getAttribute('aria-pressed'))`);
+    assert.deepEqual(await chips(), ['Eleni:false', 'Nikos:false', 'Petros:false']);
+    await page.eval(`document.querySelectorAll('#recover-names .name-chip')[2].click()`);
+    assert.equal(await page.eval(`document.getElementById('recover-name').value`), 'Petros');
+    assert.equal(await page.eval('document.activeElement.id'), 'recover-code');
+    assert.deepEqual(await chips(), ['Eleni:false', 'Nikos:false', 'Petros:true']);
+    // Typing a name the other way marks the same chip, whatever its capitals.
+    await type(page, 'recover-name', ' nikos ');
+    assert.deepEqual(await chips(), ['Eleni:false', 'Nikos:true', 'Petros:false']);
+    await page.eval(`document.querySelectorAll('#recover-names .name-chip')[2].click()`);
+    await type(page, 'recover-code', '4821');
+    await page.click('#recover-submit');
+    assert.ok(await waitFor(async () => (await state(page)) === 'match'));
+    const open = (await calls(page)).find((c) => c.fn === 'santa_open');
+    assert.deepEqual([open.args.p_name, open.args.p_code], ['Petros', '4821']);
+    assert.deepEqual(page.errors, []);
+  });
+});
+
+test('a draw with nobody in it shows no names to tap, and the join form never shows them', async () => {
+  await withPage(URL_, stub({ santa_page: draw({ people: [] }) }), async (page) => {
+    assert.ok(await waitFor(() => visible(page, 'join')));
+    assert.ok(!(await visible(page, 'recover-names')));
+    await page.click('#have-code');
+    assert.ok(await visible(page, 'recover'));
+    assert.ok(!(await visible(page, 'recover-names')));
+    assert.deepEqual(page.errors, []);
+  });
+});
+
 test('a right code before the draw keeps the new key and shows the waiting state, with no code', async () => {
   const table = {
     santa_page: [draw(), draw({ me: me() })],
