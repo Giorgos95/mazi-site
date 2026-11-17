@@ -869,7 +869,7 @@ const drawn = (over = {}) => draw({ state: 'drawn', can_join: false, me: me({ ma
 const keepWords = {
   ask: 'Have Mazí on this phone?',
   button: 'Keep it in Mazí',
-  note: 'Your match stays in the app, and Mazí offers to add the exchange to your calendar. Needs the latest Mazí.',
+  note: 'Your match stays in the app, and Mazí offers to add the exchange to your calendar. Needs the latest Mazí: if Mazí opens on an error page, update it, close it, open it again and tap this button once more.',
 };
 // Asserts the code is nowhere but in the link the page asked to open.
 async function codeKeptNowhere(page) {
@@ -988,7 +988,7 @@ test('Keep it in Mazí reads Greek in Greek', async () => {
     assert.ok(await waitFor(() => visible(page, 'keep')));
     assert.equal(await text(page, 'keep-ask'), 'Έχετε το Mazí σε αυτό το κινητό;');
     assert.equal(await text(page, 'keep-go'), 'Κρατήστε το στο Mazí');
-    assert.equal(await text(page, 'keep-note'), 'Το άτομο που σας έτυχε μένει στην εφαρμογή και το Mazí προτείνει να μπει η ανταλλαγή στο ημερολόγιό σας. Χρειάζεται την πιο πρόσφατη έκδοση του Mazí.');
+    assert.equal(await text(page, 'keep-note'), 'Το άτομο που σας έτυχε μένει στην εφαρμογή και το Mazí προτείνει να μπει η ανταλλαγή στο ημερολόγιό σας. Χρειάζεται την πιο πρόσφατη έκδοση του Mazí: αν το Mazí ανοίξει σε σελίδα σφάλματος, ενημερώστε το, κλείστε το, ανοίξτε το ξανά και πατήστε πάλι αυτό το κουμπί.');
     await page.click('#keep-go');
     assert.ok(await waitFor(() => visible(page, 'keep-failed')));
     assert.equal(await text(page, 'keep-failed'), 'Κάτι δεν πήγε καλά. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.');
