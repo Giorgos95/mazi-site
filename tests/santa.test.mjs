@@ -142,7 +142,7 @@ test('an open draw shows the join form with its name, budget, date and who is in
   await withPage(URL_, stub({ santa_page: draw({ exchange_date: CHRISTMAS_2099 }) }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'join')));
     assert.equal(await text(page, 'heading'), 'Family Secret Santa');
-    assert.equal(await text(page, 'facts'), 'Up to €20 · exchange Fri 25 Dec');
+    assert.equal(await text(page, 'facts'), 'Gift price up to €20 · exchange Fri 25 Dec');
     assert.equal(await text(page, 'people'), 'In so far: Eleni, Nikos');
     assert.equal(await text(page, 'join-submit'), "I'm in");
     const [c] = await calls(page);
@@ -742,7 +742,7 @@ test('names and wishes from people are shown as text, never as markup', async ()
   await withPage(URL_, stub(table, { stored: KEY }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'match')));
     assert.equal(await text(page, 'heading'), evil);
-    assert.equal(await text(page, 'facts'), `Up to ${greek} · exchange Fri 25 Dec`);
+    assert.equal(await text(page, 'facts'), `Gift price up to ${greek} · exchange Fri 25 Dec`);
     assert.equal(await text(page, 'match-line'), `${evil}, you are buying a gift for`);
     assert.equal(await text(page, 'match-name'), greek);
     assert.equal(await text(page, 'match-wishes-label'), `${greek} · gift preferences`);
@@ -787,7 +787,7 @@ test('?lang=el, and a phone set to Greek, read the page in Greek', async () => {
   });
   await withPage(`${URL_}&lang=el`, stub({ santa_page: draw({ exchange_date: CHRISTMAS_2099 }) }), async (page) => {
     assert.ok(await waitFor(() => visible(page, 'join')));
-    assert.equal(await text(page, 'facts'), 'Έως €20 · ανταλλαγή Παρ 25 Δεκ');
+    assert.equal(await text(page, 'facts'), 'Τιμή δώρου έως €20 · ανταλλαγή Παρ 25 Δεκ');
     assert.equal(await text(page, 'join-submit'), 'Μπαίνω');
     assert.equal(await text(page, 'join-name-label'), 'Το όνομά σας');
     assert.equal(await text(page, 'people'), 'Μέχρι τώρα μπήκαν: Eleni, Nikos');
